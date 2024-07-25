@@ -6,31 +6,32 @@ class LoginScreenLogic {
   final MaskedTextController phoneNumberController;
   final Logger logger;
 
-  // Конструктор класса, инициализирует контроллер номера телефона и логгер
   LoginScreenLogic({
-    required this.phoneNumberController, 
-    required this.logger});
+    required this.phoneNumberController,
+    required this.logger,
+  });
 
-  // Метод для обработки логики аутентификации
   void login(BuildContext context) {
-    // Получаем номер телефона из контроллера
     final phoneNumber = phoneNumberController.text;
 
-    // Проверяем, что номер телефона не пустой
     if (phoneNumber.isEmpty) {
       _showErrorDialog(context, 'Введите номер телефона');
       return;
     }
 
-    // Логируем попытку аутентификации
     logger.i('Попытка аутентификации с номером: $phoneNumber');
 
-    // Здесь можно добавить вызов к API или другую логику для аутентификации
-    // Пока что показываем диалог успешной аутентификации как пример
-    _showSuccessDialog(context);
+    // Добавьте вашу логику аутентификации здесь
+    // Например, если аутентификация успешна, перейдите на другой экран
+
+    // Пример успешной аутентификации и перехода на экран SMS верификации
+    Navigator.pushNamed(
+      context,
+      '/sms_verification',
+      arguments: {'verificationId': 'example_verification_id'}, // Передайте необходимые параметры
+    );
   }
 
-  // Метод для отображения диалога об ошибке
   void _showErrorDialog(BuildContext context, String message) {
     showDialog(
       context: context,
@@ -40,7 +41,7 @@ class LoginScreenLogic {
           content: Text(message),
           actions: [
             TextButton(
-              onPressed: () => Navigator.of(context).pop(), // Закрываем диалог
+              onPressed: () => Navigator.of(context).pop(),
               child: const Text('ОК'),
             ),
           ],
@@ -49,7 +50,6 @@ class LoginScreenLogic {
     );
   }
 
-  // Метод для отображения диалога об успешной аутентификации
   void _showSuccessDialog(BuildContext context) {
     showDialog(
       context: context,
@@ -59,7 +59,7 @@ class LoginScreenLogic {
           content: const Text('Аутентификация успешна'),
           actions: [
             TextButton(
-              onPressed: () => Navigator.of(context).pop(), // Закрываем диалог
+              onPressed: () => Navigator.of(context).pop(),
               child: const Text('ОК'),
             ),
           ],

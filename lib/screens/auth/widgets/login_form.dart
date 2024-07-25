@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:extended_masked_text/extended_masked_text.dart';
 import 'package:flutter/services.dart';
+import 'package:sheber_market/widgets/save_button.dart';
 
 class LoginForm extends StatelessWidget {
   final MaskedTextController phoneNumberController;
@@ -19,7 +20,7 @@ class LoginForm extends StatelessWidget {
     return Container(
       height: screenSize.height * 0.4,
       decoration: BoxDecoration(
-        color: Colors.grey[400],
+        color: Colors.grey[600],
         borderRadius: const BorderRadius.only(
           topLeft: Radius.circular(60),
         ),
@@ -54,21 +55,7 @@ class LoginForm extends StatelessWidget {
               maxLengthEnforcement: MaxLengthEnforcement.enforced,
             ),
             SizedBox(height: screenSize.height * 0.03),
-            SizedBox(
-              height: screenSize.height * 0.05,
-              width: double.infinity,
-              child: ElevatedButton(
-                onPressed: onLoginPressed,
-                style: ElevatedButton.styleFrom(
-                  //padding: EdgeInsets.symmetric(vertical: screenSize.height * 0.02),
-                  textStyle: TextStyle(fontSize: screenSize.width * 0.05),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  )
-                ),
-                child: const Text('Войти'),
-              ),
-            ),
+            Savebutton(onPressed: onLoginPressed, text: 'Войти',),
           ],
         ),
       ),
