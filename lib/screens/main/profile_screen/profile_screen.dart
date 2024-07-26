@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
 import 'package:sheber_market/screens/main/profile_screen/profile_screen_logic.dart';
 import 'package:sheber_market/screens/main/profile_screen/widgets/profile_headrs.dart';
 import 'package:sheber_market/screens/main/profile_screen/widgets/profile_options_list.dart';
@@ -18,9 +19,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    logic = Provider.of<ProfileScreenLogic>(context); // Initialize logic
+    logic = Provider.of<ProfileScreenLogic>(context);
     if (logic.user == null) {
-      logic.loadUserProfile(); // Load user profile if not already loaded
+      logic.loadUserProfile();
     }
   }
 
@@ -56,7 +57,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       'Условия использования',
                       'Выйти с аккаунта',
                     ],
-                    onOptionSelected: logic.navigateTo,
+                    onOptionSelected: (index) => logic.navigateTo(context, index),
                   ),
                 ],
               ),

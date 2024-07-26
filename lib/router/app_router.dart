@@ -7,7 +7,10 @@ import 'package:sheber_market/screens/main/main_screen/main_screen.dart';
 import 'package:sheber_market/screens/main/basket_screen/basket_screen.dart';
 import 'package:sheber_market/screens/main/favorite_screen/favorites_screen.dart';
 import 'package:sheber_market/screens/main/product_screen/product_screen.dart';
+import 'package:sheber_market/screens/main/product_screen/product_inform_screen/product_inform_screen.dart'; // Импортируйте ProductInformScreen
+import 'package:sheber_market/screens/main/profile_screen/app_settings_screen/address_screen/address_screen.dart';
 import 'package:sheber_market/screens/main/profile_screen/profile_screen.dart';
+import 'package:sheber_market/models/product.dart'; // Импортируйте модель Product
 
 class AppRouter {
   static Route<dynamic> generateRoute(RouteSettings settings) {
@@ -52,6 +55,18 @@ class AppRouter {
         return MaterialPageRoute(
           builder: (_) => ProductScreen(category: args['category'] as String),
         );
+      case '/product_inform':
+        final args = settings.arguments as Map<String, dynamic>;
+        final product = args['product'] as Product;
+        return MaterialPageRoute(
+          builder: (_) => ProductInformScreen(product: product),
+        );
+      // В файле AppRouter
+      case '/address-settings':
+         return MaterialPageRoute(
+            builder: (_) => const AddressScreen(),
+        );
+
       default:
         return MaterialPageRoute(
           builder: (_) => const Scaffold(

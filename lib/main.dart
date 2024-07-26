@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:sheber_market/app/sheber_market_app.dart';
 import 'package:provider/provider.dart';
+import 'package:sheber_market/app/sheber_market_app.dart';
 import 'package:sheber_market/screens/main/basket_screen/basket_screen_logic.dart';
 import 'package:sheber_market/screens/main/category_screen/category_screen_logic.dart';
 import 'package:sheber_market/screens/main/favorite_screen/favorites_screen_logic.dart';
@@ -12,7 +12,7 @@ void main() {
     MultiProvider(
       providers: [
         ChangeNotifierProvider(
-          create: (_) => HomeScreenLogic()..init(), // Инициализируйте HomeScreenLogic
+          create: (_) => HomeScreenLogic()..init(),
         ),
         ChangeNotifierProvider(
           create: (_) => CategoryScreenLogic(),
@@ -20,12 +20,13 @@ void main() {
         ChangeNotifierProvider(
           create: (_) => BasketLogic(),
         ),
-        // Переопределите логику инициализации FavoritesLogic
         ChangeNotifierProvider(
           create: (context) => FavoritesLogic(context),
         ),
+        // В ProfileScreenLogic контекст может быть доступен позже
         ChangeNotifierProvider(
-          create: (context)=> ProfileScreenLogic(context)),
+          create: (context) => ProfileScreenLogic(),
+        ),
         // Добавьте другие провайдеры здесь, если нужно
       ],
       child: const SheberMarketApp(),

@@ -1,18 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:sheber_market/models/users.dart';
 
-
 class ProfileScreenLogic extends ChangeNotifier {
-  final BuildContext context;
-
-  ProfileScreenLogic(this.context);
-
   User? user;
   bool isLoading = false;
 
   Future<void> loadUserProfile() async {
     isLoading = true;
-    notifyListeners(); // Notify listeners that loading state has changed
+    notifyListeners();
 
     // Mock user data; replace with real data loading logic
     await Future.delayed(const Duration(seconds: 2));
@@ -24,25 +19,25 @@ class ProfileScreenLogic extends ChangeNotifier {
     );
 
     isLoading = false;
-    notifyListeners(); // Notify listeners that data has been updated
+    notifyListeners();
   }
 
-  void navigateTo(int index) {
+  void navigateTo(BuildContext context, int index) {
     switch (index) {
       case 0:
-        
+        Navigator.pushNamed(context, '/address-settings');
         break;
       case 1:
-        
+        Navigator.pushNamed(context, '/address-settings');
         break;
       case 2:
-        
+        Navigator.pushNamed(context, '/address-settings');
         break;
       case 3:
-        
+        Navigator.pushNamed(context, '/address-settings');
         break;
       case 4:
-        
+        Navigator.pushNamed(context, '/address-settings');
         break;
       default:
         break;
