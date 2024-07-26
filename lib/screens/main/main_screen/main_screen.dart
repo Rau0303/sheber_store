@@ -17,17 +17,19 @@ class _MainScreenState extends State<MainScreen> {
   final List<Widget> _pages = const [
     HomeScreen(),
     CategoryScreen(),
-    CategoryScreen(),// Замените на соответствующие экраны
-    BasketScreen(),    // Замените на соответствующие экраны
-    CategoryScreen(),  // Замените на соответствующие экраны
+    CategoryScreen(), // Замените на соответствующие экраны
+    BasketScreen(),  // Замените на соответствующие экраны
+    CategoryScreen(), // Замените на соответствующие экраны
   ];
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Scaffold(
       body: _pages[_currentIndex],
+      backgroundColor: theme.colorScheme.surface, // Используйте фон из темы
       bottomNavigationBar: Container(
-        color: Theme.of(context).colorScheme.primary,
+        color: theme.colorScheme.primary, // Цвет фона для нижнего меню
         padding: EdgeInsets.symmetric(
           horizontal: MediaQuery.of(context).size.width * 0.02,
           vertical: MediaQuery.of(context).size.height * 0.02,
@@ -39,10 +41,10 @@ class _MainScreenState extends State<MainScreen> {
             });
           },
           gap: 10,
-          backgroundColor: Theme.of(context).colorScheme.primary,
-          color: Theme.of(context).colorScheme.onPrimary,
-          activeColor: Theme.of(context).colorScheme.onPrimary,
-          tabBackgroundColor: Theme.of(context).colorScheme.secondary,
+          backgroundColor: theme.colorScheme.primary,
+          color: theme.colorScheme.onPrimary,
+          activeColor: theme.colorScheme.onPrimary,
+          tabBackgroundColor: theme.colorScheme.secondary,
           padding: const EdgeInsets.all(10),
           tabs: [
             GButton(

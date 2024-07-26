@@ -6,10 +6,10 @@ class AdaptiveTheme {
 
     return ThemeData(
       colorScheme: const ColorScheme.light(
-        primary: Colors.white,
-        secondary: Colors.deepOrange,
+        primary: Colors.deepOrange,
+        secondary: Colors.orangeAccent,
       ),
-      scaffoldBackgroundColor: Colors.white,
+      scaffoldBackgroundColor: Colors.grey[100], // Светлый фон для светлой темы
       textTheme: TextTheme(
         displayLarge: TextStyle(fontSize: screenWidth * 0.08, fontWeight: FontWeight.bold, color: Colors.black),
         displayMedium: TextStyle(fontSize: screenWidth * 0.07, fontWeight: FontWeight.bold, color: Colors.black),
@@ -69,7 +69,7 @@ class AdaptiveTheme {
         primary: Colors.black,
         secondary: Colors.deepOrange,
       ),
-      scaffoldBackgroundColor: Colors.black,
+      scaffoldBackgroundColor: Colors.grey[850], // Темный фон для темной темы
       textTheme: TextTheme(
         displayLarge: TextStyle(fontSize: screenWidth * 0.08, fontWeight: FontWeight.bold, color: Colors.white),
         displayMedium: TextStyle(fontSize: screenWidth * 0.07, fontWeight: FontWeight.bold, color: Colors.white),
