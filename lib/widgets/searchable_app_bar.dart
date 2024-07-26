@@ -15,36 +15,38 @@ class SearchableAppBar extends StatelessWidget implements PreferredSizeWidget {
     required this.searchController,
     required this.onSearchChanged,
     required this.onSearchPressed,
-    required this.onClearPressed, 
+    required this.onClearPressed,
     required this.appBarTitle,
   });
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+
     return AppBar(
       title: isSearch
           ? TextField(
               controller: searchController,
               decoration: InputDecoration(
                 hintText: 'Поиск',
-                hintStyle: theme.textTheme.bodyMedium?.copyWith(color: theme.colorScheme.onPrimary),
+                hintStyle: theme.inputDecorationTheme.hintStyle,
                 suffixIcon: IconButton(
                   onPressed: onClearPressed,
-                  icon: Icon(Icons.clear, color: theme.colorScheme.onPrimary),
+                  icon: const Icon(Icons.clear, color: Colors.white),
                 ),
               ),
-              style: theme.textTheme.bodyMedium?.copyWith(color: theme.colorScheme.onPrimary),
+              style: theme.textTheme.bodyMedium?.copyWith(color: Colors.white),
               onChanged: onSearchChanged,
             )
-          :  Text(
+          : Text(
               appBarTitle,
+              style: theme.appBarTheme.titleTextStyle,
             ),
       actions: [
         if (!isSearch)
           IconButton(
             onPressed: onSearchPressed,
-            icon: Icon(Icons.search, color: theme.colorScheme.onPrimary),
+            icon: const Icon(Icons.search, color: Colors.white),
           ),
       ],
       automaticallyImplyLeading: false,

@@ -10,6 +10,9 @@ class AdaptiveTheme {
         secondary: Colors.orangeAccent,
       ),
       scaffoldBackgroundColor: Colors.grey[100], // Светлый фон для светлой темы
+      bottomAppBarTheme: const BottomAppBarTheme(
+        color: Colors.white, // Цвет фона для нижнего меню в светлой теме
+      ),
       textTheme: TextTheme(
         displayLarge: TextStyle(fontSize: screenWidth * 0.08, fontWeight: FontWeight.bold, color: Colors.black),
         displayMedium: TextStyle(fontSize: screenWidth * 0.07, fontWeight: FontWeight.bold, color: Colors.black),
@@ -31,6 +34,7 @@ class AdaptiveTheme {
         backgroundColor: Colors.deepOrange,
         titleTextStyle: TextStyle(fontSize: screenWidth * 0.05, fontWeight: FontWeight.bold, color: Colors.white),
         elevation: 0,
+        iconTheme: const IconThemeData(color: Colors.white), // Установите цвет иконок для AppBar
       ),
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
@@ -39,6 +43,7 @@ class AdaptiveTheme {
           textStyle: TextStyle(fontSize: screenWidth * 0.045),
         ),
       ),
+      dividerColor: Colors.grey[300],
       inputDecorationTheme: InputDecorationTheme(
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8),
@@ -70,6 +75,9 @@ class AdaptiveTheme {
         secondary: Colors.deepOrange,
       ),
       scaffoldBackgroundColor: Colors.grey[850], // Темный фон для темной темы
+      bottomAppBarTheme: BottomAppBarTheme(
+        color: Colors.grey[900], // Цвет фона для нижнего меню в темной теме
+      ),
       textTheme: TextTheme(
         displayLarge: TextStyle(fontSize: screenWidth * 0.08, fontWeight: FontWeight.bold, color: Colors.white),
         displayMedium: TextStyle(fontSize: screenWidth * 0.07, fontWeight: FontWeight.bold, color: Colors.white),
@@ -91,7 +99,9 @@ class AdaptiveTheme {
         backgroundColor: Colors.deepOrange,
         titleTextStyle: TextStyle(fontSize: screenWidth * 0.05, fontWeight: FontWeight.bold, color: Colors.white),
         elevation: 0,
+        iconTheme: const IconThemeData(color: Colors.white), // Установите цвет иконок для AppBar
       ),
+      dividerColor: Colors.grey[700],
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
           foregroundColor: Colors.white,

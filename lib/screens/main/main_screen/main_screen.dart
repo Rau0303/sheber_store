@@ -5,7 +5,7 @@ import 'package:sheber_market/screens/main/category_screen/category_screen.dart'
 import 'package:sheber_market/screens/main/favorite_screen/favorites_screen.dart';
 import 'package:sheber_market/screens/main/home_screen/home_screen.dart';
 import 'package:sheber_market/screens/main/basket_screen/basket_screen.dart';
-import 'package:sheber_market/screens/main/profile_screen/profile_screen.dart'; // Импортируйте BasketScreen
+import 'package:sheber_market/screens/main/profile_screen/profile_screen.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
@@ -20,22 +20,26 @@ class _MainScreenState extends State<MainScreen> {
   final List<Widget> _pages = const [
     HomeScreen(),
     CategoryScreen(),
-    FavoritesScreen(), // Замените на соответствующие экраны
-    BasketScreen(),  // Замените на соответствующие экраны
-    ProfileScreen(), // Замените на соответствующие экраны
+    FavoritesScreen(),
+    BasketScreen(),
+    ProfileScreen(),
   ];
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final mediaQuery = MediaQuery.of(context);
+    final screenWidth = mediaQuery.size.width;
+    final screenHeight = mediaQuery.size.height;
+
     return Scaffold(
       body: _pages[_currentIndex],
-      backgroundColor: theme.colorScheme.surface, // Используйте фон из темы
+      backgroundColor: theme.scaffoldBackgroundColor,
       bottomNavigationBar: Container(
-        color: theme.colorScheme.primary, // Цвет фона для нижнего меню
+        color: theme.bottomAppBarTheme.color,
         padding: EdgeInsets.symmetric(
-          horizontal: MediaQuery.of(context).size.width * 0.02,
-          vertical: MediaQuery.of(context).size.height * 0.02,
+          horizontal: screenWidth * 0.02,
+          vertical: screenHeight * 0.02,
         ),
         child: GNav(
           onTabChange: (index) {
@@ -44,10 +48,10 @@ class _MainScreenState extends State<MainScreen> {
             });
           },
           gap: 10,
-          backgroundColor: theme.colorScheme.primary,
-          color: theme.colorScheme.onPrimary,
-          activeColor: theme.colorScheme.onPrimary,
-          tabBackgroundColor: theme.colorScheme.secondary,
+          backgroundColor: theme.bottomAppBarTheme.color!,
+          color: theme.colorScheme.onSurface, // Цвет иконок неактивных
+          activeColor: Colors.white, // Цвет иконок активных
+          tabBackgroundColor: theme.colorScheme.onSecondary, // Цвет фона активной вкладки
           padding: const EdgeInsets.all(10),
           tabs: [
             GButton(

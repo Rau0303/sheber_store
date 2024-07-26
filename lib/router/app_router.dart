@@ -6,6 +6,7 @@ import 'package:sheber_market/screens/main/home_screen/home_screen.dart';
 import 'package:sheber_market/screens/main/main_screen/main_screen.dart';
 import 'package:sheber_market/screens/main/basket_screen/basket_screen.dart';
 import 'package:sheber_market/screens/main/favorite_screen/favorites_screen.dart';
+import 'package:sheber_market/screens/main/product_screen/product_screen.dart';
 import 'package:sheber_market/screens/main/profile_screen/profile_screen.dart';
 
 class AppRouter {
@@ -42,9 +43,14 @@ class AppRouter {
         return MaterialPageRoute(
           builder: (_) => const FavoritesScreen(),
         );
-      case '/profile': // Добавьте маршрут для ProfileScreen
+      case '/profile':
         return MaterialPageRoute(
           builder: (_) => const ProfileScreen(),
+        );
+      case '/products':
+        final args = settings.arguments as Map<String, dynamic>;
+        return MaterialPageRoute(
+          builder: (_) => ProductScreen(category: args['category'] as String),
         );
       default:
         return MaterialPageRoute(

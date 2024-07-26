@@ -21,20 +21,21 @@ class ProductGridviewCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final screenSize = MediaQuery.of(context).size;
-    final textTheme = Theme.of(context).textTheme;
+    final theme = Theme.of(context);
+    final textTheme = theme.textTheme;
 
     return GestureDetector(
       onTap: onTap,
       child: Container(
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: theme.cardColor, // Используйте цвет фона карты из темы
           borderRadius: BorderRadius.circular(16),
           boxShadow: [
             BoxShadow(
-              color: Colors.grey.withOpacity(0.5),
+              color: theme.shadowColor.withOpacity(0.5),
               spreadRadius: 2,
               blurRadius: 5,
-              offset: const Offset(0, 3), // changes position of shadow
+              offset: const Offset(0, 3), // Измените положение тени
             ),
           ],
         ),
@@ -85,14 +86,12 @@ class ProductGridviewCard extends StatelessWidget {
                         ? 'в наличии ${product.quantity} штук'
                         : 'Нет в наличии',
                     style: product.quantity > 0
-                        ? const TextStyle(
+                        ? textTheme.bodyMedium!.copyWith(
                             color: Colors.green,
-                            fontSize: 14,
                             fontWeight: FontWeight.bold,
                           )
-                        : const TextStyle(
+                        : textTheme.bodyMedium!.copyWith(
                             color: Colors.red,
-                            fontSize: 14,
                             fontWeight: FontWeight.bold,
                           ),
                   ),
@@ -103,13 +102,11 @@ class ProductGridviewCard extends StatelessWidget {
                     children: [
                       ElevatedButton(
                         onPressed: onAddToCart,
-                        style: ButtonStyle(
-                          backgroundColor: WidgetStateProperty.all(
-                              Colors.deepOrange),
-                          padding: WidgetStateProperty.all(
-                              const EdgeInsets.symmetric(horizontal: 12.0)),
+                        
+                        child: Text(
+                          'В корзину',
+                          style: textTheme.bodyMedium!.copyWith(color: Colors.white),
                         ),
-                        child: const Text('В корзину'),
                       ),
                       IconButton(
                         onPressed: onToggleFavorite,
@@ -117,7 +114,7 @@ class ProductGridviewCard extends StatelessWidget {
                           isFavorite
                               ? CupertinoIcons.heart_fill
                               : CupertinoIcons.heart,
-                          color: isFavorite ? Colors.red : Colors.grey,
+                          color: isFavorite ? Colors.red : theme.iconTheme.color,
                         ),
                       ),
                     ],

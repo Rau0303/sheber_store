@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sheber_market/screens/main/home_screen/home_screen_logic.dart';
 import 'package:sheber_market/screens/main/home_screen/widgets/category_card.dart';
-import 'package:sheber_market/theme/adaptive_theme.dart';
 import 'package:sheber_market/widgets/searchable_app_bar.dart';
 import 'package:vibration/vibration.dart';
 import 'package:sheber_market/screens/main/home_screen/widgets/product_gridview_card.dart';
@@ -15,7 +14,7 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final logic = Provider.of<HomeScreenLogic>(context);
     final screenSize = MediaQuery.of(context).size;
-    final theme = AdaptiveTheme.getTheme(context); // Использование вашего кастомного ThemeData
+    final theme = Theme.of(context); // Использование вашего кастомного ThemeData
 
     return Scaffold(
       appBar: SearchableAppBar(
