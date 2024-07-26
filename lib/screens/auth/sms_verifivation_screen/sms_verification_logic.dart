@@ -13,7 +13,7 @@ class SmsVerificationLogic {
       // Например, можно вызвать API или использовать метод для проверки кода
       
       // Переход к следующему экрану после успешной проверки
-      Navigator.pushNamed(context, '/nextScreen');  // Замените '/nextScreen' на нужный маршрут
+      Navigator.pushNamed(context, '/main');  // Замените '/nextScreen' на нужный маршрут
     } else {
       // Показать сообщение об ошибке
       ScaffoldMessenger.of(context).showSnackBar(
