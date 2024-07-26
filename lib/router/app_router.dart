@@ -5,6 +5,7 @@ import 'package:sheber_market/screens/main/category_screen/category_screen.dart'
 import 'package:sheber_market/screens/main/home_screen/home_screen.dart';
 import 'package:sheber_market/screens/main/main_screen/main_screen.dart';
 import 'package:sheber_market/screens/main/basket_screen/basket_screen.dart'; // Импортируйте BasketScreen
+import 'package:sheber_market/screens/main/favorite_screen/favorites_screen.dart'; // Импортируйте FavoritesScreen
 
 class AppRouter {
   static Route<dynamic> generateRoute(RouteSettings settings) {
@@ -34,7 +35,11 @@ class AppRouter {
         );
       case '/basket':
         return MaterialPageRoute(
-          builder: (_) => const BasketScreen(), // Добавьте BasketScreen
+          builder: (_) => const BasketScreen(),
+        );
+      case '/favorites': // Добавьте маршрут для FavoritesScreen
+        return MaterialPageRoute(
+          builder: (_) => const FavoritesScreen(),
         );
       default:
         return MaterialPageRoute(

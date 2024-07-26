@@ -1,6 +1,8 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:sheber_market/screens/main/category_screen/category_screen.dart';
+import 'package:sheber_market/screens/main/favorite_screen/favorites_screen.dart';
 import 'package:sheber_market/screens/main/home_screen/home_screen.dart';
 import 'package:sheber_market/screens/main/basket_screen/basket_screen.dart'; // Импортируйте BasketScreen
 
@@ -17,7 +19,7 @@ class _MainScreenState extends State<MainScreen> {
   final List<Widget> _pages = const [
     HomeScreen(),
     CategoryScreen(),
-    CategoryScreen(), // Замените на соответствующие экраны
+    FavoritesScreen(), // Замените на соответствующие экраны
     BasketScreen(),  // Замените на соответствующие экраны
     CategoryScreen(), // Замените на соответствующие экраны
   ];
@@ -48,28 +50,28 @@ class _MainScreenState extends State<MainScreen> {
           padding: const EdgeInsets.all(10),
           tabs: [
             GButton(
-              icon: Icons.home,
-              text: 'Home',
+              icon: CupertinoIcons.home,
+              text: 'Главная',
               onPressed: () => setState(() => _currentIndex = 0),
             ),
             GButton(
-              icon: Icons.category,
-              text: 'Categories',
+              icon: CupertinoIcons.square_grid_2x2,
+              text: 'Категории',
               onPressed: () => setState(() => _currentIndex = 1),
             ),
             GButton(
-              icon: Icons.favorite,
-              text: 'Favorites',
+              icon: CupertinoIcons.heart,
+              text: 'Избранное',
               onPressed: () => setState(() => _currentIndex = 2),
             ),
             GButton(
-              icon: Icons.shopping_basket,
-              text: 'Basket',
+              icon: CupertinoIcons.cart,
+              text: 'Корзина',
               onPressed: () => setState(() => _currentIndex = 3),
             ),
             GButton(
-              icon: Icons.person,
-              text: 'Profile',
+              icon: CupertinoIcons.person,
+              text: 'Профиль',
               onPressed: () => setState(() => _currentIndex = 4),
             ),
           ],
