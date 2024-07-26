@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:sheber_market/theme/adaptive_theme.dart';
+
 
 class SearchableAppBar extends StatelessWidget implements PreferredSizeWidget {
   final bool isSearch;
@@ -7,6 +7,7 @@ class SearchableAppBar extends StatelessWidget implements PreferredSizeWidget {
   final Function(String) onSearchChanged;
   final VoidCallback onSearchPressed;
   final VoidCallback onClearPressed;
+  final String appBarTitle;
 
   const SearchableAppBar({
     super.key,
@@ -14,13 +15,13 @@ class SearchableAppBar extends StatelessWidget implements PreferredSizeWidget {
     required this.searchController,
     required this.onSearchChanged,
     required this.onSearchPressed,
-    required this.onClearPressed,
+    required this.onClearPressed, 
+    required this.appBarTitle,
   });
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-
     return AppBar(
       title: isSearch
           ? TextField(
@@ -36,10 +37,9 @@ class SearchableAppBar extends StatelessWidget implements PreferredSizeWidget {
               style: theme.textTheme.bodyMedium?.copyWith(color: theme.colorScheme.onPrimary),
               onChanged: onSearchChanged,
             )
-          : const Text(
-              'Главная',
+          :  Text(
+              appBarTitle,
             ),
-      
       actions: [
         if (!isSearch)
           IconButton(

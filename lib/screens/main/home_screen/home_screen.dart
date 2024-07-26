@@ -23,7 +23,8 @@ class HomeScreen extends StatelessWidget {
         searchController: logic.searchController,
         onSearchChanged: logic.onSearchChanged,
         onSearchPressed: logic.onSearchPressed,
-        onClearPressed: logic.onClearPressed,
+        onClearPressed: logic.onClearPressed, 
+        appBarTitle: 'Главная',
       ),
       body: ListView(
         children: [

@@ -16,7 +16,7 @@ class SheberMarketApp extends StatelessWidget {
       theme: theme,
       darkTheme: darkTheme,
       themeMode: ThemeMode.system,
-      initialRoute: '/login',
+      initialRoute: '/main',
       onGenerateRoute: AppRouter.generateRoute, // Убедитесь, что роутер используется
     );
   }

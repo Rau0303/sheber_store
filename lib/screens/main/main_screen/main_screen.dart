@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
+import 'package:sheber_market/screens/main/category_screen/category_screen.dart';
 import 'package:sheber_market/screens/main/home_screen/home_screen.dart';
 
 
@@ -14,7 +15,7 @@ class _MainScreenState extends State<MainScreen> {
   int _currentIndex = 0;
   final List<Widget> _pages = const [
     HomeScreen(),
-    HomeScreen(),
+    CategoryScreen(),
     HomeScreen(),
     HomeScreen(),
     HomeScreen(),
