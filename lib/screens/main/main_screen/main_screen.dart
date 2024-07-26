@@ -4,7 +4,8 @@ import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:sheber_market/screens/main/category_screen/category_screen.dart';
 import 'package:sheber_market/screens/main/favorite_screen/favorites_screen.dart';
 import 'package:sheber_market/screens/main/home_screen/home_screen.dart';
-import 'package:sheber_market/screens/main/basket_screen/basket_screen.dart'; // Импортируйте BasketScreen
+import 'package:sheber_market/screens/main/basket_screen/basket_screen.dart';
+import 'package:sheber_market/screens/main/profile_screen/profile_screen.dart'; // Импортируйте BasketScreen
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
@@ -21,7 +22,7 @@ class _MainScreenState extends State<MainScreen> {
     CategoryScreen(),
     FavoritesScreen(), // Замените на соответствующие экраны
     BasketScreen(),  // Замените на соответствующие экраны
-    CategoryScreen(), // Замените на соответствующие экраны
+    ProfileScreen(), // Замените на соответствующие экраны
   ];
 
   @override
