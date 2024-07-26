@@ -41,7 +41,7 @@ class CategoryScreen extends StatelessWidget {
                   return CategoryTile(
                     category: category,
                     onTap: () {
-                      // Handle category tap
+                      
                     },
                   );
                 },

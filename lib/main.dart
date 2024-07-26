@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:sheber_market/app/sheber_market_app.dart';
 import 'package:provider/provider.dart';
+import 'package:sheber_market/screens/main/basket_screen/basket_screen_logic.dart';
 import 'package:sheber_market/screens/main/category_screen/category_screen_logic.dart';
 import 'package:sheber_market/screens/main/home_screen/home_screen_logic.dart';
 
@@ -14,6 +15,8 @@ void main() {
         ),
         ChangeNotifierProvider(
           create: (_) =>CategoryScreenLogic()),
+        ChangeNotifierProvider(
+          create: (_)=> BasketLogic())
         // Добавьте другие провайдеры здесь, если нужно
       ],
       child: const SheberMarketApp(),

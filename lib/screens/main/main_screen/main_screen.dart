@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:sheber_market/screens/main/category_screen/category_screen.dart';
 import 'package:sheber_market/screens/main/home_screen/home_screen.dart';
-
+import 'package:sheber_market/screens/main/basket_screen/basket_screen.dart'; // Импортируйте BasketScreen
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
@@ -13,13 +13,15 @@ class MainScreen extends StatefulWidget {
 
 class _MainScreenState extends State<MainScreen> {
   int _currentIndex = 0;
+
   final List<Widget> _pages = const [
     HomeScreen(),
     CategoryScreen(),
-    HomeScreen(),
-    HomeScreen(),
-    HomeScreen(),
+    CategoryScreen(),// Замените на соответствующие экраны
+    BasketScreen(),    // Замените на соответствующие экраны
+    CategoryScreen(),  // Замените на соответствующие экраны
   ];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -46,27 +48,27 @@ class _MainScreenState extends State<MainScreen> {
             GButton(
               icon: Icons.home,
               text: 'Home',
-              onPressed: () => Navigator.of(context).pushNamed('/home'),
+              onPressed: () => setState(() => _currentIndex = 0),
             ),
             GButton(
               icon: Icons.category,
               text: 'Categories',
-              onPressed: () => Navigator.of(context).pushNamed('/categories'),
+              onPressed: () => setState(() => _currentIndex = 1),
             ),
             GButton(
               icon: Icons.favorite,
               text: 'Favorites',
-              onPressed: () => Navigator.of(context).pushNamed('/favorites'),
+              onPressed: () => setState(() => _currentIndex = 2),
             ),
             GButton(
               icon: Icons.shopping_basket,
               text: 'Basket',
-              onPressed: () => Navigator.of(context).pushNamed('/basket'),
+              onPressed: () => setState(() => _currentIndex = 3),
             ),
             GButton(
               icon: Icons.person,
               text: 'Profile',
-              onPressed: () => Navigator.of(context).pushNamed('/profile'),
+              onPressed: () => setState(() => _currentIndex = 4),
             ),
           ],
         ),

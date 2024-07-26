@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:sheber_market/screens/auth/login_screen/login_screen.dart';
 import 'package:sheber_market/screens/auth/sms_verifivation_screen/sms_verification_screen.dart';
 import 'package:sheber_market/screens/main/category_screen/category_screen.dart';
-import 'package:sheber_market/screens/main/home_screen/home_screen.dart'; // Импортируйте HomeScreen
-import 'package:sheber_market/screens/main/main_screen/main_screen.dart'; // Импортируйте MainScreen
+import 'package:sheber_market/screens/main/home_screen/home_screen.dart';
+import 'package:sheber_market/screens/main/main_screen/main_screen.dart';
+import 'package:sheber_market/screens/main/basket_screen/basket_screen.dart'; // Импортируйте BasketScreen
 
 class AppRouter {
   static Route<dynamic> generateRoute(RouteSettings settings) {
@@ -25,11 +26,15 @@ class AppRouter {
         );
       case '/main':
         return MaterialPageRoute(
-          builder: (_) => const MainScreen(), // Добавьте MainScreen
+          builder: (_) => const MainScreen(),
         );
       case '/categories':
         return MaterialPageRoute(
-          builder: (_) => const CategoryScreen(), // Добавьте CategoryScreen
+          builder: (_) => const CategoryScreen(),
+        );
+      case '/basket':
+        return MaterialPageRoute(
+          builder: (_) => const BasketScreen(), // Добавьте BasketScreen
         );
       default:
         return MaterialPageRoute(

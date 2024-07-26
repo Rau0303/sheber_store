@@ -50,7 +50,7 @@ class LoginScreenLogic {
     );
   }
 
-  void _showSuccessDialog(BuildContext context) {
+  /*void _showSuccessDialog(BuildContext context) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -66,5 +66,5 @@ class LoginScreenLogic {
         );
       },
     );
-  }
+  }*/
 }
