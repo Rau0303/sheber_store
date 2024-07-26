@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sheber_market/screens/main/profile_screen/profile_screen_logic.dart';
+import 'package:sheber_market/screens/main/profile_screen/widgets/profile_headrs.dart';
+import 'package:sheber_market/screens/main/profile_screen/widgets/profile_options_list.dart';
 import 'package:sheber_market/widgets/enhanced_app_bar.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -25,7 +27,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
     final screenSize = MediaQuery.of(context).size;
-    final textTheme = Theme.of(context).textTheme;
 
     return Scaffold(
       appBar: EnhancedAppBar(
@@ -44,69 +45,22 @@ class _ProfileScreenState extends State<ProfileScreen> {
               ),
               child: Column(
                 children: [
-                  Container(
-                    height: screenSize.height * 0.1,
-                    width: screenSize.width - screenSize.width * 0.03,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(20),
-                      color: Colors.deepOrange,
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Row(
-                        children: [
-                          CircleAvatar(
-                            radius: screenSize.height * 0.04,
-                            backgroundImage: NetworkImage(logic.user?.photo ?? 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png'),
-                          ),
-                          Expanded(
-                            child: ListTile(
-                              title: Text(logic.user?.name ?? 'Имя пользователя', style: textTheme.bodyLarge),
-                              subtitle: Text(logic.user?.phoneNumber ?? 'Номер телефона', style: textTheme.bodyLarge),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
+                  ProfileHeader(user: logic.user),
                   SizedBox(height: screenSize.height * 0.01),
-                  Expanded(
-                    child: ListView.builder(
-                      itemCount: 6, // Number of items
-                      itemBuilder: (BuildContext context, int index) {
-                        return ListTile(
-                          title: Text(
-                            _getListElementTitle(index),
-                            style: textTheme.headlineSmall,
-                          ),
-                          onTap: () => logic.navigateTo(index),
-                          trailing: const Icon(Icons.arrow_forward_ios),
-                        );
-                      },
-                    ),
+                  ProfileOptionsList(
+                    options: const [
+                      'О приложении',
+                      'Настройки аккаунта',
+                      'Мои покупки',
+                      'Настройки приложения',
+                      'Условия использования',
+                      'Выйти с аккаунта',
+                    ],
+                    onOptionSelected: logic.navigateTo,
                   ),
                 ],
               ),
             ),
     );
-  }
-
-  String _getListElementTitle(int index) {
-    switch (index) {
-      case 0:
-        return 'О приложении';
-      case 1:
-        return 'Настройки аккаунта';
-      case 2:
-        return 'Мои покупки';
-      case 3:
-        return 'Настройки приложения';
-      case 4:
-        return 'Условия использования';
-      case 5:
-        return 'Выйти с аккаунта';
-      default:
-        return '';
-    }
   }
 }
