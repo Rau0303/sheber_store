@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sheber_market/screens/main/profile_screen/app_settings_screen/address_screen/widgets/address_list.dart';
+import 'package:sheber_market/widgets/add_app_bar.dart';
 import 'address_screen_logic.dart';
 
 class AddressScreen extends StatefulWidget {
@@ -29,18 +30,9 @@ class _AddressScreenState extends State<AddressScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Мои адреса'),
-        centerTitle: true,
-        actions: [
-          IconButton(
-            onPressed: () {
-              addressLogic.showAddressModal();
-            },
-            icon: const Icon(Icons.add),
-          ),
-        ],
-      ),
+      appBar: AddAppBar(onActionPressed: (){
+        addressLogic.showAddressModal();
+      }, text: 'Мои адреса',),
       body: Padding(
         padding: const EdgeInsets.all(10),
         child: AddressList(

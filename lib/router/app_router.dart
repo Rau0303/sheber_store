@@ -9,6 +9,8 @@ import 'package:sheber_market/screens/main/favorite_screen/favorites_screen.dart
 import 'package:sheber_market/screens/main/product_screen/product_screen.dart';
 import 'package:sheber_market/screens/main/product_screen/product_inform_screen/product_inform_screen.dart'; // Импортируйте ProductInformScreen
 import 'package:sheber_market/screens/main/profile_screen/app_settings_screen/address_screen/address_screen.dart';
+import 'package:sheber_market/screens/main/profile_screen/app_settings_screen/payment_cards_screen/payment_cards_screen.dart';
+import 'package:sheber_market/screens/main/profile_screen/app_settings_screen/profile_settings_screen/profile_settings_screen.dart';
 import 'package:sheber_market/screens/main/profile_screen/profile_screen.dart';
 import 'package:sheber_market/models/product.dart'; // Импортируйте модель Product
 
@@ -65,6 +67,14 @@ class AppRouter {
       case '/address-settings':
          return MaterialPageRoute(
             builder: (_) => const AddressScreen(),
+        );
+      case '/payment-cards':
+         return MaterialPageRoute(
+            builder: (_) => const PaymentCardsScreen(),
+        );
+      case '/profile-settings':
+         return MaterialPageRoute(
+            builder: (_) => const ProfileSettingsScreen(),
         );
 
       default:
