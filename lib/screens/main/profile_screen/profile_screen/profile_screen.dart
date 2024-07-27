@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'package:sheber_market/screens/main/profile_screen/profile_screen_logic.dart';
-import 'package:sheber_market/screens/main/profile_screen/widgets/profile_headrs.dart';
-import 'package:sheber_market/screens/main/profile_screen/widgets/profile_options_list.dart';
+import 'package:sheber_market/screens/main/profile_screen/profile_screen/profile_screen_logic.dart';
+import 'package:sheber_market/screens/main/profile_screen/profile_screen/widgets/profile_headrs.dart';
+import 'package:sheber_market/screens/main/profile_screen/profile_screen/widgets/profile_options_list.dart';
 import 'package:sheber_market/widgets/enhanced_app_bar.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -50,7 +50,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   SizedBox(height: screenSize.height * 0.01),
                   ProfileOptionsList(
                     options: const [
-                      'О приложении',
                       'Настройки аккаунта',
                       'Мои покупки',
                       'Условия использования',

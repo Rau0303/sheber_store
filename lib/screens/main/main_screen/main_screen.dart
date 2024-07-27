@@ -5,7 +5,7 @@ import 'package:sheber_market/screens/main/category_screen/category_screen.dart'
 import 'package:sheber_market/screens/main/favorite_screen/favorites_screen.dart';
 import 'package:sheber_market/screens/main/home_screen/home_screen.dart';
 import 'package:sheber_market/screens/main/basket_screen/basket_screen.dart';
-import 'package:sheber_market/screens/main/profile_screen/profile_screen.dart';
+import 'package:sheber_market/screens/main/profile_screen/profile_screen/profile_screen.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});

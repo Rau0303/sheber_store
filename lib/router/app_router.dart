@@ -12,8 +12,11 @@ import 'package:sheber_market/screens/main/profile_screen/app_settings_screen/ad
 import 'package:sheber_market/screens/main/profile_screen/app_settings_screen/app_settings_screen/app_settings_screen.dart';
 import 'package:sheber_market/screens/main/profile_screen/app_settings_screen/payment_cards_screen/payment_cards_screen.dart';
 import 'package:sheber_market/screens/main/profile_screen/app_settings_screen/profile_settings_screen/profile_settings_screen.dart';
-import 'package:sheber_market/screens/main/profile_screen/profile_screen.dart';
-import 'package:sheber_market/models/product.dart'; // Импортируйте модель Product
+import 'package:sheber_market/screens/main/profile_screen/profile_screen/profile_screen.dart';
+import 'package:sheber_market/models/product.dart';
+import 'package:sheber_market/screens/main/profile_screen/terms_of_use_screen/terms_of_use_screen.dart';
+import 'package:sheber_market/screens/main/profile_screen/user_orders_screen/user_orders_screen.dart'; // Импортируйте модель Product
+import 'package:sheber_market/screens/main/profile_screen/user_orders_screen/order_inform_screen/order_inform_screen.dart';
 
 class AppRouter {
   static Route<dynamic> generateRoute(RouteSettings settings) {
@@ -64,22 +67,36 @@ class AppRouter {
         return MaterialPageRoute(
           builder: (_) => ProductInformScreen(product: product),
         );
-      // В файле AppRouter
       case '/address-settings':
-         return MaterialPageRoute(
-            builder: (_) => const AddressScreen(),
+        return MaterialPageRoute(
+          builder: (_) => const AddressScreen(),
         );
       case '/payment-cards':
-         return MaterialPageRoute(
-            builder: (_) => const PaymentCardsScreen(),
+        return MaterialPageRoute(
+          builder: (_) => const PaymentCardsScreen(),
         );
       case '/profile-settings':
-         return MaterialPageRoute(
-            builder: (_) => const ProfileSettingsScreen(),
+        return MaterialPageRoute(
+          builder: (_) => const ProfileSettingsScreen(),
         );
       case '/app-settings':
-         return MaterialPageRoute(
-            builder: (_) => const AppSettingsScreen(),
+        return MaterialPageRoute(
+          builder: (_) => const AppSettingsScreen(),
+        );
+      case '/terms_of_use':
+        return MaterialPageRoute(
+          builder: (_) => const TermsOfUseScreen(),
+        );
+      case '/user-orders':
+        final args = settings.arguments as Map<String, dynamic>;
+        return MaterialPageRoute(
+          builder: (_) => UserOrdersScreen(userId: args['userId'] as String),
+        );
+      case '/order_inform':
+        final args = settings.arguments as Map<String, dynamic>;
+        final orderId = args['orderId'] as int;
+        return MaterialPageRoute(
+          builder: (_) => OrderInformScreen(orderId: orderId),
         );
       default:
         return MaterialPageRoute(
