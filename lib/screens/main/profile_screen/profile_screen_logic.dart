@@ -28,7 +28,7 @@ class ProfileScreenLogic extends ChangeNotifier {
         Navigator.pushNamed(context, '/address-settings');
         break;
       case 1:
-        Navigator.pushNamed(context, '/profile-settings');
+        Navigator.pushNamed(context, '/app-settings');
         break;
       case 2:
         Navigator.pushNamed(context, '/payment-cards');

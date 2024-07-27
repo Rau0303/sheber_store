@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:sheber_market/models/user_address.dart';
 
 
+
 class AddressLogic {
   final BuildContext context;
   AddressLogic(this.context);
@@ -22,11 +23,6 @@ class AddressLogic {
 
   Future<void> loadUserAddresses() async {
     // Здесь должен быть код для загрузки адресов
-    // Например:
-    // addresses = await fetchAddresses();
-    // if (selectedAddress == null && addresses.isNotEmpty) {
-    //   selectedAddress = addresses.last;
-    // }
   }
 
   void showAddressModal({UserAddress? address}) {
@@ -47,12 +43,13 @@ class AddressLogic {
       isScrollControlled: true,
       context: context,
       builder: (BuildContext context) {
+        final theme = Theme.of(context);
         return Padding(
           padding: MediaQuery.of(context).viewInsets,
           child: Container(
-            decoration: const BoxDecoration(
-              color: Colors.black,
-              borderRadius: BorderRadius.only(
+            decoration: BoxDecoration(
+              color: theme.scaffoldBackgroundColor,
+              borderRadius: const BorderRadius.only(
                 topLeft: Radius.circular(16),
                 topRight: Radius.circular(16),
               ),
@@ -65,9 +62,7 @@ class AddressLogic {
                   Text(
                     address == null ? 'Добавить новый адрес' : 'Обновить адрес',
                     textAlign: TextAlign.left,
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 14,
+                    style: theme.textTheme.titleLarge?.copyWith(
                       fontWeight: FontWeight.bold,
                     ),
                   ),
@@ -116,18 +111,22 @@ class AddressLogic {
   }
 
   Widget _buildTextFormField(TextEditingController controller, String label) {
+    final theme = Theme.of(context);
     return TextFormField(
       controller: controller,
       decoration: InputDecoration(
         labelText: label,
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10),
-        ),
+        border: theme.inputDecorationTheme.border,
+        focusedBorder: theme.inputDecorationTheme.focusedBorder,
+        enabledBorder: theme.inputDecorationTheme.enabledBorder,
+        hintStyle: theme.inputDecorationTheme.hintStyle,
+        labelStyle: theme.inputDecorationTheme.labelStyle,
       ),
     );
   }
 
   Widget _buildButton(Color color, String text, VoidCallback onPressed) {
+    final theme = Theme.of(context);
     return SizedBox(
       height: MediaQuery.of(context).size.height * 0.05,
       width: MediaQuery.of(context).size.width * 0.4,
@@ -141,7 +140,7 @@ class AddressLogic {
           ),
         ),
         onPressed: onPressed,
-        child: Text(text),
+        child: Text(text, style: theme.textTheme.bodyMedium),
       ),
     );
   }
