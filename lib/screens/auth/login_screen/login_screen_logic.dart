@@ -1,6 +1,8 @@
 import 'package:extended_masked_text/extended_masked_text.dart';
 import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
+import 'package:provider/provider.dart';
+import 'package:sheber_market/providers/auth_provider.dart';
 
 class LoginScreenLogic {
   final MaskedTextController phoneNumberController;
@@ -21,15 +23,8 @@ class LoginScreenLogic {
 
     logger.i('Попытка аутентификации с номером: $phoneNumber');
 
-    // Добавьте вашу логику аутентификации здесь
-    // Например, если аутентификация успешна, перейдите на другой экран
-
-    // Пример успешной аутентификации и перехода на экран SMS верификации
-    Navigator.pushNamed(
-      context,
-      '/sms_verification',
-      arguments: {'verificationId': 'example_verification_id'}, // Передайте необходимые параметры
-    );
+    final authProvider = Provider.of<AuthProvider>(context, listen: false);
+    authProvider.signInWithPhoneNumber(context, phoneNumber);
   }
 
   void _showErrorDialog(BuildContext context, String message) {

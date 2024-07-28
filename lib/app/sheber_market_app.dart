@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:sheber_market/app/auth_gate.dart';
 import 'package:sheber_market/theme/adaptive_theme.dart';
-import 'package:sheber_market/router/app_router.dart'; // Убедитесь, что роутер импортирован
+import 'package:sheber_market/router/app_router.dart';
+
 
 class SheberMarketApp extends StatelessWidget {
   const SheberMarketApp({super.key});
@@ -16,7 +18,7 @@ class SheberMarketApp extends StatelessWidget {
       theme: theme,
       darkTheme: darkTheme,
       themeMode: ThemeMode.system,
-      initialRoute: '/main',
+      home: const AuthGate(), // Начальный экран
       onGenerateRoute: AppRouter.generateRoute, // Убедитесь, что роутер используется
     );
   }

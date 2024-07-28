@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:sheber_market/providers/auth_provider.dart';
+
 
 class SmsVerificationLogic {
   final TextEditingController smsController;
@@ -6,21 +9,45 @@ class SmsVerificationLogic {
   SmsVerificationLogic({required this.smsController});
 
   void verify(BuildContext context, String verificationId) {
-    // Логика для верификации кода SMS
     final smsCode = smsController.text.trim();
     if (smsCode.length == 6) {
-      // Здесь вы можете добавить логику для отправки кода верификации на сервер или проверки его
-      // Например, можно вызвать API или использовать метод для проверки кода
-      
-      // Переход к следующему экрану после успешной проверки
-      Navigator.pushNamed(context, '/main');  // Замените '/nextScreen' на нужный маршрут
+      // Используем AuthProvider для проверки кода
+      final authProvider = Provider.of<AuthProvider>(context, listen: false);
+      authProvider.verifySmsCode(
+        context,
+        verificationId,
+        smsCode,
+        onSuccess: () {
+          Navigator.pushNamed(context, '/main');
+        },
+        onError: (error) {
+          _showErrorDialog(context, error);
+        },
+      );
     } else {
-      // Показать сообщение об ошибке
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Введите корректный код верификации'),
         ),
       );
     }
+  }
+
+  void _showErrorDialog(BuildContext context, String message) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Ошибка'),
+          content: Text(message),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text('ОК'),
+            ),
+          ],
+        );
+      },
+    );
   }
 }

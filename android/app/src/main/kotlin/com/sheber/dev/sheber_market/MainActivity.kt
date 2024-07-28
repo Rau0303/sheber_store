@@ -1,4 +1,4 @@
-package com.sheber.dev.sheber_market
+package com.dev.sheber_market
 
 import io.flutter.embedding.android.FlutterActivity
 
