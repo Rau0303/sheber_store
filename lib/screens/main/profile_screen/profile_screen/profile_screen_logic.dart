@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sheber_market/models/users.dart';
+import 'package:sheber_market/widgets/logout_dialog.dart';
 
 class ProfileScreenLogic extends ChangeNotifier {
   User? user;
@@ -22,7 +23,7 @@ class ProfileScreenLogic extends ChangeNotifier {
     notifyListeners();
   }
 
-  void navigateTo(BuildContext context, int index, {String? userId}) {
+void navigateTo(BuildContext context, int index, {String? userId}) {
   switch (index) {
     case 0:
       Navigator.pushNamed(context, '/app-settings');
@@ -35,19 +36,26 @@ class ProfileScreenLogic extends ChangeNotifier {
           arguments: {'userId': userId},
         );
       } else {
-        // Можно добавить обработку ошибки или перейти на другой экран
-        Navigator.pushNamed(context, '/error'); // Пример для маршрута ошибки
+        Navigator.pushNamed(context, '/error');
       }
       break;
     case 2:
       Navigator.pushNamed(context, '/terms_of_use');
       break;
     case 3:
-      Navigator.pushNamed(context, '/address-settings');
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return LogoutDialog(onLogout: () {
+            // Ваш код выхода из аккаунта
+          });
+        },
+      );
       break;
     default:
       break;
   }
 }
+
 
 }

@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 
@@ -32,7 +33,7 @@ class SearchableAppBar extends StatelessWidget implements PreferredSizeWidget {
                 hintStyle: theme.inputDecorationTheme.hintStyle,
                 suffixIcon: IconButton(
                   onPressed: onClearPressed,
-                  icon: const Icon(Icons.clear, color: Colors.white),
+                  icon: const Icon(CupertinoIcons.clear, color: Colors.white),
                 ),
               ),
               style: theme.textTheme.bodyMedium?.copyWith(color: Colors.white),
@@ -46,7 +47,7 @@ class SearchableAppBar extends StatelessWidget implements PreferredSizeWidget {
         if (!isSearch)
           IconButton(
             onPressed: onSearchPressed,
-            icon: const Icon(Icons.search, color: Colors.white),
+            icon: const Icon(CupertinoIcons.search, color: Colors.white),
           ),
       ],
       automaticallyImplyLeading: false,

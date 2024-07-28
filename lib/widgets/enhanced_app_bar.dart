@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class EnhancedAppBar extends StatelessWidget implements PreferredSizeWidget {
@@ -21,7 +22,7 @@ class EnhancedAppBar extends StatelessWidget implements PreferredSizeWidget {
         if (showAction)
           IconButton(
             onPressed: onActionPressed,
-            icon: const Icon(Icons.delete), // Можно заменить на другой иконку или виджет
+            icon: const Icon(CupertinoIcons.delete), // Можно заменить на другой иконку или виджет
           ),
       ],
     );

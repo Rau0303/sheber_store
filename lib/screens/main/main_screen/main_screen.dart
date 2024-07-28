@@ -51,7 +51,7 @@ class _MainScreenState extends State<MainScreen> {
           backgroundColor: theme.bottomAppBarTheme.color!,
           color: theme.colorScheme.onSurface, // Цвет иконок неактивных
           activeColor: Colors.white, // Цвет иконок активных
-          tabBackgroundColor: theme.colorScheme.onSecondary, // Цвет фона активной вкладки
+          tabBackgroundColor: Colors.deepOrange, // Цвет фона активной вкладки
           padding: const EdgeInsets.all(10),
           tabs: [
             GButton(
