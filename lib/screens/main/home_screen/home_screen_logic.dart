@@ -1,12 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:sheber_market/models/category.dart';
 import 'package:sheber_market/models/product.dart';
+import 'package:sheber_market/models/favorite_item.dart';
+import 'package:sheber_market/providers/favorite_provider.dart';
 
 class HomeScreenLogic extends ChangeNotifier {
   bool isSearch = false;
   TextEditingController searchController = TextEditingController();
   List<Category> categories = [];
   List<Product> products = [];
+  List<FavoriteItem> favoriteItems = [];
+
+  // Подключение провайдера избранного
+  FavoriteProvider favoriteProvider;
+
+  HomeScreenLogic(this.favoriteProvider) {
+    init();
+  }
 
   // Фильтрация категорий в зависимости от поиска
   List<Category> get filteredCategories {
@@ -24,6 +34,7 @@ class HomeScreenLogic extends ChangeNotifier {
   void init() {
     categories = loadCategories();
     products = loadProducts();
+    loadFavoriteItems();
     notifyListeners();
   }
 
@@ -63,7 +74,22 @@ class HomeScreenLogic extends ChangeNotifier {
       Product(id: 2, name: 'Laptop', sellingPrice: 899.99, quantity: 5, photo: 'https://example.com/laptop.jpg', barcode: '', category: '', unit: ''),
     ];
   }
-  bool isFavorite(int id){
-      return false;
+
+  Future<void> loadFavoriteItems() async {
+    favoriteItems = await favoriteProvider.fetchFavoriteItems();
+    notifyListeners();
+  }
+
+  Future<void> toggleFavorite(int productId) async {
+    if (isFavorite(productId)) {
+      await favoriteProvider.deleteFavoriteItem(productId);
+    } else {
+      await favoriteProvider.addFavoriteItem(FavoriteItem(productId: productId));
+    }
+    await loadFavoriteItems();
+  }
+
+  bool isFavorite(int productId) {
+    return favoriteItems.any((item) => item.productId == productId);
   }
 }

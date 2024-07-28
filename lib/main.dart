@@ -40,8 +40,10 @@ await FirebaseAppCheck.instance.activate(
   runApp(
     MultiProvider(
       providers: [
-        ChangeNotifierProvider(
-          create: (_) => HomeScreenLogic()..init(),
+        ChangeNotifierProvider(create: (_) => FavoriteProvider()),
+        ChangeNotifierProxyProvider<FavoriteProvider, HomeScreenLogic>(
+          create: (context) => HomeScreenLogic(Provider.of<FavoriteProvider>(context, listen: false)),
+          update: (context, favoriteProvider, previousLogic) => HomeScreenLogic(favoriteProvider),
         ),
         ChangeNotifierProvider(
           create: (_) => CategoryScreenLogic(),

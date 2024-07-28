@@ -1,5 +1,3 @@
-// lib/providers/favorite_provider.dart
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:sheber_market/models/favorite_item.dart';
@@ -26,12 +24,14 @@ class FavoriteProvider with ChangeNotifier {
     }
   }
 
-  Future<void> fetchFavoriteItems() async {
+  Future<List<FavoriteItem>> fetchFavoriteItems() async {
     try {
       _favoriteItems = await _dbHelper.queryAllFavoriteItems();
       notifyListeners();
+      return _favoriteItems;
     } catch (e) {
       print("Ошибка при получении элементов избранного: $e");
+      return [];
     }
   }
 
