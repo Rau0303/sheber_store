@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:sheber_market/models/cart_item.dart';
+import 'package:sheber_market/models/category.dart';
 import 'package:sheber_market/models/users.dart';
 import 'package:sheber_market/models/favorite_item.dart';
 import 'package:sqflite/sqflite.dart';
@@ -63,6 +64,13 @@ class DatabaseHelper {
       CREATE TABLE cart (
         product_id INTEGER PRIMARY KEY,
         quantity INTEGER
+      )
+    ''');
+    await db.execute('''
+      CREATE TABLE categories (
+        id INTEGER PRIMARY KEY,
+        name TEXT,
+        photo_url TEXT
       )
     ''');
   }
@@ -168,4 +176,29 @@ class DatabaseHelper {
     Database db = await instance.database;
     await db.delete('cart');
   }
+
+
+   Future<void> insertCategory(Category category) async {
+    Database db = await instance.database;
+    await db.insert('categories', category.toMap());
+  }
+
+  Future<List<Category>> queryAllCategories() async {
+    Database db = await instance.database;
+    final List<Map<String, dynamic>> maps = await db.query('categories');
+
+    return List.generate(maps.length, (i) {
+      return Category.fromMap(maps[i]);
+    });
+  }
+
+  Future<void> deleteCategory(int id) async {
+    Database db = await instance.database;
+    await db.delete(
+      'categories',
+      where: 'id = ?',
+      whereArgs: [id],
+    );
+  }
+  
 }
