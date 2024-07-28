@@ -1,34 +1,58 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:vibration/vibration.dart';
+import 'package:sheber_market/models/users.dart';
+import 'package:sheber_market/providers/user_service.dart';
+import 'package:sheber_market/utils/image_compressor.dart';
 
 class ProfileSettingsLogic {
   File? file;
   final nameController = TextEditingController();
   final phoneController = TextEditingController();
+  final UserService _userService = UserService();
+  final ImageCompressor _imageCompressor = ImageCompressor();
+  User? _currentUser;
 
   ProfileSettingsLogic() {
-    // Инициализация логики, например, загрузка данных профиля
     _loadProfile();
   }
 
   Future<void> _loadProfile() async {
-    // Загрузка данных профиля, замените это заглушкой
-    nameController.text = 'Тест Имя';
-    phoneController.text = '+7(000)-000-00-00';
-  }
-
-  Future<void> pickImage() async {
-    final pickedFile = await ImagePicker().pickImage(source: ImageSource.gallery);
-    if (pickedFile != null) {
-      file = File(pickedFile.path);
+    List<User> users = await _userService.fetchUsersFromLocal();
+    
+    if (users.isNotEmpty) {
+      _currentUser = users.first;
+      nameController.text = _currentUser!.name;
+      phoneController.text = _currentUser!.phoneNumber;
+    } else {
+      _currentUser = User(id: 0, name: '', phoneNumber: '');
     }
   }
 
   Future<void> saveProfile() async {
-    Vibration.vibrate(duration: 50);
-    // Логика сохранения профиля
-    
+    final String name = nameController.text.trim();
+    final String phoneNumber = phoneController.text.trim();
+    final File? photo = file != null ? await _imageCompressor.compressImage(file!) : null;
+
+    if (_currentUser != null) {
+      _currentUser = User(
+        id: _currentUser!.id,
+        name: name,
+        phoneNumber: phoneNumber,
+        // Assuming the photo field in User model expects a String? type
+        photo: photo?.path, // Converting File to String by using the file path
+      );
+
+      await _userService.addUser(_currentUser!);
+    }
+  }
+
+  Future<void> pickImage() async {
+    final picker = ImagePicker();
+    final pickedFile = await picker.pickImage(source: ImageSource.gallery); // Use pickImage instead of getImage
+
+    if (pickedFile != null) {
+      file = File(pickedFile.path);
+    }
   }
 }
