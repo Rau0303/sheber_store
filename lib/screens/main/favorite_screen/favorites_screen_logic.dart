@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:sheber_market/models/product.dart';
+import 'package:sheber_market/providers/favorite_provider.dart';
 
 class FavoritesLogic extends ChangeNotifier {
   final BuildContext context;
-
   FavoritesLogic(this.context);
 
   bool isLoading = false;
@@ -11,30 +12,26 @@ class FavoritesLogic extends ChangeNotifier {
 
   // Загрузка данных (вместо использования сервиса)
   Future<void> loadFavorites() async {
-    // Здесь можно загрузить данные из локального хранилища
-    // Например, из базы данных SQLite или другого источника
-    // Временно заполняем список тестовыми данными
-    _favorites = [
-      // Пример тестовых данных
-      Product(
-        id: 1,
-        barcode: '123456',
-        name: 'Товар 1',
-        sellingPrice: 100.0,
-        category: 'Категория 1',
-        unit: 'шт',
-        quantity: 10,
-      ),
-      Product(
-        id: 2,
-        barcode: '789012',
-        name: 'Товар 2',
-        sellingPrice: 200.0,
-        category: 'Категория 2',
-        unit: 'шт',
-        quantity: 5,
-      ),
-    ];
+    isLoading = true;
+    notifyListeners();
+    
+    try {
+      var favoriteProvider = Provider.of<FavoriteProvider>(context, listen: false);
+      await favoriteProvider.fetchFavoriteItems();
+      _favorites = favoriteProvider.favoriteItems.map((item) => Product(
+        id: item.productId,
+        barcode: '',
+        name: '', // Должны быть заполнены данные о продукте
+        sellingPrice: 0,
+        category: '',
+        unit: '',
+        quantity: 0,
+      )).toList();
+    } catch (e) {
+      print("Ошибка при загрузке избранных товаров: $e");
+    }
+
+    isLoading = false;
     notifyListeners();
   }
 
@@ -52,13 +49,17 @@ class FavoritesLogic extends ChangeNotifier {
               child: const Text('Отмена'),
             ),
             ElevatedButton(
-              style: ButtonStyle(
-                backgroundColor: WidgetStateProperty.all<Color>(Colors.deepOrange),
-              ),
-              onPressed: () {
+              
+              onPressed: () async {
+                var favoriteProvider = Provider.of<FavoriteProvider>(context, listen: false);
+                for (var favorite in _favorites) {
+                  await favoriteProvider.deleteFavoriteItem(favorite.id);
+                }
                 _favorites.clear(); // Очищаем список
-                Navigator.of(context).pop();
-                notifyListeners(); // Обновляем состояние
+                if (context.mounted) {
+                  Navigator.of(context).pop();
+                  notifyListeners(); // Обновляем состояние
+                }
               },
               child: const Text('Очистить'),
             ),
@@ -82,13 +83,16 @@ class FavoritesLogic extends ChangeNotifier {
               child: const Text('Отмена'),
             ),
             ElevatedButton(
-              style: ButtonStyle(
-                backgroundColor: WidgetStateProperty.all<Color>(Colors.deepOrange),
-              ),
-              onPressed: () {
+            
+              onPressed: () async {
+                var favoriteProvider = Provider.of<FavoriteProvider>(context, listen: false);
+                await favoriteProvider.deleteFavoriteItem(product.id);
                 _favorites.remove(product); // Удаляем товар из списка
-                Navigator.of(context).pop();
-                notifyListeners(); // Обновляем состояние
+                
+                if (context.mounted) {
+                  Navigator.of(context).pop();
+                  notifyListeners(); // Обновляем состояние
+                }
               },
               child: const Text('Удалить'),
             ),

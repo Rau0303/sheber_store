@@ -5,7 +5,10 @@ import 'package:provider/provider.dart';
 import 'package:sheber_market/app/sheber_market_app.dart';
 import 'package:sheber_market/firebase_options.dart';
 import 'package:sheber_market/providers/auth_provider.dart';
+import 'package:sheber_market/providers/cart_provider.dart';
+import 'package:sheber_market/providers/favorite_provider.dart';
 import 'package:sheber_market/screens/main/basket_screen/basket_screen_logic.dart';
+
 import 'package:sheber_market/screens/main/category_screen/category_screen_logic.dart';
 import 'package:sheber_market/screens/main/favorite_screen/favorites_screen_logic.dart';
 import 'package:sheber_market/screens/main/home_screen/home_screen_logic.dart';
@@ -44,7 +47,7 @@ await FirebaseAppCheck.instance.activate(
           create: (_) => CategoryScreenLogic(),
         ),
         ChangeNotifierProvider(
-          create: (_) => BasketLogic(),
+          create: (_) => BasketLogic(_),
         ),
         ChangeNotifierProvider(
           create: (context) => FavoritesLogic(context),
@@ -54,6 +57,8 @@ await FirebaseAppCheck.instance.activate(
           create: (context) => ProfileScreenLogic(),
         ),
         ChangeNotifierProvider(create: (_) => AuthProvider()),
+        ChangeNotifierProvider(create: (_)=>FavoriteProvider()),
+        ChangeNotifierProvider(create: (_)=>CartProvider()),
         // Добавьте другие провайдеры здесь, если нужно
       ],
       child: const SheberMarketApp(),

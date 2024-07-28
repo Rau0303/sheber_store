@@ -25,8 +25,8 @@ class BasketScreenState extends State<BasketScreen> {
   Widget build(BuildContext context) {
     final basket = _logic.basket;
 
-    int totalQuantity = _logic.calculateTotalQuantity(basket);
-    double totalPrice = _logic.calculateTotalPrice(basket);
+    int totalQuantity = _logic.calculateTotalQuantity();
+    double totalPrice = _logic.calculateTotalPrice();
     double remainingAmountForFreeDelivery = _logic.calculateRemainingAmountForFreeDelivery(totalPrice, 50000);
     bool isEligibleForFreeDelivery = _logic.isEligibleForFreeDelivery(totalPrice, 50000);
 

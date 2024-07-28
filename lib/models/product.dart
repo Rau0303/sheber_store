@@ -1,5 +1,5 @@
+// lib/models/product.dart
 
-// Модель товара
 class Product {
   final int id;
   final String barcode;

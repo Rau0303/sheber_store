@@ -1,11 +1,30 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:sheber_market/models/basket_item.dart';
+import 'package:sheber_market/models/cart_item.dart';
+import 'package:sheber_market/providers/cart_provider.dart';
 
 class BasketLogic extends ChangeNotifier {
+  final BuildContext context;
+  BasketLogic(this.context);
+
   List<BasketItem> basket = []; // Инициализируйте пустую корзину
 
+  // Загрузка данных из локальной базы данных
+  Future<void> loadBasket() async {
+    var cartProvider = Provider.of<CartProvider>(context, listen: false);
+    await cartProvider.fetchCartItems();
+    basket = cartProvider.cartItems.map((item) => BasketItem(
+      title: '', // Заполните данные продукта
+      price: 0.0,
+      quantity: item.quantity,
+      photoURLs: [], // Заполните URL фото
+    )).toList();
+    notifyListeners();
+  }
+
   // Добавить товар в корзину
-  void addProduct(BasketItem item, int quantity) {
+  Future<void> addProduct(BasketItem item, int quantity) async {
     final index = basket.indexWhere((i) => i.title == item.title);
     if (index != -1) {
       basket[index] = BasketItem(
@@ -17,12 +36,19 @@ class BasketLogic extends ChangeNotifier {
     } else {
       basket.add(item);
     }
+    var cartProvider = Provider.of<CartProvider>(context, listen: false);
+    await cartProvider.addCartItem(CartItem(
+      productId: item.title.hashCode, // Пример productId, используйте правильный идентификатор
+      quantity: quantity,
+    ));
     notifyListeners();
   }
 
   // Удалить товар из корзины
-  void removeProduct(BasketItem item) {
+  Future<void> removeProduct(BasketItem item) async {
     basket.removeWhere((i) => i.title == item.title);
+    var cartProvider = Provider.of<CartProvider>(context, listen: false);
+    await cartProvider.deleteCartItem(item.title.hashCode); // Пример productId, используйте правильный идентификатор
     notifyListeners();
   }
 
@@ -41,9 +67,9 @@ class BasketLogic extends ChangeNotifier {
               child: const Text('Отмена'),
             ),
             ElevatedButton(
-              onPressed: () {
+              onPressed: () async {
                 Navigator.of(context).pop();
-                clearBasket();
+                await clearBasket();
               },
               child: const Text('Очистить'),
             ),
@@ -54,18 +80,20 @@ class BasketLogic extends ChangeNotifier {
   }
 
   // Очистить корзину
-  void clearBasket() {
+  Future<void> clearBasket() async {
     basket.clear();
+    var cartProvider = Provider.of<CartProvider>(context, listen: false);
+    await cartProvider.clearCart();
     notifyListeners();
   }
 
   // Рассчитать общее количество товаров
-  int calculateTotalQuantity(List<BasketItem> basket) {
+  int calculateTotalQuantity() {
     return basket.fold(0, (sum, item) => sum + item.quantity);
   }
 
   // Рассчитать общую цену
-  double calculateTotalPrice(List<BasketItem> basket) {
+  double calculateTotalPrice() {
     return basket.fold(0.0, (sum, item) => sum + (item.price * item.quantity));
   }
 
