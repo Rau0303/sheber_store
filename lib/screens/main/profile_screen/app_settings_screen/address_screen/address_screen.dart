@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:sheber_market/providers/user_addresses_provider.dart';
 import 'package:sheber_market/screens/main/profile_screen/app_settings_screen/address_screen/widgets/address_list.dart';
 import 'package:sheber_market/widgets/add_app_bar.dart';
 import 'address_screen_logic.dart';
@@ -30,21 +32,26 @@ class _AddressScreenState extends State<AddressScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AddAppBar(onActionPressed: (){
+      appBar: AddAppBar(onActionPressed: () {
         addressLogic.showAddressModal();
-      }, text: 'Мои адреса',),
-      body: Padding(
-        padding: const EdgeInsets.all(10),
-        child: AddressList(
-          addresses: addressLogic.addresses,
-          selectedAddress: addressLogic.selectedAddress,
-          onAddressSelected: (address, isSelected) {
-            addressLogic.updateSelectedAddress(address, isSelected);
-          },
-          onAddressEdit: (address) {
-            addressLogic.showAddressModal(address: address);
-          },
-        ),
+      }, text: 'Мои адреса'),
+      body: Consumer<UserAddressProvider>(
+        builder: (context, userAddressProvider, child) {
+          addressLogic.addresses = userAddressProvider.userAddresses;
+          return Padding(
+            padding: const EdgeInsets.all(10),
+            child: AddressList(
+              addresses: addressLogic.addresses,
+              selectedAddress: addressLogic.selectedAddress,
+              onAddressSelected: (address, isSelected) {
+                addressLogic.updateSelectedAddress(address, isSelected);
+              },
+              onAddressEdit: (address) {
+                addressLogic.showAddressModal(address: address);
+              },
+            ),
+          );
+        },
       ),
     );
   }

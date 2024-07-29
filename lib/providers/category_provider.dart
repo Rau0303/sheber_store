@@ -11,47 +11,33 @@ class CategoryProvider extends ChangeNotifier {
   List<Category> get categories => _categories;
 
   CategoryProvider() {
-    syncCategories();
+    _syncCategories();
   }
 
-  Future<void> syncCategories() async {
-    // Fetch categories from Firebase Firestore
-    QuerySnapshot querySnapshot = await _firestore.collection('categories').get();
-    List<Category> fetchedCategories = querySnapshot.docs.map((doc) {
-      return Category.fromMap(doc.data() as Map<String, dynamic>);
-    }).toList();
+  Future<void> _syncCategories() async {
+    // Listen for changes in Firestore collection
+    _firestore.collection('categories').snapshots().listen((querySnapshot) async {
+      List<Category> fetchedCategories = querySnapshot.docs.map((doc) {
+        return Category.fromMap(doc.data() as Map<String, dynamic>);
+      }).toList();
 
-    // Insert fetched categories into SQLite
-    for (var category in fetchedCategories) {
-      await _dbHelper.insertCategory(category);
-    }
+      // Clear existing categories in SQLite before inserting new ones
+      await _dbHelper.clearCategories();
 
-    // Load categories from SQLite
-    await loadCategories();
+      // Insert fetched categories into SQLite
+      for (var category in fetchedCategories) {
+        await _dbHelper.insertCategory(category);
+      }
+
+      // Load categories from SQLite
+      await _loadCategories();
+    });
   }
 
-  Future<void> loadCategories() async {
+  Future<void> _loadCategories() async {
     _categories.clear();
     List<Category> dbCategories = await _dbHelper.queryAllCategories();
     _categories.addAll(dbCategories);
     notifyListeners();
-  }
-
-  Future<void> addCategory(Category category) async {
-    // Add category to Firestore
-    await _firestore.collection('categories').doc(category.id.toString()).set(category.toMap());
-    // Add category to SQLite
-    await _dbHelper.insertCategory(category);
-    // Load categories from SQLite
-    await loadCategories();
-  }
-
-  Future<void> deleteCategory(int id) async {
-    // Delete category from Firestore
-    await _firestore.collection('categories').doc(id.toString()).delete();
-    // Delete category from SQLite
-    await _dbHelper.deleteCategory(id);
-    // Load categories from SQLite
-    await loadCategories();
   }
 }

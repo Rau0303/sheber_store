@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:sheber_market/models/user_bank_card.dart';
+import 'package:sheber_market/providers/user_bank_card_provider.dart';
 
 class PaymentCardsLogic {
   final BuildContext context;
@@ -12,9 +14,9 @@ class PaymentCardsLogic {
   Future<void> loadSelectedCard() async {
     final userId = FirebaseAuth.instance.currentUser?.uid;
     if (userId != null) {
-      // Замените это на вашу реальную логику загрузки карт
-      // final loadedCards = await someService.getPaymentCardsByOwnerId(userId);
-      // cards = loadedCards;
+      final provider = Provider.of<UserBankCardProvider>(context, listen: false);
+      await provider.loadUserBankCards();
+      cards = provider.userBankCards;
       if (cards.isNotEmpty) {
         selectedCard = cards.last;
       }
@@ -27,22 +29,20 @@ class PaymentCardsLogic {
 
     final card = UserBankCard(
       id: DateTime.now().millisecondsSinceEpoch, // Уникальный идентификатор карты
-      userId: int.parse(userId) , // ID пользователя
+      userId: int.parse(userId), // ID пользователя
       cardNumber: cardNumber,
       cardExpiry: expiryDate,
       cardholderName: cardHolderName,
     );
 
-    // Замените это на вашу реальную логику сохранения карты
-    // await someService.savePaymentCard(card);
+    final provider = Provider.of<UserBankCardProvider>(context, listen: false);
+    await provider.addUserBankCard(card);
     cards.add(card); // Добавьте карту в локальный список
   }
 
   void updateSelectedCard(UserBankCard card, bool isSelected) {
     if (isSelected) {
       selectedCard = card;
-      // Замените это на вашу реальную логику обновления выбранной карты
-      // someService.setSelectedCard(card);
     } else {
       selectedCard = null;
     }

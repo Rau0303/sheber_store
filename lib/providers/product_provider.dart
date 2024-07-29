@@ -17,9 +17,6 @@ class ProductProvider with ChangeNotifier {
       // Добавить товар в локальную базу данных
       await _dbHelper.insertProduct(product);
 
-      // Добавить товар в Firestore
-      await _firestore.collection('products').doc(product.id.toString()).set(product.toMap());
-
       _products.add(product);
       notifyListeners();
     } catch (e) {

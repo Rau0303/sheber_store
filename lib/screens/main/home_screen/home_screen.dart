@@ -25,85 +25,99 @@ class HomeScreen extends StatelessWidget {
         onClearPressed: logic.onClearPressed, 
         appBarTitle: 'Главная',
       ),
-      body: ListView(
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Text(
-              'Категории', // Добавлено текстовое обозначение для категорий
-              style: theme.textTheme.headlineLarge,
-            ),
-          ),
-          SizedBox(
-            height: screenSize.height * 0.2,
-            child: GridView.builder(
-              scrollDirection: Axis.horizontal,
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 1,
-                crossAxisSpacing: 20.0,
-                mainAxisSpacing: 20.0,
-                childAspectRatio: 1.0,
-                mainAxisExtent: screenSize.width * 0.4,
+      body: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: ListView(
+          children: [
+        
+            Container(
+              height: screenSize.height * 0.3,
+              width: screenSize.width,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(20),
+                image: const DecorationImage(
+                  image: AssetImage('assets/promo.png'),
+                  fit: BoxFit.fill)
               ),
-              itemCount: logic.categories.length,
-              itemBuilder: (context, index) {
-                return CategoryCard(
-                  category: logic.categories[index],
-                  onTap: () {
-                    Vibration.vibrate(duration: 50);
-                    // Handle category tap
-                  },
-                );
-              },
             ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Text(
-              'Товары', // Добавлено текстовое обозначение для товаров
-              style: theme.textTheme.headlineLarge,
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: GridView.builder(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: screenSize.width < 600
-                    ? 2
-                    : screenSize.width < 900
-                        ? 3
-                        : 4,
-                crossAxisSpacing: 10,
-                mainAxisSpacing: 10,
-                childAspectRatio: 0.7,
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                'Категории', // Добавлено текстовое обозначение для категорий
+                style: theme.textTheme.headlineLarge,
               ),
-              itemCount: logic.products.length,
-              itemBuilder: (context, index) {
-                final product = logic.products[index];
-                return ProductGridviewCard(
-                  product: product,
-                  onAddToCart: () {
-                    // Implement your add to cart logic
-                  },
-                  onToggleFavorite: () {
-                    // Implement your toggle favorite logic
-                  },
-                  isFavorite: logic.isFavorite(product.id), // Использование метода для проверки избранного
-                  onTap: () {
-                    Vibration.vibrate(duration: 50);
-                    Navigator.pushNamed(
-                      context,
-                      '/product_info',
-                      arguments: product,
-                    );
-                  },
-                );
-              },
             ),
-          ),
-        ],
+            SizedBox(
+              height: screenSize.height * 0.2,
+              child: GridView.builder(
+                scrollDirection: Axis.horizontal,
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 1,
+                  crossAxisSpacing: 20.0,
+                  mainAxisSpacing: 20.0,
+                  childAspectRatio: 1.0,
+                  mainAxisExtent: screenSize.width * 0.4,
+                ),
+                itemCount: logic.categories.length,
+                itemBuilder: (context, index) {
+                  return CategoryCard(
+                    category: logic.categories[index],
+                    onTap: () {
+                      Vibration.vibrate(duration: 50);
+                      // Handle category tap
+                    },
+                  );
+                },
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                'Товары', // Добавлено текстовое обозначение для товаров
+                style: theme.textTheme.headlineLarge,
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: GridView.builder(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: screenSize.width < 600
+                      ? 2
+                      : screenSize.width < 900
+                          ? 3
+                          : 4,
+                  crossAxisSpacing: 10,
+                  mainAxisSpacing: 10,
+                  childAspectRatio: 0.7,
+                ),
+                itemCount: logic.products.length,
+                itemBuilder: (context, index) {
+                  final product = logic.products[index];
+                  return ProductGridviewCard(
+                    product: product,
+                    onAddToCart: () {
+                      // Implement your add to cart logic
+                    },
+                    onToggleFavorite: () {
+                      // Implement your toggle favorite logic
+                    },
+                    isFavorite: logic.isFavorite(product.id), // Использование метода для проверки избранного
+                    onTap: () {
+                      Vibration.vibrate(duration: 50);
+                      Navigator.pushNamed(
+                        context,
+                        '/product_inform',
+                        arguments: product,
+                      );
+                    },
+                  );
+                },
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

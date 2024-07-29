@@ -1,5 +1,3 @@
-// lib/providers/cart_provider.dart
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:sheber_market/models/cart_item.dart';
@@ -73,6 +71,25 @@ class CartProvider with ChangeNotifier {
       notifyListeners();
     } catch (e) {
       print("Ошибка при очистке корзины: $e");
+    }
+  }
+
+  Future<void> syncCartItemsFromFirebase() async {
+    try {
+      QuerySnapshot snapshot = await _firestore.collection('cart').get();
+      for (var doc in snapshot.docs) {
+        var data = doc.data() as Map<String, dynamic>;
+        if (data['product_id'] != null && data['quantity'] != null) {
+          CartItem cartItem = CartItem(
+            productId: data['product_id'],
+            quantity: data['quantity'],
+          );
+          await _dbHelper.insertCartItem(cartItem);
+        }
+      }
+      await fetchCartItems();
+    } catch (e) {
+      print("Ошибка при синхронизации элементов корзины: $e");
     }
   }
 }

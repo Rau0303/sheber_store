@@ -1,11 +1,11 @@
 import 'dart:async';
 import 'package:sheber_market/models/cart_item.dart';
 import 'package:sheber_market/models/category.dart';
+import 'package:sheber_market/models/user_address.dart';
 import 'package:sheber_market/models/users.dart';
 import 'package:sheber_market/models/favorite_item.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
-
 import 'package:sheber_market/models/product.dart';
 
 class DatabaseHelper {
@@ -66,6 +66,7 @@ class DatabaseHelper {
         quantity INTEGER
       )
     ''');
+
     await db.execute('''
       CREATE TABLE categories (
         id INTEGER PRIMARY KEY,
@@ -177,8 +178,8 @@ class DatabaseHelper {
     await db.delete('cart');
   }
 
-
-   Future<void> insertCategory(Category category) async {
+  // Методы для работы с таблицей категорий
+  Future<void> insertCategory(Category category) async {
     Database db = await instance.database;
     await db.insert('categories', category.toMap());
   }
@@ -200,5 +201,53 @@ class DatabaseHelper {
       whereArgs: [id],
     );
   }
-  
+
+  // Новый метод для очистки всех категорий
+  Future<void> clearCategories() async {
+    Database db = await instance.database;
+    await db.delete('categories');
+  }
+
+
+
+
+  // Методы для работы с таблицей адресов
+Future<void> insertUserAddress(UserAddress address) async {
+  Database db = await instance.database;
+  await db.insert('user_addresses', address.toMap(), conflictAlgorithm: ConflictAlgorithm.replace);
+}
+
+Future<void> updateUserAddress(UserAddress address) async {
+  Database db = await instance.database;
+  await db.update(
+    'user_addresses',
+    address.toMap(),
+    where: 'id = ?',
+    whereArgs: [address.id],
+  );
+}
+
+Future<void> deleteUserAddress(int id) async {
+  Database db = await instance.database;
+  await db.delete(
+    'user_addresses',
+    where: 'id = ?',
+    whereArgs: [id],
+  );
+}
+
+Future<void> clearUserAddresses() async {
+  Database db = await instance.database;
+  await db.delete('user_addresses');
+}
+
+Future<List<UserAddress>> queryAllUserAddresses() async {
+  Database db = await instance.database;
+  final List<Map<String, dynamic>> maps = await db.query('user_addresses');
+
+  return List.generate(maps.length, (i) {
+    return UserAddress.fromMap(maps[i]);
+  });
+}
+
 }

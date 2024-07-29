@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:sheber_market/models/user_address.dart';
-
-
+import 'package:sheber_market/providers/user_addresses_provider.dart';
 
 class AddressLogic {
   final BuildContext context;
@@ -22,7 +22,9 @@ class AddressLogic {
   }
 
   Future<void> loadUserAddresses() async {
-    // Здесь должен быть код для загрузки адресов
+    final provider = Provider.of<UserAddressProvider>(context, listen: false);
+    await provider.loadUserAddresses();  // Исправленный вызов метода
+    addresses = provider.userAddresses;
   }
 
   void showAddressModal({UserAddress? address}) {
@@ -131,21 +133,13 @@ class AddressLogic {
       height: MediaQuery.of(context).size.height * 0.05,
       width: MediaQuery.of(context).size.width * 0.4,
       child: ElevatedButton(
-        style: ButtonStyle(
-          backgroundColor: WidgetStateProperty.all(color),
-          shape: WidgetStateProperty.all(
-            RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10),
-            ),
-          ),
-        ),
         onPressed: onPressed,
         child: Text(text, style: theme.textTheme.bodyMedium),
       ),
     );
   }
 
-  void addAddress() {
+  void addAddress() async {
     final newAddress = UserAddress(
       id: DateTime.now().millisecondsSinceEpoch, // Используйте уникальный идентификатор
       userId: 1, // Пример userId, замените на актуальное значение
@@ -154,25 +148,29 @@ class AddressLogic {
       house: houseController.text,
       apartment: apartmentController.text,
     );
-    addresses.add(newAddress);
+    final provider = Provider.of<UserAddressProvider>(context, listen: false);
+    await provider.addUserAddress(newAddress);
+    await loadUserAddresses(); // Обновляем список адресов
   }
 
-  void updateAddress(int id) {
-    final index = addresses.indexWhere((address) => address.id == id);
-    if (index != -1) {
-      addresses[index] = UserAddress(
-        id: id,
-        userId: addresses[index].userId,
-        city: cityController.text,
-        street: streetController.text,
-        house: houseController.text,
-        apartment: apartmentController.text,
-      );
-    }
+  void updateAddress(int id) async {
+    final updatedAddress = UserAddress(
+      id: id,
+      userId: addresses.firstWhere((address) => address.id == id).userId,
+      city: cityController.text,
+      street: streetController.text,
+      house: houseController.text,
+      apartment: apartmentController.text,
+    );
+    final provider = Provider.of<UserAddressProvider>(context, listen: false);
+    await provider.updateUserAddress(updatedAddress);
+    await loadUserAddresses(); // Обновляем список адресов
   }
 
-  void deleteAddress(int id) {
-    addresses.removeWhere((address) => address.id == id);
+  void deleteAddress(int id) async {
+    final provider = Provider.of<UserAddressProvider>(context, listen: false);
+    await provider.deleteUserAddress(id);
+    await loadUserAddresses(); // Обновляем список адресов
   }
 
   void updateSelectedAddress(UserAddress address, bool isSelected) {
