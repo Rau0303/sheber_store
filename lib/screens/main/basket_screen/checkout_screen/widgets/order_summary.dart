@@ -16,7 +16,7 @@ class OrderSummary extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final textTheme = theme.textTheme;
-    
+
     final double finalTotal = totalPrice + (totalPrice < 50000 && selectedDeliveryMethod == 'Доставка курьером' ? 1500 : 0);
 
     return Card(

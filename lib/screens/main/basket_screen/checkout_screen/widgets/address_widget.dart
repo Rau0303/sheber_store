@@ -1,3 +1,4 @@
+
 import 'package:flutter/material.dart';
 
 class AddressWidget extends StatelessWidget {
@@ -23,22 +24,22 @@ class AddressWidget extends StatelessWidget {
       decoration: BoxDecoration(
         color: Colors.transparent,
         borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: theme.dividerColor), // Используем цвет разделителя темы
+        border: Border.all(color: theme.dividerColor),
       ),
       child: ListTile(
         title: Text(
           'Адрес',
-          style: textTheme.titleLarge, // Используем стиль из темы
+          style: textTheme.titleLarge,
         ),
         subtitle: Text(
           address,
-          style: textTheme.bodyMedium, // Используем стиль из темы
+          style: textTheme.bodyMedium,
         ),
         trailing: IconButton(
           onPressed: onPressed,
           icon: Icon(
             Icons.arrow_forward_ios,
-            color: theme.iconTheme.color, // Используем цвет иконок из темы
+            color: theme.iconTheme.color,
           ),
         ),
       ),

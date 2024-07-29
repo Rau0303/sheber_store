@@ -11,7 +11,7 @@ class ProfileScreenLogic extends ChangeNotifier {
     notifyListeners();
 
     // Mock user data; replace with real data loading logic
-    await Future.delayed(const Duration(seconds: 2));
+    
     user = User(
       id: 1,
       name: 'Имя пользователя',

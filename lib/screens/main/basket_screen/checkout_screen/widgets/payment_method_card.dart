@@ -52,7 +52,7 @@ class PaymentMethodCard extends StatelessWidget {
                 );
               }).toList(),
               isExpanded: true,
-              underline: const SizedBox(), // Убираем нижнее подчеркивание
+              underline: const SizedBox(),
               dropdownColor: theme.scaffoldBackgroundColor,
             ),
           ],

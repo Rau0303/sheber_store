@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sheber_market/models/user_address.dart';
@@ -23,16 +24,16 @@ class AddressLogic {
 
   Future<void> loadUserAddresses() async {
     final provider = Provider.of<UserAddressProvider>(context, listen: false);
-    await provider.loadUserAddresses();  // Исправленный вызов метода
+    await provider.loadUserAddresses();
     addresses = provider.userAddresses;
   }
 
   void showAddressModal({UserAddress? address}) {
     if (address != null) {
       cityController.text = address.city;
-      streetController.text = address.street ?? '';
-      houseController.text = address.house ?? '';
-      apartmentController.text = address.apartment ?? '';
+      streetController.text = address.street;
+      houseController.text = address.house;
+      apartmentController.text = address.apartment;
     } else {
       cityController.clear();
       streetController.clear();
@@ -140,9 +141,12 @@ class AddressLogic {
   }
 
   void addAddress() async {
+    final userId = FirebaseAuth.instance.currentUser?.uid;
+    if (userId == null) return;
+
     final newAddress = UserAddress(
-      id: DateTime.now().millisecondsSinceEpoch, // Используйте уникальный идентификатор
-      userId: 1, // Пример userId, замените на актуальное значение
+      id: DateTime.now().millisecondsSinceEpoch, // Unique ID
+      userId: userId, // Firebase UID
       city: cityController.text,
       street: streetController.text,
       house: houseController.text,
@@ -150,13 +154,16 @@ class AddressLogic {
     );
     final provider = Provider.of<UserAddressProvider>(context, listen: false);
     await provider.addUserAddress(newAddress);
-    await loadUserAddresses(); // Обновляем список адресов
+    await loadUserAddresses(); // Refresh addresses
   }
 
   void updateAddress(int id) async {
+    final userId = FirebaseAuth.instance.currentUser?.uid;
+    if (userId == null) return;
+
     final updatedAddress = UserAddress(
       id: id,
-      userId: addresses.firstWhere((address) => address.id == id).userId,
+      userId: userId, // Firebase UID
       city: cityController.text,
       street: streetController.text,
       house: houseController.text,
@@ -164,13 +171,13 @@ class AddressLogic {
     );
     final provider = Provider.of<UserAddressProvider>(context, listen: false);
     await provider.updateUserAddress(updatedAddress);
-    await loadUserAddresses(); // Обновляем список адресов
+    await loadUserAddresses(); // Refresh addresses
   }
 
   void deleteAddress(int id) async {
     final provider = Provider.of<UserAddressProvider>(context, listen: false);
     await provider.deleteUserAddress(id);
-    await loadUserAddresses(); // Обновляем список адресов
+    await loadUserAddresses(); // Refresh addresses
   }
 
   void updateSelectedAddress(UserAddress address, bool isSelected) {

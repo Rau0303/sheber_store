@@ -1,104 +1,102 @@
-// Провайдер для банковских карт
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:sheber_market/models/user_bank_card.dart';
-import 'package:sheber_market/utils/encryption_helper.dart';
+import 'package:sheber_market/providers/database_helper.dart';
 
-class UserBankCardProvider with ChangeNotifier {
+
+class UserBankCardProvider extends ChangeNotifier {
+  final DatabaseHelper _dbHelper = DatabaseHelper.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-  final EncryptionHelper _encryptionHelper = EncryptionHelper();
-  List<UserBankCard> _userBankCards = [];
 
+  List<UserBankCard> _userBankCards = [];
   List<UserBankCard> get userBankCards => _userBankCards;
 
+  Future<void> loadUserBankCards() async {
+    final userId = FirebaseAuth.instance.currentUser?.uid;
+
+    if (userId == null) return;
+
+    // Загружаем банковские карты из локальной базы данных
+    
+    notifyListeners();
+
+    // Загружаем банковские карты из Firebase
+    final snapshot = await _firestore
+        .collection('user_bank_cards')
+        .where('user_id', isEqualTo: userId)
+        .get();
+
+    final firebaseBankCards = snapshot.docs.map((doc) => UserBankCard.fromMap(doc.data())).toList();
+
+    // Сохраняем банковские карты в локальной базе данных
+   
+
+    // Обновляем список банковских карт
+    _userBankCards.addAll(firebaseBankCards);
+    notifyListeners();
+  }
+
   Future<void> addUserBankCard(UserBankCard card) async {
-    try {
-      // Шифруем данные карты
-      final encryptedCardNumber = _encryptionHelper.encryptData(card.cardNumber);
-      final encryptedCardExpiry = _encryptionHelper.encryptData(card.cardExpiry);
-      final encryptedCardholderName = _encryptionHelper.encryptData(card.cardholderName);
+    final userId = FirebaseAuth.instance.currentUser?.uid;
 
-      final encryptedCard = UserBankCard(
-        id: card.id,
-        userId: card.userId,
-        cardNumber: encryptedCardNumber,
-        cardExpiry: encryptedCardExpiry,
-        cardholderName: encryptedCardholderName,
-      );
+    if (userId == null) return;
 
-      // Добавляем карту в Firestore
-      await _firestore.collection('user_bank_cards').doc(card.id.toString()).set(encryptedCard.toMap());
+    // Сохраняем карту в локальной базе данных
+    
 
-      _userBankCards.add(card);
-      notifyListeners();
-    } catch (e) {
-      print("Ошибка при добавлении карты: $e");
-    }
+    // Сохраняем карту в Firebase
+    await _firestore.collection('user_bank_cards').add(card.toMap());
+
+    // Обновляем список банковских карт
+    _userBankCards.add(card);
+    notifyListeners();
   }
 
   Future<void> updateUserBankCard(UserBankCard card) async {
-    try {
-      // Шифруем данные карты
-      final encryptedCardNumber = _encryptionHelper.encryptData(card.cardNumber);
-      final encryptedCardExpiry = _encryptionHelper.encryptData(card.cardExpiry);
-      final encryptedCardholderName = _encryptionHelper.encryptData(card.cardholderName);
+    final userId = FirebaseAuth.instance.currentUser?.uid;
 
-      final encryptedCard = UserBankCard(
-        id: card.id,
-        userId: card.userId,
-        cardNumber: encryptedCardNumber,
-        cardExpiry: encryptedCardExpiry,
-        cardholderName: encryptedCardholderName,
-      );
+    if (userId == null) return;
 
-      // Обновляем карту в Firestore
-      await _firestore.collection('user_bank_cards').doc(card.id.toString()).update(encryptedCard.toMap());
+    // Обновляем карту в локальной базе данных
+    
+    // Находим идентификатор документа в Firestore
+    final snapshot = await _firestore
+        .collection('user_bank_cards')
+        .where('user_id', isEqualTo: userId)
+        .get();
+    final docId = snapshot.docs.first.id;
 
-      // Обновляем локальный список
-      int index = _userBankCards.indexWhere((c) => c.id == card.id);
-      if (index != -1) {
-        _userBankCards[index] = card;
-        notifyListeners();
-      }
-    } catch (e) {
-      print("Ошибка при обновлении карты: $e");
+    // Обновляем карту в Firebase
+    await _firestore.collection('user_bank_cards').doc(docId).update(card.toMap());
+
+    // Обновляем список банковских карт
+    final index = _userBankCards.indexWhere((c) => c.id == card.id);
+    if (index != -1) {
+      _userBankCards[index] = card;
+      notifyListeners();
     }
   }
 
-  Future<void> deleteUserBankCard(int id) async {
-    try {
-      // Удаляем карту из Firestore
-      await _firestore.collection('user_bank_cards').doc(id.toString()).delete();
+  Future<void> deleteUserBankCard(int cardId) async {
+    final userId = FirebaseAuth.instance.currentUser?.uid;
 
-      // Удаляем из локального списка
-      _userBankCards.removeWhere((c) => c.id == id);
-      notifyListeners();
-    } catch (e) {
-      print("Ошибка при удалении карты: $e");
-    }
-  }
+    if (userId == null) return;
 
-  Future<void> loadUserBankCards() async {
-    try {
-      final snapshot = await _firestore.collection('user_bank_cards').get();
-      _userBankCards = snapshot.docs.map((doc) {
-        final data = doc.data();
-        final decryptedCardNumber = _encryptionHelper.decryptData(data['card_number']);
-        final decryptedCardExpiry = _encryptionHelper.decryptData(data['card_expiry']);
-        final decryptedCardholderName = _encryptionHelper.decryptData(data['cardholder_name']);
+    // Удаляем карту из локальной базы данных
+    
+    // Находим идентификатор документа в Firestore
+    final snapshot = await _firestore
+        .collection('user_bank_cards')
+        .where('user_id', isEqualTo: userId)
+        .get();
+    final docId = snapshot.docs.first.id;
 
-        return UserBankCard(
-          id: data['id'],
-          userId: data['user_id'],
-          cardNumber: decryptedCardNumber,
-          cardExpiry: decryptedCardExpiry,
-          cardholderName: decryptedCardholderName,
-        );
-      }).toList();
+    // Удаляем карту из Firebase
+    await _firestore.collection('user_bank_cards').doc(docId).delete();
 
-      notifyListeners();
-    } catch (e) {
-      print("Ошибка при загрузке карт: $e");
-    }
+    // Обновляем список банковских карт
+    _userBankCards.removeWhere((c) => c.id == cardId);
+    notifyListeners();
   }
 }

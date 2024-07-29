@@ -28,8 +28,4 @@ class CheckoutLogic extends ChangeNotifier {
     }
     return finalTotal;
   }
-
-  void createOrder() {
-    // Логика создания заказа
-  }
 }

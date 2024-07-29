@@ -1,31 +1,27 @@
-// Модель адреса пользователя
 class UserAddress {
   final int id;
-  final int userId;
+  final String userId;
   final String city;
-  final String? street;
-  final String? house;
-  final String? apartment;
+  final String street;
+  final String house;
+  final String apartment;
 
   UserAddress({
     required this.id,
     required this.userId,
     required this.city,
-    this.street,
-    this.house,
-    this.apartment,
+    required this.street,
+    required this.house,
+    required this.apartment,
   });
 
-  factory UserAddress.fromMap(Map<String, dynamic> map) {
-    return UserAddress(
-      id: map['id'],
-      userId: map['user_id'],
-      city: map['city'],
-      street: map['street'],
-      house: map['house'],
-      apartment: map['apartment'],
-    );
-  }
+  UserAddress.fromMap(Map<String, dynamic> map)
+      : id = map['id'],
+        userId = map['user_id'],
+        city = map['city'],
+        street = map['street'] ?? '',
+        house = map['house'] ?? '',
+        apartment = map['apartment'] ?? '';
 
   Map<String, dynamic> toMap() {
     return {
@@ -37,4 +33,12 @@ class UserAddress {
       'apartment': apartment,
     };
   }
+
+  UserAddress.withUserId(UserAddress address, String newUserId)
+      : id = address.id,
+        userId = newUserId,
+        city = address.city,
+        street = address.street,
+        house = address.house,
+        apartment = address.apartment;
 }

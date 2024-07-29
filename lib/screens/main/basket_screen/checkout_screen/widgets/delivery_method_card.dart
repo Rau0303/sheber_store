@@ -29,7 +29,7 @@ class DeliveryMethodCard extends StatelessWidget {
               'Выберите способ доставки:',
               style: textTheme.titleLarge?.copyWith(
                 fontWeight: FontWeight.bold,
-                color: theme.colorScheme.onSurface, // Цвет текста в соответствии с темой
+                color: theme.colorScheme.onSurface,
               ),
             ),
             const SizedBox(height: 8),
@@ -43,11 +43,12 @@ class DeliveryMethodCard extends StatelessWidget {
               ].map<DropdownMenuItem<String>>((String value) {
                 return DropdownMenuItem<String>(
                   value: value,
-                  child: Text(value, style: textTheme.bodyMedium), // Используем стиль из темы
+                  child: Text(value, style: textTheme.bodyMedium),
                 );
               }).toList(),
-              style: textTheme.bodyMedium?.copyWith(color: theme.colorScheme.onSurface), // Цвет текста в соответствии с темой
-              dropdownColor: theme.cardColor, // Цвет фона выпадающего меню
+              isExpanded: true,
+              underline: const SizedBox(),
+              dropdownColor: theme.scaffoldBackgroundColor,
             ),
           ],
         ),

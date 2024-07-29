@@ -21,8 +21,6 @@ class CheckoutScreenState extends State<CheckoutScreen> {
   @override
   void initState() {
     super.initState();
-    // Здесь можно инициализировать данные
-    // Например, загрузка данных корзины
   }
 
   void updateTotalPrice(double price) {
@@ -48,7 +46,6 @@ class CheckoutScreenState extends State<CheckoutScreen> {
             onChanged: (newValue) {
               setState(() {
                 selectedDeliveryMethod = newValue!;
-                // Логика для обновления адреса
               });
             },
           ),

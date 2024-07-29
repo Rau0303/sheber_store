@@ -4,9 +4,11 @@ import 'package:sheber_market/models/category.dart';
 import 'package:sheber_market/models/user_address.dart';
 import 'package:sheber_market/models/users.dart';
 import 'package:sheber_market/models/favorite_item.dart';
+import 'package:sheber_market/models/product.dart';
+import 'package:sheber_market/models/order.dart';
+import 'package:sheber_market/models/order_product.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
-import 'package:sheber_market/models/product.dart';
 
 class DatabaseHelper {
   static final DatabaseHelper instance = DatabaseHelper._privateConstructor();
@@ -74,12 +76,33 @@ class DatabaseHelper {
         photo_url TEXT
       )
     ''');
+
+    await db.execute('''
+      CREATE TABLE orders (
+        id INTEGER PRIMARY KEY,
+        user_id TEXT,
+        order_date TEXT,
+        total_price REAL,
+        delivery_address_id INTEGER,
+        status TEXT
+      )
+    ''');
+
+    await db.execute('''
+      CREATE TABLE order_products (
+        id INTEGER PRIMARY KEY,
+        order_id INTEGER,
+        product_id INTEGER,
+        quantity INTEGER,
+        price REAL
+      )
+    ''');
   }
 
   // Методы для работы с таблицей пользователей
   Future<void> insertUser(User user) async {
     Database db = await instance.database;
-    await db.insert('users', user.toMap());
+    await db.insert('users', user.toMap(), conflictAlgorithm: ConflictAlgorithm.replace);
   }
 
   Future<List<User>> queryAllUsers() async {
@@ -103,7 +126,7 @@ class DatabaseHelper {
   // Методы для работы с таблицей товаров
   Future<void> insertProduct(Product product) async {
     Database db = await instance.database;
-    await db.insert('products', product.toMap());
+    await db.insert('products', product.toMap(), conflictAlgorithm: ConflictAlgorithm.replace);
   }
 
   Future<List<Product>> queryAllProducts() async {
@@ -127,7 +150,7 @@ class DatabaseHelper {
   // Методы для работы с таблицей избранного
   Future<void> insertFavoriteItem(FavoriteItem favoriteItem) async {
     Database db = await instance.database;
-    await db.insert('favorites', favoriteItem.toMap());
+    await db.insert('favorites', favoriteItem.toMap(), conflictAlgorithm: ConflictAlgorithm.replace);
   }
 
   Future<List<FavoriteItem>> queryAllFavoriteItems() async {
@@ -151,7 +174,7 @@ class DatabaseHelper {
   // Методы для работы с таблицей корзины
   Future<void> insertCartItem(CartItem cartItem) async {
     Database db = await instance.database;
-    await db.insert('cart', cartItem.toMap());
+    await db.insert('cart', cartItem.toMap(), conflictAlgorithm: ConflictAlgorithm.replace);
   }
 
   Future<List<CartItem>> queryAllCartItems() async {
@@ -181,7 +204,7 @@ class DatabaseHelper {
   // Методы для работы с таблицей категорий
   Future<void> insertCategory(Category category) async {
     Database db = await instance.database;
-    await db.insert('categories', category.toMap());
+    await db.insert('categories', category.toMap(), conflictAlgorithm: ConflictAlgorithm.replace);
   }
 
   Future<List<Category>> queryAllCategories() async {
@@ -208,46 +231,129 @@ class DatabaseHelper {
     await db.delete('categories');
   }
 
-
-
-
   // Методы для работы с таблицей адресов
-Future<void> insertUserAddress(UserAddress address) async {
-  Database db = await instance.database;
-  await db.insert('user_addresses', address.toMap(), conflictAlgorithm: ConflictAlgorithm.replace);
-}
+  Future<void> insertUserAddress(UserAddress address) async {
+    Database db = await instance.database;
+    await db.insert('user_addresses', address.toMap(), conflictAlgorithm: ConflictAlgorithm.replace);
+  }
 
-Future<void> updateUserAddress(UserAddress address) async {
-  Database db = await instance.database;
-  await db.update(
-    'user_addresses',
-    address.toMap(),
-    where: 'id = ?',
-    whereArgs: [address.id],
-  );
-}
+  Future<void> updateUserAddress(UserAddress address) async {
+    Database db = await instance.database;
+    await db.update(
+      'user_addresses',
+      address.toMap(),
+      where: 'id = ?',
+      whereArgs: [address.id],
+    );
+  }
 
-Future<void> deleteUserAddress(int id) async {
-  Database db = await instance.database;
-  await db.delete(
-    'user_addresses',
-    where: 'id = ?',
-    whereArgs: [id],
-  );
-}
+  Future<void> deleteUserAddress(int id) async {
+    Database db = await instance.database;
+    await db.delete(
+      'user_addresses',
+      where: 'id = ?',
+      whereArgs: [id],
+    );
+  }
 
-Future<void> clearUserAddresses() async {
-  Database db = await instance.database;
-  await db.delete('user_addresses');
-}
+  Future<void> clearUserAddresses() async {
+    Database db = await instance.database;
+    await db.delete('user_addresses');
+  }
 
-Future<List<UserAddress>> queryAllUserAddresses() async {
-  Database db = await instance.database;
-  final List<Map<String, dynamic>> maps = await db.query('user_addresses');
+  Future<List<UserAddress>> queryAllUserAddresses() async {
+    Database db = await instance.database;
+    final List<Map<String, dynamic>> maps = await db.query('user_addresses');
 
-  return List.generate(maps.length, (i) {
-    return UserAddress.fromMap(maps[i]);
-  });
-}
+    return List.generate(maps.length, (i) {
+      return UserAddress.fromMap(maps[i]);
+    });
+  }
+    Future<List<UserAddress>> queryUserAddressesByUserId(String userId) async {
+    Database db = await instance.database;
+    final List<Map<String, dynamic>> maps = await db.query(
+      'user_addresses',
+      where: 'user_id = ?',
+      whereArgs: [userId],
+    );
 
+    return List.generate(maps.length, (i) {
+      return UserAddress.fromMap(maps[i]);
+    });
+  }
+
+  // Методы для работы с таблицей заказов
+  Future<void> insertOrder(Order order) async {
+    Database db = await instance.database;
+    await db.insert('orders', order.toMap(), conflictAlgorithm: ConflictAlgorithm.replace);
+  }
+
+  Future<void> updateOrder(Order order) async {
+    Database db = await instance.database;
+    await db.update(
+      'orders',
+      order.toMap(),
+      where: 'id = ?',
+      whereArgs: [order.id],
+    );
+  }
+
+  Future<void> deleteOrder(int id) async {
+    Database db = await instance.database;
+    await db.delete(
+      'orders',
+      where: 'id = ?',
+      whereArgs: [id],
+    );
+  }
+
+  Future<List<Order>> queryOrdersByUserId(String userId) async {
+    Database db = await instance.database;
+    final List<Map<String, dynamic>> maps = await db.query(
+      'orders',
+      where: 'user_id = ?',
+      whereArgs: [userId],
+    );
+
+    return List.generate(maps.length, (i) {
+      return Order.fromMap(maps[i]);
+    });
+  }
+
+  // Методы для работы с таблицей продуктов заказов
+  Future<void> insertOrderProduct(OrderProduct orderProduct) async {
+    Database db = await instance.database;
+    await db.insert('order_products', orderProduct.toMap(), conflictAlgorithm: ConflictAlgorithm.replace);
+  }
+
+  Future<void> deleteOrderProduct(int id) async {
+    Database db = await instance.database;
+    await db.delete(
+      'order_products',
+      where: 'id = ?',
+      whereArgs: [id],
+    );
+  }
+
+  Future<void> deleteOrderProducts(int orderId) async {
+    Database db = await instance.database;
+    await db.delete(
+      'order_products',
+      where: 'order_id = ?',
+      whereArgs: [orderId],
+    );
+  }
+
+  Future<List<OrderProduct>> queryOrderProductsByOrderId(int orderId) async {
+    Database db = await instance.database;
+    final List<Map<String, dynamic>> maps = await db.query(
+      'order_products',
+      where: 'order_id = ?',
+      whereArgs: [orderId],
+    );
+
+    return List.generate(maps.length, (i) {
+      return OrderProduct.fromMap(maps[i]);
+    });
+  }
 }
