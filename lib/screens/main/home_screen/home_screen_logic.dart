@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:path/path.dart';
+import 'package:provider/provider.dart';
 import 'package:sheber_market/models/category.dart';
 import 'package:sheber_market/models/product.dart';
 import 'package:sheber_market/models/favorite_item.dart';
 import 'package:sheber_market/providers/favorite_provider.dart';
+import 'package:sheber_market/providers/firebase_push_notification_provider.dart';
 
 class HomeScreenLogic extends ChangeNotifier {
   bool isSearch = false;
@@ -79,6 +82,8 @@ class HomeScreenLogic extends ChangeNotifier {
     favoriteItems = await favoriteProvider.fetchFavoriteItems();
     notifyListeners();
   }
+
+
 
   Future<void> toggleFavorite(int productId) async {
     if (isFavorite(productId)) {

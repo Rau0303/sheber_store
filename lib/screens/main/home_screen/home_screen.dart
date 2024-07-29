@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
 import 'package:sheber_market/screens/main/home_screen/home_screen_logic.dart';
 import 'package:sheber_market/screens/main/home_screen/widgets/category_card.dart';
 import 'package:sheber_market/widgets/searchable_app_bar.dart';
@@ -15,6 +16,7 @@ class HomeScreen extends StatelessWidget {
     final logic = Provider.of<HomeScreenLogic>(context);
     final screenSize = MediaQuery.of(context).size;
     final theme = Theme.of(context); // Использование вашего кастомного ThemeData
+
 
     return Scaffold(
       appBar: SearchableAppBar(
@@ -64,6 +66,7 @@ class HomeScreen extends StatelessWidget {
                     category: logic.categories[index],
                     onTap: () {
                       Vibration.vibrate(duration: 50);
+                     
                       // Handle category tap
                     },
                   );

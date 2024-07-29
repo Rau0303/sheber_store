@@ -7,6 +7,7 @@ import 'package:sheber_market/firebase_options.dart';
 import 'package:sheber_market/providers/auth_provider.dart';
 import 'package:sheber_market/providers/cart_provider.dart';
 import 'package:sheber_market/providers/favorite_provider.dart';
+import 'package:sheber_market/providers/firebase_push_notification_provider.dart';
 import 'package:sheber_market/providers/user_addresses_provider.dart';
 import 'package:sheber_market/providers/user_bank_card_provider.dart';
 import 'package:sheber_market/screens/main/basket_screen/basket_screen_logic.dart';
@@ -21,6 +22,8 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+  final firebaseProvider = FirebasePushNotificationProvider();
+  print(firebaseProvider.token);
 await FirebaseAppCheck.instance.activate(
     // You can also use a `ReCaptchaEnterpriseProvider` provider instance as an
     // argument for `webProvider`
@@ -42,6 +45,7 @@ await FirebaseAppCheck.instance.activate(
   runApp(
     MultiProvider(
       providers: [
+        ChangeNotifierProvider(create: (_) => FirebasePushNotificationProvider()),
         ChangeNotifierProvider(create: (_) => UserBankCardProvider()),
         ChangeNotifierProvider(create: (_) => UserAddressProvider()),
         ChangeNotifierProvider(create: (_) => FavoriteProvider()),

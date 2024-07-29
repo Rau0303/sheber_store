@@ -23,8 +23,8 @@ class AddressListItem extends StatelessWidget {
         onChanged: onAddressSelected,
         activeColor: Colors.deepOrange,
       ),
-      title: Text(address.street ?? 'Не указана улица'),
-      subtitle: Text('Дом ${address.house ?? 'Не указан дом'}'),
+      title: Text(address.street),
+      subtitle: Text('Дом ${address.house}'),
       trailing: IconButton(
         onPressed: onAddressEdit,
         icon: const Icon(Icons.edit),

@@ -2,14 +2,12 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:sheber_market/models/user_bank_card.dart';
-import 'package:sheber_market/providers/database_helper.dart';
 
 
 class UserBankCardProvider extends ChangeNotifier {
-  final DatabaseHelper _dbHelper = DatabaseHelper.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  List<UserBankCard> _userBankCards = [];
+  final List<UserBankCard> _userBankCards = [];
   List<UserBankCard> get userBankCards => _userBankCards;
 
   Future<void> loadUserBankCards() async {
