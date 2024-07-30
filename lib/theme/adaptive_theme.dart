@@ -143,6 +143,12 @@ class AdaptiveTheme {
         fillColor: Colors.transparent,
         filled: false,
       ),
+    progressIndicatorTheme: const ProgressIndicatorThemeData(
+          color: Colors.deepOrange, // Цвет для индикаторов загрузки
+          circularTrackColor: Colors.deepOrange, // Цвет фона кругового индикатора
+          linearTrackColor: Colors.deepOrange, // Цвет фона линейного индикатора
+          // Вы можете также настроить другие параметры, если нужно
+        ),
     );
   }
 
@@ -288,6 +294,12 @@ class AdaptiveTheme {
         fillColor: Colors.transparent,
         filled: false,
       ),
+      progressIndicatorTheme: const ProgressIndicatorThemeData(
+          color: Colors.deepOrange, // Цвет для индикаторов загрузки
+          circularTrackColor: Colors.deepOrange, // Цвет фона кругового индикатора
+          linearTrackColor: Colors.deepOrange, // Цвет фона линейного индикатора
+          // Вы можете также настроить другие параметры, если нужно
+        ),
     );
   }
 

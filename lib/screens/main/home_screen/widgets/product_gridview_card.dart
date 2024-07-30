@@ -28,14 +28,14 @@ class ProductGridviewCard extends StatelessWidget {
       onTap: onTap,
       child: Container(
         decoration: BoxDecoration(
-          color: theme.cardColor, // Используйте цвет фона карты из темы
+          color: theme.cardColor,
           borderRadius: BorderRadius.circular(16),
           boxShadow: [
             BoxShadow(
               color: theme.shadowColor.withOpacity(0.5),
               spreadRadius: 2,
               blurRadius: 5,
-              offset: const Offset(0, 3), // Измените положение тени
+              offset: const Offset(0, 3),
             ),
           ],
         ),
@@ -47,32 +47,32 @@ class ProductGridviewCard extends StatelessWidget {
                 topLeft: Radius.circular(16),
                 topRight: Radius.circular(16),
               ),
-              child: Image.network(
-                product.photo!.isNotEmpty
-                    ? product.photo!
-                    : 'assets/noshki.jpg',
+              child: SizedBox(
                 height: screenSize.height * 0.2,
                 width: double.infinity,
-                fit: BoxFit.cover,
-                loadingBuilder: (context, child, loadingProgress) {
-                  if (loadingProgress == null) return child;
-                  return Center(
-                    child: CircularProgressIndicator(
-                      value: loadingProgress.expectedTotalBytes != null
-                          ? loadingProgress.cumulativeBytesLoaded /
-                              (loadingProgress.expectedTotalBytes ?? 1)
-                          : null,
-                    ),
-                  );
-                },
-                errorBuilder: (context, exception, stackTrace) {
-                  return Image.asset(
-                    'assets/noshki.jpg',
-                    height: screenSize.height * 0.2,
-                    width: double.infinity,
-                    fit: BoxFit.cover,
-                  );
-                },
+                child: Image.network(
+                  product.photo?.isNotEmpty ?? false
+                      ? product.photo!
+                      : 'assets/noshki.jpg',
+                  fit: BoxFit.cover,
+                  loadingBuilder: (context, child, loadingProgress) {
+                    if (loadingProgress == null) return child;
+                    return Center(
+                      child: CircularProgressIndicator(
+                        value: loadingProgress.expectedTotalBytes != null
+                            ? loadingProgress.cumulativeBytesLoaded /
+                                (loadingProgress.expectedTotalBytes ?? 1)
+                            : null,
+                      ),
+                    );
+                  },
+                  errorBuilder: (context, exception, stackTrace) {
+                    return Image.asset(
+                      'assets/noshki.jpg',
+                      fit: BoxFit.cover,
+                    );
+                  },
+                ),
               ),
             ),
             Padding(
@@ -80,7 +80,11 @@ class ProductGridviewCard extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(product.name, style: textTheme.bodyMedium),
+                  Text(
+                    product.name,
+                    style: textTheme.bodyMedium,
+                    overflow: TextOverflow.ellipsis, // Обрезка текста, если он длинный
+                  ),
                   Text(
                     product.quantity > 0
                         ? 'в наличии ${product.quantity} штук'
@@ -94,18 +98,23 @@ class ProductGridviewCard extends StatelessWidget {
                             color: Colors.red,
                             fontWeight: FontWeight.bold,
                           ),
+                    overflow: TextOverflow.ellipsis, // Обрезка текста
                   ),
-                  Text('Цена: ${product.sellingPrice.toInt()}'),
+                  Text(
+                    'Цена: ${product.sellingPrice.toStringAsFixed(2)}',
+                    overflow: TextOverflow.ellipsis, // Обрезка текста
+                  ),
                   const SizedBox(height: 8.0),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      ElevatedButton(
-                        onPressed: onAddToCart,
-                        
-                        child: Text(
-                          'В корзину',
-                          style: textTheme.bodyMedium!.copyWith(color: Colors.white),
+                      Expanded(
+                        child: ElevatedButton(
+                          onPressed: onAddToCart,
+                          child: Text(
+                            'В корзину',
+                            style: textTheme.bodyMedium!.copyWith(color: Colors.white),
+                          ),
                         ),
                       ),
                       IconButton(

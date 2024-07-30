@@ -5,6 +5,9 @@ import 'package:provider/provider.dart';
 import 'package:sheber_market/app/providers_setup.dart';
 import 'package:sheber_market/app/sheber_market_app.dart';
 import 'package:sheber_market/firebase_options.dart';
+import 'package:sheber_market/models/category.dart';
+import 'package:sheber_market/models/product.dart';
+import 'package:sheber_market/providers/database_helper.dart';
 import 'package:sheber_market/providers/firebase_push_notification_provider.dart';
 
 
@@ -13,6 +16,9 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+
+
+
   final firebaseProvider = FirebasePushNotificationProvider();
   print(firebaseProvider.token);
   await FirebaseAppCheck.instance.activate(
@@ -27,3 +33,5 @@ void main() async {
     ),
   );
 }
+
+

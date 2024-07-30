@@ -23,7 +23,7 @@ class CategoryTile extends StatelessWidget {
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(16),
           image: DecorationImage(
-            image: AssetImage(category.photoUrl!),
+            image: NetworkImage(category.photoUrl!),
             fit: BoxFit.cover,
           ),
         ),

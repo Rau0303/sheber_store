@@ -34,10 +34,10 @@ class CategoryScreen extends StatelessWidget {
           : Padding(
               padding: EdgeInsets.symmetric(vertical: screenSize.height * 0.02),
               child: ListView.separated(
-                itemCount: logic.filteredCategories.length,
+                itemCount: logic.categories.length,
                 separatorBuilder: (context, index) => const Divider(),
                 itemBuilder: (context, index) {
-                  final category = logic.filteredCategories[index];
+                  final category = logic.categories[index];
                   return CategoryTile(
                     category: category,
                     onTap: () {
