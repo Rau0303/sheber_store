@@ -6,8 +6,22 @@ import 'package:sheber_market/widgets/searchable_app_bar.dart';
 import 'package:vibration/vibration.dart';
 import 'package:sheber_market/screens/main/home_screen/widgets/product_gridview_card.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
+
+  @override
+  _HomeScreenState createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final logic = Provider.of<HomeScreenLogic>(context);
+    if (!logic.isInitialized) {
+      logic.init(); // Call init only if not initialized
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -21,12 +35,13 @@ class HomeScreen extends StatelessWidget {
         searchController: logic.searchController,
         onSearchChanged: logic.onSearchChanged,
         onSearchPressed: logic.onSearchPressed,
-        onClearPressed: logic.onClearPressed, 
+        onClearPressed: logic.onClearPressed,
         appBarTitle: 'Главная',
       ),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
-        child: ListView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Промо-картинка
             Container(
@@ -45,7 +60,7 @@ class HomeScreen extends StatelessWidget {
               padding: const EdgeInsets.symmetric(vertical: 8.0),
               child: Text(
                 'Категории',
-                style: theme.textTheme.headlineLarge,
+                style: theme.textTheme.headlineSmall,
               ),
             ),
             // GridView для категорий
@@ -60,10 +75,10 @@ class HomeScreen extends StatelessWidget {
                   childAspectRatio: 1.0,
                   mainAxisExtent: screenSize.width * 0.4,
                 ),
-                itemCount: logic.categories.length,
+                itemCount: logic.filteredCategories.length,
                 itemBuilder: (context, index) {
                   return CategoryCard(
-                    category: logic.categories[index],
+                    category: logic.filteredCategories[index],
                     onTap: () {
                       Vibration.vibrate(duration: 50);
                       // Handle category tap
@@ -77,13 +92,12 @@ class HomeScreen extends StatelessWidget {
               padding: const EdgeInsets.symmetric(vertical: 8.0),
               child: Text(
                 'Товары',
-                style: theme.textTheme.headlineLarge,
+                style: theme.textTheme.headlineSmall,
               ),
             ),
             // GridView для товаров
             Expanded(
               child: GridView.builder(
-                shrinkWrap: true,
                 physics: const AlwaysScrollableScrollPhysics(),
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: screenSize.width < 600
@@ -101,10 +115,10 @@ class HomeScreen extends StatelessWidget {
                   return ProductGridviewCard(
                     product: product,
                     onAddToCart: () {
-                      // Implement your add to cart logic
+                      logic.addToCart(product);
                     },
                     onToggleFavorite: () {
-                      // Implement your toggle favorite logic
+                      logic.toggleFavorite(product.id);
                     },
                     isFavorite: logic.isFavorite(product.id),
                     onTap: () {
@@ -119,8 +133,7 @@ class HomeScreen extends StatelessWidget {
                 },
               ),
             ),
-
-            SizedBox(height: screenSize.height * 0.2,)
+            SizedBox(height: screenSize.height * 0.2),
           ],
         ),
       ),

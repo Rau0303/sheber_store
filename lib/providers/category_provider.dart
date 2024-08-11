@@ -11,10 +11,11 @@ class CategoryProvider extends ChangeNotifier {
   List<Category> get categories => _categories;
 
   CategoryProvider() {
-    _syncCategories();
+    _loadCategories();
+    _startCategorySync();
   }
 
-  Future<void> _syncCategories() async {
+  Future<void> _startCategorySync() async {
     // Listen for changes in Firestore collection
     _firestore.collection('categories').snapshots().listen((querySnapshot) async {
       List<Category> fetchedCategories = querySnapshot.docs.map((doc) {
@@ -29,7 +30,7 @@ class CategoryProvider extends ChangeNotifier {
         await _dbHelper.insertCategory(category);
       }
 
-      // Load categories from SQLite
+      // Reload categories from SQLite
       await _loadCategories();
     });
   }
@@ -39,5 +40,10 @@ class CategoryProvider extends ChangeNotifier {
     List<Category> dbCategories = await _dbHelper.queryAllCategories();
     _categories.addAll(dbCategories);
     notifyListeners();
+  }
+
+  // Add this method to expose sync functionality if needed
+  Future<void> syncCategories() async {
+    await _startCategorySync();
   }
 }

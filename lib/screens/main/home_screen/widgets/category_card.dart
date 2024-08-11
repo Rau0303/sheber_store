@@ -2,11 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:sheber_market/models/category.dart';
 
 class CategoryCard extends StatelessWidget {
-  //final Category category;
   final Category category;
   final VoidCallback onTap;
 
-  const CategoryCard({required this.category, required this.onTap, super.key});
+  const CategoryCard({
+    required this.category,
+    required this.onTap,
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -25,10 +28,20 @@ class CategoryCard extends StatelessWidget {
             Expanded(
               child: ClipRRect(
                 borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
-                child: Image.network(
-                  category.photoUrl!,
-                  fit: BoxFit.fill,
-                ),
+                child: category.photoUrl != null
+                    ? Image.network(
+                        category.photoUrl!,
+                        fit: BoxFit.fill,
+                      )
+                    : Container(
+                        color: Colors.grey[200],
+                        child: Center(
+                          child: Text(
+                            'No Image',
+                            style: theme.textTheme.labelSmall,
+                          ),
+                        ),
+                      ),
               ),
             ),
             Padding(

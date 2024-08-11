@@ -147,6 +147,11 @@ class DatabaseHelper {
     );
   }
 
+  Future<void> clearProducts() async {
+    final db = await instance.database;
+    await db.delete('products');
+  }
+
   // Методы для работы с таблицей избранного
   Future<void> insertFavoriteItem(FavoriteItem favoriteItem) async {
     Database db = await instance.database;
