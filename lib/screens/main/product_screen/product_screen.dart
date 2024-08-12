@@ -68,16 +68,16 @@ class _ProductScreenState extends State<ProductScreen> {
                 itemBuilder: (context, index) {
                   final product = products[index];
                   return ProductCard(
-                    imageUrl: product.photo!,
+                    imageUrl: product.photo ?? '',
                     title: product.name,
-                    description: product.description!,
+                    description: product.description ?? '',
                     total: product.sellingPrice,
                     onTap: () {},
                     on: () {
                       // Обработайте добавление в корзину
                     },
                     product: product,
-                    quantity: 0,
+                    quantity: product.quantity,
                   );
                 },
               ),

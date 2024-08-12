@@ -2,14 +2,14 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:sheber_market/models/product.dart';
 
-class ProductGridviewCard extends StatelessWidget {
+class ProductGridViewCard extends StatefulWidget {
   final Product product;
   final VoidCallback onAddToCart;
   final VoidCallback onToggleFavorite;
   final bool isFavorite;
   final VoidCallback onTap;
 
-  const ProductGridviewCard({
+  const ProductGridViewCard({
     required this.product,
     required this.onAddToCart,
     required this.onToggleFavorite,
@@ -19,13 +19,26 @@ class ProductGridviewCard extends StatelessWidget {
   });
 
   @override
+  _ProductGridViewCardState createState() => _ProductGridViewCardState();
+}
+
+class _ProductGridViewCardState extends State<ProductGridViewCard> {
+  late bool _isFavorite;
+
+  @override
+  void initState() {
+    super.initState();
+    _isFavorite = widget.isFavorite;
+  }
+
+  @override
   Widget build(BuildContext context) {
     final screenSize = MediaQuery.of(context).size;
     final theme = Theme.of(context);
     final textTheme = theme.textTheme;
 
     return GestureDetector(
-      onTap: onTap,
+      onTap: widget.onTap,
       child: Container(
         decoration: BoxDecoration(
           color: theme.cardColor,
@@ -51,8 +64,8 @@ class ProductGridviewCard extends StatelessWidget {
                 height: screenSize.height * 0.2,
                 width: double.infinity,
                 child: Image.network(
-                  product.photo?.isNotEmpty ?? false
-                      ? product.photo!
+                  widget.product.photo?.isNotEmpty ?? false
+                      ? widget.product.photo!
                       : 'assets/noshki.jpg',
                   fit: BoxFit.cover,
                   loadingBuilder: (context, child, loadingProgress) {
@@ -81,15 +94,15 @@ class ProductGridviewCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    product.name,
+                    widget.product.name,
                     style: textTheme.bodyMedium,
                     overflow: TextOverflow.ellipsis, // Обрезка текста, если он длинный
                   ),
                   Text(
-                    product.quantity > 0
-                        ? 'в наличии ${product.quantity} штук'
+                    widget.product.quantity > 0
+                        ? 'в наличии ${widget.product.quantity} штук'
                         : 'Нет в наличии',
-                    style: product.quantity > 0
+                    style: widget.product.quantity > 0
                         ? textTheme.bodyMedium!.copyWith(
                             color: Colors.green,
                             fontWeight: FontWeight.bold,
@@ -101,7 +114,7 @@ class ProductGridviewCard extends StatelessWidget {
                     overflow: TextOverflow.ellipsis, // Обрезка текста
                   ),
                   Text(
-                    'Цена: ${product.sellingPrice.toStringAsFixed(2)}',
+                    'Цена: ${widget.product.sellingPrice.toStringAsFixed(2)}',
                     overflow: TextOverflow.ellipsis, // Обрезка текста
                   ),
                   const SizedBox(height: 8.0),
@@ -110,7 +123,7 @@ class ProductGridviewCard extends StatelessWidget {
                     children: [
                       Expanded(
                         child: ElevatedButton(
-                          onPressed: onAddToCart,
+                          onPressed: widget.onAddToCart,
                           child: Text(
                             'В корзину',
                             style: textTheme.bodyMedium!.copyWith(color: Colors.white),
@@ -118,12 +131,17 @@ class ProductGridviewCard extends StatelessWidget {
                         ),
                       ),
                       IconButton(
-                        onPressed: onToggleFavorite,
+                        onPressed: () {
+                          setState(() {
+                            _isFavorite = !_isFavorite;
+                          });
+                          widget.onToggleFavorite();
+                        },
                         icon: Icon(
-                          isFavorite
+                          _isFavorite
                               ? CupertinoIcons.heart_fill
                               : CupertinoIcons.heart,
-                          color: isFavorite ? Colors.red : theme.iconTheme.color,
+                          color: _isFavorite ? Colors.red : theme.iconTheme.color,
                         ),
                       ),
                     ],

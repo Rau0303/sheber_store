@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:logger/logger.dart';
 import 'package:sheber_market/models/category.dart';
 import 'package:sheber_market/models/favorite_item.dart';
 import 'package:sheber_market/models/product.dart';
@@ -8,11 +9,12 @@ import 'package:sheber_market/providers/product_provider.dart';
 
 class HomeScreenLogic extends ChangeNotifier {
   bool isSearch = false;
-  bool isInitialized = false; // Добавьте это поле
+  bool isInitialized = false;
   TextEditingController searchController = TextEditingController();
   List<FavoriteItem> favoriteItems = [];
   List<Product> cartItems = [];
   List<Product> products = [];
+  var logger = Logger(printer: PrettyPrinter());
 
   final CategoryProvider categoryProvider;
   final ProductProvider productProvider;
@@ -22,9 +24,7 @@ class HomeScreenLogic extends ChangeNotifier {
     this.favoriteProvider,
     this.categoryProvider,
     this.productProvider,
-  ) {
-    init();
-  }
+  );
 
   List<Category> get filteredCategories {
     if (isSearch) {
@@ -38,10 +38,15 @@ class HomeScreenLogic extends ChangeNotifier {
   }
 
   Future<void> init() async {
-    if (!isInitialized) { // Проверьте, инициализировано ли уже
-      await _loadInitialData();
-      await loadFavoriteItems();
-      isInitialized = true; // Установите флаг после инициализации
+    if (!isInitialized) {
+      try {
+        await _loadInitialData();
+        await loadFavoriteItems();
+        isInitialized = true;
+        notifyListeners();
+      } catch (e) {
+        print('Error initializing HomeScreenLogic: $e');
+      }
     }
   }
 
@@ -52,6 +57,8 @@ class HomeScreenLogic extends ChangeNotifier {
   }
 
   void onSearchChanged(String value) {
+    searchController.text = value;
+    isSearch = value.isNotEmpty;
     notifyListeners();
   }
 
@@ -68,11 +75,14 @@ class HomeScreenLogic extends ChangeNotifier {
 
   Future<void> _loadInitialData() async {
     try {
-      await categoryProvider.syncCategories();
+      await categoryProvider.refreshCategories();
       await productProvider.syncProductsFromFirebase();
-      products = productProvider.products;
-      print('Products loaded: ${products.length}');
-      notifyListeners();
+      products.clear();
+      products.addAll(productProvider.products);
+      logger.i('Products loaded: ${products.length}');
+      if (products.isNotEmpty) {
+        logger.i('First product: ${products.first}');
+      }
     } catch (e) {
       print('Error loading initial data: $e');
     }
@@ -82,7 +92,6 @@ class HomeScreenLogic extends ChangeNotifier {
     try {
       favoriteItems = await favoriteProvider.fetchFavoriteItems();
       print('Favorite items loaded: ${favoriteItems.length}');
-      notifyListeners();
     } catch (e) {
       print('Error loading favorite items: $e');
     }

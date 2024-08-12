@@ -8,7 +8,7 @@ class ProductCard extends StatefulWidget {
   final String title;
   final String description;
   final int quantity;
-  final double total;
+  final int total;
   final Function() onTap;
   final Function() on;
   final Product product;
