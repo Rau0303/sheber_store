@@ -41,7 +41,11 @@ class CategoryScreen extends StatelessWidget {
                   return CategoryTile(
                     category: category,
                     onTap: () {
-                      
+                      Navigator.pushNamed(
+                        context,
+                        '/category-products',
+                        arguments: {'category': category.name},
+                        );
                     },
                   );
                 },

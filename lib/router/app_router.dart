@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:sheber_market/screens/auth/login_screen/login_screen.dart';
 import 'package:sheber_market/screens/auth/sms_verifivation_screen/sms_verification_screen.dart';
+import 'package:sheber_market/screens/main/category_screen/categoru_product_screen/category_product_screen.dart';
 import 'package:sheber_market/screens/main/category_screen/category_screen.dart';
 import 'package:sheber_market/screens/main/home_screen/home_screen.dart';
 import 'package:sheber_market/screens/main/main_screen/main_screen.dart';
@@ -97,6 +98,13 @@ class AppRouter {
         final orderId = args['orderId'] as int;
         return MaterialPageRoute(
           builder: (_) => OrderInformScreen(orderId: orderId),
+        );
+      case '/category-products':
+        final args = settings.arguments as Map<String, dynamic>;
+        return MaterialPageRoute(
+          builder: (_) => CategoryProductScreen(
+            category: args['category'] as String,
+          ),
         );
       default:
         return MaterialPageRoute(
