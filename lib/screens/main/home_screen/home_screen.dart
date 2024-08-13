@@ -110,9 +110,9 @@ void initState() {
                         mainAxisSpacing: 10,
                         childAspectRatio: 0.55,
                       ),
-                      itemCount: logic.products.length ,
+                      itemCount: logic.filteredProducts.length ,
                       itemBuilder: (context, index) {
-                        final product = logic.products[index];
+                        final product = logic.filteredProducts[index];
                         return ProductGridViewCard(
                           product: product,
                           onAddToCart: () {

@@ -70,6 +70,18 @@ class HomeScreenLogic extends ChangeNotifier {
     notifyListeners();
   }
 
+  List<Product> get filteredProducts {
+  if (isSearch) {
+    return products.where((product) {
+      return product.name.toLowerCase().contains(
+            searchController.text.toLowerCase(),
+          );
+      }).toList();
+    }
+    return products;
+  }
+
+
   Future<void> _loadInitialData() async {
     final categoryProvider = CategoryProvider();
     final productProvider = ProductProvider();
