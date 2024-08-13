@@ -1,12 +1,14 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-
+import 'package:provider/provider.dart';
+import 'package:sheber_market/models/cart_item.dart';
 import 'package:sheber_market/models/category.dart';
 import 'package:sheber_market/models/favorite_item.dart';
 import 'package:sheber_market/models/product.dart';
 import 'package:sheber_market/providers/category_provider.dart';
 import 'package:sheber_market/providers/favorite_provider.dart';
 import 'package:sheber_market/providers/product_provider.dart';
+import 'package:sheber_market/providers/cart_provider.dart'; // Импортируем CartProvider
 import 'package:logger/logger.dart';
 
 class HomeScreenLogic extends ChangeNotifier {
@@ -19,9 +21,9 @@ class HomeScreenLogic extends ChangeNotifier {
   List<Category> categories = [];
   var logger = Logger(printer: PrettyPrinter());
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  
+  final CartProvider _cartProvider = CartProvider(); // Добавляем CartProvider
 
-  HomeScreenLogic(); // Передаем userId через конструктор
+  HomeScreenLogic(); // Передаем CartProvider через конструктор
 
   List<Category> get filteredCategories {
     final categoryProvider = CategoryProvider();
@@ -136,9 +138,19 @@ class HomeScreenLogic extends ChangeNotifier {
     return favoriteItems.any((item) => item.productId == productId);
   }
 
-  void addToCart(Product product) {
-    cartItems.add(product);
-    notifyListeners();
+  Future<void> addToCart(Product product) async {
+    final currentUser = _auth.currentUser;
+    if (currentUser == null) return;
+
+    try {
+      await _cartProvider.addCartItem(CartItem(
+        productId: product.id,
+        quantity: 1, // Вы можете использовать другое значение по умолчанию
+      ));
+      notifyListeners();
+    } catch (e) {
+      print('Error adding product to cart: $e');
+    }
   }
 
   void removeFromCart(Product product) {

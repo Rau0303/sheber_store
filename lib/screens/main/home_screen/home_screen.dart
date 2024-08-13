@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:sheber_market/providers/cart_provider.dart';
 import 'package:sheber_market/screens/main/home_screen/home_screen_logic.dart';
 import 'package:sheber_market/screens/main/home_screen/widgets/category_card.dart';
 import 'package:sheber_market/widgets/searchable_app_bar.dart';
@@ -17,17 +18,16 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   final Logger _logger = Logger();
 
-
-
   @override
-void initState() {
-  super.initState();
-  Provider.of<HomeScreenLogic>(context, listen: false).init();
-}
-
+  void initState() {
+    super.initState();
+    final cartProvider = Provider.of<CartProvider>(context, listen: false);
+    Provider.of<HomeScreenLogic>(context, listen: false).init();
+  }
 
   @override
   Widget build(BuildContext context) {
+    final cartProvider = Provider.of<CartProvider>(context);
     return Consumer<HomeScreenLogic>(
       builder: (context, logic, child) {
         final screenSize = MediaQuery.of(context).size;
@@ -98,43 +98,43 @@ void initState() {
               ),
               // GridView для товаров
               GridView.builder(
-                      physics: const NeverScrollableScrollPhysics(),
-                      shrinkWrap: true,
-                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: screenSize.width < 600
-                            ? 2
-                            : screenSize.width < 900
-                                ? 3
-                                : 4,
-                        crossAxisSpacing: 10,
-                        mainAxisSpacing: 10,
-                        childAspectRatio: 0.55,
-                      ),
-                      itemCount: logic.filteredProducts.length ,
-                      itemBuilder: (context, index) {
-                        final product = logic.filteredProducts[index];
-                        return ProductGridViewCard(
-                          product: product,
-                          onAddToCart: () {
-                            _logger.i('Adding product ${product.name} to cart');
-                            logic.addToCart(product);
-                          },
-                          onToggleFavorite: () {
-                            _logger.i('Toggling favorite for product ${product.name}');
-                            logic.toggleFavorite(product.id);
-                          },
-                          isFavorite: logic.isFavorite(product.id),
-                          onTap: () {
-                            Vibration.vibrate(duration: 50);
-                            Navigator.pushNamed(
-                              context,
-                              '/product_inform',
-                              arguments: product,
-                            );
-                          },
-                        );
-                      },
-                    ),
+                physics: const NeverScrollableScrollPhysics(),
+                shrinkWrap: true,
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: screenSize.width < 600
+                      ? 2
+                      : screenSize.width < 900
+                          ? 3
+                          : 4,
+                  crossAxisSpacing: 10,
+                  mainAxisSpacing: 10,
+                  childAspectRatio: 0.55,
+                ),
+                itemCount: logic.filteredProducts.length,
+                itemBuilder: (context, index) {
+                  final product = logic.filteredProducts[index];
+                  return ProductGridViewCard(
+                    product: product,
+                    onAddToCart: () {
+                      _logger.i('Adding product ${product.name} to cart');
+                      logic.addToCart(product);
+                    },
+                    onToggleFavorite: () {
+                      _logger.i('Toggling favorite for product ${product.name}');
+                      logic.toggleFavorite(product.id);
+                    },
+                    isFavorite: logic.isFavorite(product.id),
+                    onTap: () {
+                      Vibration.vibrate(duration: 50);
+                      Navigator.pushNamed(
+                        context,
+                        '/product_inform',
+                        arguments: product,
+                      );
+                    },
+                  );
+                },
+              ),
             ],
           ),
         );

@@ -38,7 +38,7 @@ class BasketItemWidget extends StatelessWidget {
                 image: DecorationImage(
                   image: item.photoURLs.isEmpty
                       ? const AssetImage('assets/noshki.jpg') as ImageProvider
-                      : NetworkImage(item.photoURLs.last),
+                      : NetworkImage(item.photoURLs),
                   fit: BoxFit.cover,
                 ),
               ),

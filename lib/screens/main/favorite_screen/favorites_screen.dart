@@ -84,42 +84,50 @@ Widget build(BuildContext context) {
 
   
 
-  Future<void> showClearFavoritesDialog() async {
-    return showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (context) {
-        return AlertDialog(
-          title: const Text('Очистить Избранное?'),
-          content: const Text('Вы уверены, что хотите очистить избранное?'),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: const Text('Отмена'),
-            ),
-            ElevatedButton(
-              onPressed: () async {
-                var favoriteProvider = Provider.of<FavoriteProvider>(context, listen: false);
-                final auth = FirebaseAuth.instance;
-                final currentUser = auth.currentUser;
-                final currentUserId = currentUser?.uid ?? "";
+Future<void> showClearFavoritesDialog() async {
+  return showDialog(
+    context: context,
+    barrierDismissible: false,
+    builder: (context) {
+      return AlertDialog(
+        title: const Text('Очистить Избранное?'),
+        content: const Text('Вы уверены, что хотите очистить избранное?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text('Отмена'),
+          ),
+          ElevatedButton(
+            onPressed: () async {
+              var favoriteProvider = Provider.of<FavoriteProvider>(context, listen: false);
+              final auth = FirebaseAuth.instance;
+              final currentUser = auth.currentUser;
+              final currentUserId = currentUser?.uid ?? "";
 
-                final favorites = await favoriteProvider.fetchFavoriteItems(currentUserId);
-                for (var product in favorites) {
-                  await favoriteProvider.deleteFavoriteItem(currentUserId, product.productId);
-                }
-                if (mounted) { // Проверяем, что виджет ещё не удалён
-                  Navigator.of(context).pop();
-                  setState(() {
-                    _favoritesFuture = _loadFavorites(); // Обновляем данные после очистки
-                  });
-                }
-              },
-              child: const Text('Очистить'),
-            ),
-          ],
-        );
-      },
-    );
-  }
+              // Получаем избранные товары
+              final favorites = await favoriteProvider.fetchFavoriteItems(currentUserId);
+              
+              // Удаляем каждый товар из избранного
+              for (var favoriteItem in favorites) {
+                final productId = favoriteItem.productId;
+                print('Удаление продукта с ID: $productId'); // Логируем удаление
+                await favoriteProvider.deleteFavoriteItem(currentUserId, productId);
+              }
+              
+              // Обновляем данные после удаления
+              if (mounted) {
+                Navigator.of(context).pop();
+                setState(() {
+                  _favoritesFuture = _loadFavorites(); // Обновляем список избранного
+                });
+              }
+            },
+            child: const Text('Очистить'),
+          ),
+        ],
+      );
+    },
+  );
+}
+
 }
