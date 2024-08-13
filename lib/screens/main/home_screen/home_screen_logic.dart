@@ -1,12 +1,13 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:logger/logger.dart';
+
 import 'package:sheber_market/models/category.dart';
 import 'package:sheber_market/models/favorite_item.dart';
 import 'package:sheber_market/models/product.dart';
 import 'package:sheber_market/providers/category_provider.dart';
 import 'package:sheber_market/providers/favorite_provider.dart';
 import 'package:sheber_market/providers/product_provider.dart';
-
+import 'package:logger/logger.dart';
 
 class HomeScreenLogic extends ChangeNotifier {
   bool isSearch = false;
@@ -17,10 +18,10 @@ class HomeScreenLogic extends ChangeNotifier {
   List<Product> products = [];
   List<Category> categories = [];
   var logger = Logger(printer: PrettyPrinter());
-
-
-  HomeScreenLogic();
+  final FirebaseAuth _auth = FirebaseAuth.instance;
   
+
+  HomeScreenLogic(); // Передаем userId через конструктор
 
   List<Category> get filteredCategories {
     final categoryProvider = CategoryProvider();
@@ -71,16 +72,15 @@ class HomeScreenLogic extends ChangeNotifier {
   }
 
   List<Product> get filteredProducts {
-  if (isSearch) {
-    return products.where((product) {
-      return product.name.toLowerCase().contains(
-            searchController.text.toLowerCase(),
-          );
+    if (isSearch) {
+      return products.where((product) {
+        return product.name.toLowerCase().contains(
+              searchController.text.toLowerCase(),
+            );
       }).toList();
     }
     return products;
   }
-
 
   Future<void> _loadInitialData() async {
     final categoryProvider = CategoryProvider();
@@ -101,10 +101,13 @@ class HomeScreenLogic extends ChangeNotifier {
 
   Future<void> loadFavoriteItems() async {
     final favoriteProvider = FavoriteProvider();
+    final User? currentUser = _auth.currentUser;
+    final currentUserId = currentUser?.uid ?? "";
 
     try {
-      favoriteItems = await favoriteProvider.fetchFavoriteItems();
+      favoriteItems = await favoriteProvider.fetchFavoriteItems(currentUserId);
       print('Favorite items loaded: ${favoriteItems.length}');
+      notifyListeners();
     } catch (e) {
       print('Error loading favorite items: $e');
     }
@@ -112,12 +115,15 @@ class HomeScreenLogic extends ChangeNotifier {
 
   Future<void> toggleFavorite(int productId) async {
     final favoriteProvider = FavoriteProvider();
+    final User? currentUser = _auth.currentUser;
+    final currentUserId = currentUser?.uid ?? "";
+
     try {
       if (isFavorite(productId)) {
-        await favoriteProvider.deleteFavoriteItem(productId);
+        await favoriteProvider.deleteFavoriteItem(currentUserId, productId);
       } else {
         await favoriteProvider.addFavoriteItem(
-          FavoriteItem(productId: productId),
+          FavoriteItem(userId: currentUserId, productId: productId),
         );
       }
       await loadFavoriteItems();

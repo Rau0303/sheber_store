@@ -1,39 +1,23 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sheber_market/models/product.dart';
 import 'package:sheber_market/providers/favorite_provider.dart';
+import 'package:sheber_market/providers/product_provider.dart';
 
 class FavoritesLogic extends ChangeNotifier {
   final BuildContext context;
   FavoritesLogic(this.context);
+  final FirebaseAuth _auth = FirebaseAuth.instance;
 
   bool isLoading = false;
   List<Product> _favorites = []; // Временное хранилище для избранных товаров
 
-  // Загрузка данных (вместо использования сервиса)
-  Future<void> loadFavorites() async {
-    isLoading = true;
-    notifyListeners();
-    
-    try {
-      var favoriteProvider = Provider.of<FavoriteProvider>(context, listen: false);
-      await favoriteProvider.fetchFavoriteItems();
-      _favorites = favoriteProvider.favoriteItems.map((item) => Product(
-        id: item.productId,
-        barcode: '',
-        name: '', // Должны быть заполнены данные о продукте
-        sellingPrice: 0,
-        category: '',
-        unit: '',
-        quantity: 0,
-      )).toList();
-    } catch (e) {
-      print("Ошибка при загрузке избранных товаров: $e");
-    }
+  // Загрузка данных
 
-    isLoading = false;
-    notifyListeners();
-  }
+
+
+
 
   Future<void> showClearFavoritesDialog() async {
     return showDialog(
@@ -49,17 +33,19 @@ class FavoritesLogic extends ChangeNotifier {
               child: const Text('Отмена'),
             ),
             ElevatedButton(
-              
               onPressed: () async {
                 var favoriteProvider = Provider.of<FavoriteProvider>(context, listen: false);
-                for (var favorite in _favorites) {
-                  await favoriteProvider.deleteFavoriteItem(favorite.id);
+
+                // Получаем текущего пользователя
+                final User? currentUser = _auth.currentUser;
+                final currentUserId = currentUser?.uid ?? "";
+
+                for (var product in _favorites) {
+                  await favoriteProvider.deleteFavoriteItem(currentUserId, product.id);
                 }
                 _favorites.clear(); // Очищаем список
-                if (context.mounted) {
-                  Navigator.of(context).pop();
-                  notifyListeners(); // Обновляем состояние
-                }
+                Navigator.of(context).pop();
+                notifyListeners(); // Обновляем состояние
               },
               child: const Text('Очистить'),
             ),
@@ -83,16 +69,18 @@ class FavoritesLogic extends ChangeNotifier {
               child: const Text('Отмена'),
             ),
             ElevatedButton(
-            
               onPressed: () async {
                 var favoriteProvider = Provider.of<FavoriteProvider>(context, listen: false);
-                await favoriteProvider.deleteFavoriteItem(product.id);
+
+                // Получаем текущего пользователя
+                final User? currentUser = _auth.currentUser;
+                final currentUserId = currentUser?.uid ?? "";
+
+                await favoriteProvider.deleteFavoriteItem(currentUserId, product.id);
                 _favorites.remove(product); // Удаляем товар из списка
-                
-                if (context.mounted) {
-                  Navigator.of(context).pop();
-                  notifyListeners(); // Обновляем состояние
-                }
+
+                Navigator.of(context).pop();
+                notifyListeners(); // Обновляем состояние
               },
               child: const Text('Удалить'),
             ),
