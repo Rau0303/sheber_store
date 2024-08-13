@@ -7,6 +7,7 @@ import 'package:sheber_market/providers/category_provider.dart';
 import 'package:sheber_market/providers/favorite_provider.dart';
 import 'package:sheber_market/providers/product_provider.dart';
 
+
 class HomeScreenLogic extends ChangeNotifier {
   bool isSearch = false;
   bool isInitialized = false;
@@ -14,19 +15,15 @@ class HomeScreenLogic extends ChangeNotifier {
   List<FavoriteItem> favoriteItems = [];
   List<Product> cartItems = [];
   List<Product> products = [];
+  List<Category> categories = [];
   var logger = Logger(printer: PrettyPrinter());
 
-  final CategoryProvider categoryProvider;
-  final ProductProvider productProvider;
-  final FavoriteProvider favoriteProvider;
 
-  HomeScreenLogic(
-    this.favoriteProvider,
-    this.categoryProvider,
-    this.productProvider,
-  );
+  HomeScreenLogic();
+  
 
   List<Category> get filteredCategories {
+    final categoryProvider = CategoryProvider();
     if (isSearch) {
       return categoryProvider.categories.where((category) {
         return category.name.toLowerCase().contains(
@@ -74,21 +71,25 @@ class HomeScreenLogic extends ChangeNotifier {
   }
 
   Future<void> _loadInitialData() async {
+    final categoryProvider = CategoryProvider();
+    final productProvider = ProductProvider();
     try {
       await categoryProvider.refreshCategories();
       await productProvider.syncProductsFromFirebase();
       products.clear();
+      categories.clear();
       products.addAll(productProvider.products);
+      categories.addAll(categoryProvider.categories);
       logger.i('Products loaded: ${products.length}');
-      if (products.isNotEmpty) {
-        logger.i('First product: ${products.first}');
-      }
+      notifyListeners();
     } catch (e) {
       print('Error loading initial data: $e');
     }
   }
 
   Future<void> loadFavoriteItems() async {
+    final favoriteProvider = FavoriteProvider();
+
     try {
       favoriteItems = await favoriteProvider.fetchFavoriteItems();
       print('Favorite items loaded: ${favoriteItems.length}');
@@ -98,6 +99,7 @@ class HomeScreenLogic extends ChangeNotifier {
   }
 
   Future<void> toggleFavorite(int productId) async {
+    final favoriteProvider = FavoriteProvider();
     try {
       if (isFavorite(productId)) {
         await favoriteProvider.deleteFavoriteItem(productId);

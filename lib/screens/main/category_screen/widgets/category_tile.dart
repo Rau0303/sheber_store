@@ -21,6 +21,7 @@ class CategoryTile extends StatelessWidget {
         height: screenSize.height * 0.12,
         width: screenSize.width * 0.15,
         decoration: BoxDecoration(
+          color: Colors.white,
           borderRadius: BorderRadius.circular(16),
           image: DecorationImage(
             image: NetworkImage(category.photoUrl!),

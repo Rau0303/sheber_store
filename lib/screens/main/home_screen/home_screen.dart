@@ -17,18 +17,14 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   final Logger _logger = Logger();
 
+
+
   @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    final logic = Provider.of<HomeScreenLogic>(context, listen: false);
-    if (!logic.isInitialized) {
-      logic.init().then((_) {
-        _logger.i('Init completed');
-      }).catchError((error) {
-        _logger.e('Init error: $error');
-      });
-    }
-  }
+void initState() {
+  super.initState();
+  Provider.of<HomeScreenLogic>(context, listen: false).init();
+}
+
 
   @override
   Widget build(BuildContext context) {
@@ -81,10 +77,10 @@ class _HomeScreenState extends State<HomeScreen> {
                     childAspectRatio: 1.0,
                     mainAxisExtent: screenSize.width * 0.4,
                   ),
-                  itemCount: logic.filteredCategories.length,
+                  itemCount: logic.categories.length,
                   itemBuilder: (context, index) {
                     return CategoryCard(
-                      category: logic.filteredCategories[index],
+                      category: logic.categories[index],
                       onTap: () {
                         Vibration.vibrate(duration: 50);
                       },
@@ -116,12 +112,8 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                       itemCount: logic.products.length ,
                       itemBuilder: (context, index) {
-                        print('asd logic.products.length');
-                        return ListTile(
-                          title: Text(logic.products[index].name ,style: TextStyle(color: Colors.red),),
-                        );
-                        
-                        /*ProductGridViewCard(
+                        final product = logic.products[index];
+                        return ProductGridViewCard(
                           product: product,
                           onAddToCart: () {
                             _logger.i('Adding product ${product.name} to cart');
@@ -140,7 +132,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               arguments: product,
                             );
                           },
-                        );*/
+                        );
                       },
                     ),
             ],

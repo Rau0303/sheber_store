@@ -1,14 +1,15 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+
 import 'package:sheber_market/models/product.dart';
 
-class ProductProvider with ChangeNotifier {
+class ProductProvider extends ChangeNotifier {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   List<Product> products = [];
 
 
 
-Future<void> fetchProductsFromFirebase() async {
+Future<void> _fetchProductsFromFirebase() async {
   try {
     QuerySnapshot snapshot = await _firestore.collection('products').get();
 
@@ -24,7 +25,7 @@ Future<void> fetchProductsFromFirebase() async {
       }
     }
 
-    notifyListeners();
+  
   } catch (e) {
     print("Ошибка при получении товаров из Firebase: $e");
   }
@@ -33,7 +34,7 @@ Future<void> fetchProductsFromFirebase() async {
 
   Future<void> syncProductsFromFirebase() async {
     try {
-      await fetchProductsFromFirebase();
+      await _fetchProductsFromFirebase();
     } catch (e) {
       print("Ошибка при синхронизации товаров: $e");
     }
