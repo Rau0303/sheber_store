@@ -25,11 +25,11 @@ class BasketItemWidget extends StatelessWidget {
         borderRadius: BorderRadius.circular(16),
       ),
       child: Padding(
-        padding: const EdgeInsets.all(8.0),
+        padding: const EdgeInsets.all(4.0),
         child: Row(
           children: [
             Container(
-              height: screenSize.height * 0.2,
+              height: screenSize.height ,
               width: screenSize.width * 0.35,
               decoration: BoxDecoration(
                 color: Colors.grey,
@@ -42,19 +42,20 @@ class BasketItemWidget extends StatelessWidget {
                 ),
               ),
             ),
+            const SizedBox(
+              width: 10,
+            ),
             Expanded(
               child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Expanded(
-                    child: ListTile(
-                      title: Text(item.product.name),
-                      trailing: Text(
-                        '${item.product.sellingPrice.toStringAsFixed(2)} \u20B8',
-                        style: const TextStyle(color: Colors.green),
-                      ),
-                    ),
+                  Text(item.product.name,softWrap: true,),
+                  Text(
+                    '${item.product.sellingPrice.toStringAsFixed(2)} тг',
+                    style: const TextStyle(color: Colors.green),
                   ),
+                  
                   Row(
                     children: [
                       IconButton(

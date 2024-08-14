@@ -18,42 +18,48 @@ class BasketBottomAppBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BottomAppBar(
-      height: MediaQuery.of(context).size.height * 0.18,
-      color: Colors.grey.shade700,
-      child: Container(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text('Товары: $totalQuantity'),
-                Text('Общая сумма товаров: $totalPrice \u20B8'),
-              ],
-            ),
-            const SizedBox(height: 8.0),
-            if (!isEligibleForFreeDelivery)
-              Text(
-                'Добавьте товаров на ${remainingAmountForFreeDelivery.toInt()} \u20B8 для бесплатной доставки',
-                style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: BottomAppBar(
+        height: MediaQuery.of(context).size.height * 0.19,
+        color: Colors.grey.shade700,
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 10,),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(10)
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text('Товары: $totalQuantity'),
+                  Text('Общая сумма товаров: $totalPrice тг'),
+                ],
               ),
-            const SizedBox(height: 8.0),
-            SizedBox(
-              height: 50,
-              child: ElevatedButton(
-                onPressed: onProceedToCheckout,
-                style: ButtonStyle(
-                  backgroundColor: WidgetStateProperty.all<Color>(Colors.red),
+              const SizedBox(height: 8.0),
+              if (!isEligibleForFreeDelivery)
+                Text(
+                  'Добавьте товаров на ${remainingAmountForFreeDelivery.toInt()} тг для бесплатной доставки',
+                  style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
                 ),
-                child: const Text(
-                  'Оформить заказ',
-                  style: TextStyle(color: Colors.white),
+              const SizedBox(height: 8.0),
+              SizedBox(
+                height: 50,
+                child: ElevatedButton(
+                  onPressed: onProceedToCheckout,
+                  style: ButtonStyle(
+                    backgroundColor: WidgetStateProperty.all<Color>(Colors.red),
+                  ),
+                  child: const Text(
+                    'Оформить заказ',
+                    style: TextStyle(color: Colors.white),
+                  ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
