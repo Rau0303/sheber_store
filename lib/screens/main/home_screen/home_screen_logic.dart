@@ -1,29 +1,28 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:sheber_market/models/cart_item.dart';
 import 'package:sheber_market/models/category.dart';
 import 'package:sheber_market/models/favorite_item.dart';
 import 'package:sheber_market/models/product.dart';
 import 'package:sheber_market/providers/category_provider.dart';
 import 'package:sheber_market/providers/favorite_provider.dart';
 import 'package:sheber_market/providers/product_provider.dart';
-import 'package:sheber_market/providers/cart_provider.dart'; // Импортируем CartProvider
 import 'package:logger/logger.dart';
+import 'package:sheber_market/screens/main/basket_screen/basket_screen_logic.dart';
 
 class HomeScreenLogic extends ChangeNotifier {
   bool isSearch = false;
   bool isInitialized = false;
   TextEditingController searchController = TextEditingController();
   List<FavoriteItem> favoriteItems = [];
-  List<Product> cartItems = [];
   List<Product> products = [];
   List<Category> categories = [];
   var logger = Logger(printer: PrettyPrinter());
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  final CartProvider _cartProvider = CartProvider(); // Добавляем CartProvider
+  late BasketLogic _basketLogic;
 
-  HomeScreenLogic(); // Передаем CartProvider через конструктор
+  HomeScreenLogic(BuildContext context) {
+    _basketLogic = BasketLogic(context);
+  }
 
   List<Category> get filteredCategories {
     final categoryProvider = CategoryProvider();
@@ -139,22 +138,13 @@ class HomeScreenLogic extends ChangeNotifier {
   }
 
   Future<void> addToCart(Product product) async {
-    final currentUser = _auth.currentUser;
-    if (currentUser == null) return;
-
     try {
-      await _cartProvider.addCartItem(CartItem(
-        productId: product.id,
-        quantity: 1, // Вы можете использовать другое значение по умолчанию
-      ));
+      await _basketLogic.addProduct(product, 1); // Добавляем продукт в корзину
       notifyListeners();
     } catch (e) {
-      print('Error adding product to cart: $e');
+      print('Error adding product to basket: $e');
     }
   }
 
-  void removeFromCart(Product product) {
-    cartItems.remove(product);
-    notifyListeners();
-  }
+
 }

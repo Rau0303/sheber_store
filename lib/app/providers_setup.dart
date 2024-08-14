@@ -22,7 +22,7 @@ List<SingleChildWidget> getProviders() {
     ChangeNotifierProvider(create: (_) => FavoriteProvider()),
     ChangeNotifierProvider(create: (_) => CategoryProvider()), // Добавляем CategoryProvider
     ChangeNotifierProvider(create: (_) => ProductProvider()),  // Добавляем ProductProvider
-    ChangeNotifierProvider(create: (_)=> HomeScreenLogic()),
+    ChangeNotifierProvider(create: (_) => HomeScreenLogic(_)),
     ChangeNotifierProvider(create: (_) => CategoryScreenLogic()),
     ChangeNotifierProvider(create: (_) => BasketLogic(_)),
     ChangeNotifierProvider(create: (context) => FavoritesLogic(context)),

@@ -8,7 +8,7 @@ class ProductCard extends StatefulWidget {
   final String title;
   final String description;
   final int quantity;
-  final int total;
+  final double total;
   final Function() onTap;
   final Function() on;
   final Product product;
@@ -86,7 +86,7 @@ class ProductCardState extends State<ProductCard> {
                       ),
                       const SizedBox(height: 8),
                       Text(
-                        'Цена: ${widget.total.toStringAsFixed(2)} ₽',
+                        'Цена: ${widget.total.toStringAsFixed(2)} тг',
                         style: theme.textTheme.bodyLarge?.copyWith(
                           color: Colors.green,
                           fontWeight: FontWeight.bold,

@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:sheber_market/models/basket_item.dart';
 
@@ -36,21 +35,22 @@ class BasketItemWidget extends StatelessWidget {
                 color: Colors.grey,
                 borderRadius: BorderRadius.circular(16),
                 image: DecorationImage(
-                  image: item.photoURLs.isEmpty
+                  image: item.product.photo?.isEmpty ?? true
                       ? const AssetImage('assets/noshki.jpg') as ImageProvider
-                      : NetworkImage(item.photoURLs),
+                      : NetworkImage(item.product.photo!),
                   fit: BoxFit.cover,
                 ),
               ),
             ),
             Expanded(
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Expanded(
                     child: ListTile(
-                      title: Text(item.title),
+                      title: Text(item.product.name),
                       trailing: Text(
-                        '${item.price.toInt()} \u20B8',
+                        '${item.product.sellingPrice.toStringAsFixed(2)} \u20B8',
                         style: const TextStyle(color: Colors.green),
                       ),
                     ),

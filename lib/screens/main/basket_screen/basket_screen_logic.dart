@@ -1,63 +1,59 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart'; // Импортируем пакет для работы с SharedPreferences
+import 'dart:convert';
 import 'package:sheber_market/models/basket_item.dart';
-import 'package:sheber_market/models/cart_item.dart';
 import 'package:sheber_market/models/product.dart';
-import 'package:sheber_market/providers/cart_provider.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 
 class BasketLogic extends ChangeNotifier {
   final BuildContext context;
-  BasketLogic(this.context);
+  BasketLogic(this.context) {
+    loadBasket(); // Загружаем корзину при инициализации
+  }
 
   List<BasketItem> basket = [];
 
   Future<void> loadBasket() async {
-    var cartProvider = Provider.of<CartProvider>(context, listen: false);
-    await cartProvider.fetchCartItems();
-    basket = await Future.wait(cartProvider.cartItems.map((item) async {
-      final product = await fetchProductById(item.productId);
-      return BasketItem(
-        title: product.name,
-        price: product.sellingPrice,
-        quantity: item.quantity,
-        photoURLs: product.photo!,
-      );
-    }));
+    final prefs = await SharedPreferences.getInstance();
+    final basketJson = prefs.getString('basket');
+    if (basketJson != null) {
+      final List<dynamic> basketList = jsonDecode(basketJson);
+      basket = basketList.map((item) => BasketItem.fromJson(item)).toList();
+    }
     notifyListeners();
   }
 
-  Future<Product> fetchProductById(int productId) async {
-    try {
-      final doc = await FirebaseFirestore.instance
-          .collection('products')
-          .doc(productId.toString())
-          .get();
-
-      if (doc.exists) {
-        return Product.fromMap(doc.data()!);
-      } else {
-        throw Exception('Product not found');
-      }
-    } catch (e) {
-      print("Error fetching product: $e");
-      throw e; // Обязательно выбросите исключение, чтобы функция всегда возвращала значение
-    }
+  Future<void> saveBasket() async {
+    final prefs = await SharedPreferences.getInstance();
+    final basketJson = jsonEncode(basket.map((item) => item.toJson()).toList());
+    prefs.setString('basket', basketJson);
   }
 
-  Future<void> addProduct(BasketItem item, int quantity) async {
-    final cartProvider = Provider.of<CartProvider>(context, listen: false);
-    await cartProvider.addCartItem(CartItem(
-      productId: item.title.hashCode, // Используйте правильный идентификатор продукта
-      quantity: quantity,
-    ));
-    await loadBasket(); // Обновите корзину после добавления товара
+  Future<void> addProduct(Product product, int quantity) async {
+    final existingItem = basket.firstWhere(
+      (item) => item.product.id == product.id,
+      orElse: () => BasketItem(
+        product: product,
+        quantity: 0,
+      ),
+    );
+
+    if (existingItem.quantity > 0) {
+      existingItem.quantity += quantity;
+    } else {
+      basket.add(BasketItem(
+        product: product,
+        quantity: quantity,
+      ));
+    }
+
+    await saveBasket(); // Сохраняем корзину в локальное хранилище
+    notifyListeners();
   }
 
   Future<void> removeProduct(BasketItem item) async {
-    final cartProvider = Provider.of<CartProvider>(context, listen: false);
-    await cartProvider.deleteCartItem(item.title.hashCode); // Используйте правильный идентификатор продукта
-    await loadBasket(); // Обновите корзину после удаления товара
+    basket.removeWhere((i) => i.product.id == item.product.id);
+    await saveBasket(); // Сохраняем корзину в локальное хранилище
+    notifyListeners();
   }
 
   Future<void> showClearBasketDialog(BuildContext context) async {
@@ -87,9 +83,8 @@ class BasketLogic extends ChangeNotifier {
   }
 
   Future<void> clearBasket() async {
-    final cartProvider = Provider.of<CartProvider>(context, listen: false);
-    await cartProvider.clearCart();
     basket.clear();
+    await saveBasket(); // Сохраняем изменения в локальное хранилище
     notifyListeners();
   }
 
@@ -98,7 +93,7 @@ class BasketLogic extends ChangeNotifier {
   }
 
   double calculateTotalPrice() {
-    return basket.fold(0.0, (sum, item) => sum + (item.price * item.quantity));
+    return basket.fold(0.0, (sum, item) => sum + (item.product.sellingPrice * item.quantity));
   }
 
   double calculateRemainingAmountForFreeDelivery(double totalPrice, double freeDeliveryThreshold) {

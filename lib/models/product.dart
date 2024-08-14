@@ -2,7 +2,7 @@ class Product {
   final int id;
   final String barcode;
   final String name;
-  final int sellingPrice;
+  final double sellingPrice; // Изменено с int на double
   final String category;
   final String unit;
   final int quantity;
@@ -28,7 +28,7 @@ class Product {
       id: map['id'] != null ? (map['id'] is int ? map['id'] as int : int.tryParse(map['id'].toString()) ?? 0) : 0,
       barcode: map['barcode'] as String? ?? '',
       name: map['name'] as String? ?? '',
-      sellingPrice: map['selling_price'] != null ? (map['selling_price'] is int ? map['selling_price'] as int : int.tryParse(map['selling_price'].toString()) ?? 0) : 0,
+      sellingPrice: map['selling_price'] != null ? (map['selling_price'] is double ? map['selling_price'] as double : double.tryParse(map['selling_price'].toString()) ?? 0.0) : 0.0, // Изменено с int на double и добавлено преобразование
       category: map['category'] as String? ?? '',
       unit: map['unit'] as String? ?? '',
       quantity: map['quantity'] != null ? (map['quantity'] is int ? map['quantity'] as int : int.tryParse(map['quantity'].toString()) ?? 0) : 0,

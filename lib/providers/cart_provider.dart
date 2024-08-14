@@ -17,13 +17,11 @@ class CartProvider with ChangeNotifier {
     if (userId == null) return;
 
     try {
-      // Добавить элемент в Firestore
       await _firestore.collection('users').doc(userId).collection('cart').doc(cartItem.productId.toString()).set({
         'product_id': cartItem.productId,
         'quantity': cartItem.quantity,
       });
 
-      // Обновляем локальное состояние корзины
       _cartItems.add(cartItem);
       notifyListeners();
     } catch (e) {
@@ -36,10 +34,9 @@ class CartProvider with ChangeNotifier {
     if (userId == null) return;
 
     try {
-      // Получить все элементы корзины из Firestore
       var cartItemsSnapshot = await _firestore.collection('users').doc(userId).collection('cart').get();
       _cartItems = cartItemsSnapshot.docs.map((doc) {
-        var data = doc.data() as Map<String, dynamic>;
+        var data = doc.data();
         return CartItem.fromMap(data);
       }).toList();
       notifyListeners();
@@ -53,10 +50,8 @@ class CartProvider with ChangeNotifier {
     if (userId == null) return;
 
     try {
-      // Удалить элемент из Firestore
       await _firestore.collection('users').doc(userId).collection('cart').doc(productId.toString()).delete();
 
-      // Обновляем локальное состояние корзины
       _cartItems.removeWhere((item) => item.productId == productId);
       notifyListeners();
     } catch (e) {
@@ -69,7 +64,6 @@ class CartProvider with ChangeNotifier {
     if (userId == null) return;
 
     try {
-      // Удалить все элементы из Firestore
       var batch = _firestore.batch();
       var cartItemsCollection = _firestore.collection('users').doc(userId).collection('cart');
       var cartItemsSnapshot = await cartItemsCollection.get();
@@ -78,7 +72,6 @@ class CartProvider with ChangeNotifier {
       }
       await batch.commit();
 
-      // Очистить локальное состояние корзины
       _cartItems.clear();
       notifyListeners();
     } catch (e) {
@@ -87,6 +80,6 @@ class CartProvider with ChangeNotifier {
   }
 
   Future<void> syncCartItemsFromFirebase() async {
-    await fetchCartItems(); // Убедитесь, что корзина синхронизирована
+    await fetchCartItems();
   }
 }

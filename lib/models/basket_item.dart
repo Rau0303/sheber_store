@@ -1,13 +1,26 @@
+import 'package:sheber_market/models/product.dart';
+
+
 class BasketItem {
-  final String title;
-  final int price;
-  final int quantity;
-  final String photoURLs;
+  final Product product;
+  int quantity;
 
   BasketItem({
-    required this.title,
-    required this.price,
+    required this.product,
     required this.quantity,
-    required this.photoURLs,
   });
+
+  factory BasketItem.fromJson(Map<String, dynamic> json) {
+    return BasketItem(
+      product: Product.fromMap(json['product']),
+      quantity: json['quantity'],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'product': product.toMap(),
+      'quantity': quantity,
+    };
+  }
 }

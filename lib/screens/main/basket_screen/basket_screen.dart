@@ -19,6 +19,7 @@ class BasketScreenState extends State<BasketScreen> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     _logic = Provider.of<BasketLogic>(context);
+    _logic.loadBasket(); // Загружаем корзину при инициализации
   }
 
   @override
@@ -46,12 +47,18 @@ class BasketScreenState extends State<BasketScreen> {
             ? ListView.builder(
                 itemCount: basket.length,
                 itemBuilder: (BuildContext context, int index) {
+                  final item = basket[index];
+                  final product = item.product;
+
                   return Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: BasketItemWidget(
-                      item: basket[index],
-                      onAdd: () => _logic.addProduct(basket[index], 1),
-                      onRemove: () => _logic.removeProduct(basket[index]),
+                      item: item,
+                      onAdd: () => _logic.addProduct(
+                        product, // Передаем объект Product
+                        1, // Увеличиваем количество на 1
+                      ),
+                      onRemove: () => _logic.removeProduct(item),
                     ),
                   );
                 },
