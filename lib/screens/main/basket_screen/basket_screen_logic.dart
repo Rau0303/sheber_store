@@ -13,15 +13,18 @@ class BasketLogic extends ChangeNotifier {
 
   List<BasketItem> basket = [];
 
-  Future<void> loadBasket() async {
-    final prefs = await SharedPreferences.getInstance();
-    final basketJson = prefs.getString('basket');
-    if (basketJson != null) {
-      final List<dynamic> basketList = jsonDecode(basketJson);
-      basket = basketList.map((item) => BasketItem.fromJson(item)).toList();
-    }
-    notifyListeners();
+Future<void> loadBasket() async {
+  final prefs = await SharedPreferences.getInstance();
+  final basketJson = prefs.getString('basket');
+  if (basketJson != null) {
+    final List<dynamic> basketList = jsonDecode(basketJson);
+    basket = basketList.map((item) => BasketItem.fromJson(item)).toList();
+  } else {
+    basket = []; // Инициализация пустой корзиной
   }
+  notifyListeners();
+}
+
 
   Future<void> saveBasket() async {
     final prefs = await SharedPreferences.getInstance();
@@ -94,11 +97,13 @@ Future<void> removeProduct(BasketItem item) async {
   }
 
 Future<void> clearBasket() async {
-  basket.clear();
-  await saveBasket();
-  await loadBasket(); // Перезагружаем корзину
+  final prefs = await SharedPreferences.getInstance();
+  await prefs.remove('basket'); // Удаляем данные из SharedPreferences
+  basket.clear(); // Очищаем список корзины
+  await saveBasket(); // Сохраняем пустую корзину
   notifyListeners();
 }
+
 
 
   int calculateTotalQuantity() {
@@ -118,6 +123,6 @@ Future<void> clearBasket() async {
   }
 
   void proceedToCheckout(BuildContext context) {
-    Navigator.push(context, MaterialPageRoute(builder: (_)=>const CheckoutScreen()));
+    Navigator.push(context, MaterialPageRoute(builder: (_)=> CheckoutScreen(basketItems: basket,)));
   }
 }

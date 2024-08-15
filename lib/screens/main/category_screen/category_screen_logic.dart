@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sheber_market/models/category.dart';
 import 'package:sheber_market/providers/category_provider.dart';
-import 'package:sheber_market/providers/database_helper.dart';
 
 class CategoryScreenLogic extends ChangeNotifier {
   bool isLoading = false;

@@ -1,12 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:sheber_market/models/basket_item.dart';
 import 'package:sheber_market/screens/main/basket_screen/checkout_screen/widgets/address_widget.dart';
-import 'package:sheber_market/screens/main/basket_screen/checkout_screen/widgets/cart_item_card.dart';
 import 'package:sheber_market/screens/main/basket_screen/checkout_screen/widgets/delivery_method_card.dart';
 import 'package:sheber_market/screens/main/basket_screen/checkout_screen/widgets/order_summary.dart';
 import 'package:sheber_market/screens/main/basket_screen/checkout_screen/widgets/payment_method_card.dart';
+import 'package:sheber_market/screens/main/profile_screen/app_settings_screen/address_screen/address_screen.dart';
+import 'package:sheber_market/widgets/order_product_item.dart';
+import 'package:sheber_market/screens/main/profile_screen/app_settings_screen/payment_cards_screen/payment_cards_screen.dart'; // Импорт экрана выбора карт
 
 class CheckoutScreen extends StatefulWidget {
-  const CheckoutScreen({super.key});
+  final List<BasketItem> basketItems;
+
+  const CheckoutScreen({super.key, required this.basketItems});
 
   @override
   CheckoutScreenState createState() => CheckoutScreenState();
@@ -21,12 +26,40 @@ class CheckoutScreenState extends State<CheckoutScreen> {
   @override
   void initState() {
     super.initState();
+    totalPrice = widget.basketItems.fold(
+      0.0,
+      (sum, item) => sum + item.product.sellingPrice * item.quantity,
+    );
   }
 
-  void updateTotalPrice(double price) {
-    setState(() {
-      totalPrice = price;
-    });
+  Future<void> _selectAddress() async {
+    final selectedAddress = await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => const AddressScreen(),
+      ),
+    );
+
+    if (selectedAddress != null) {
+      setState(() {
+        address = selectedAddress as String; // Обновите это, если адрес - это другой тип данных
+      });
+    }
+  }
+
+  Future<void> _selectPaymentMethod() async {
+    final selectedCard = await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => const PaymentCardsScreen(),
+      ),
+    );
+
+    if (selectedCard != null) {
+      setState(() {
+        selectedPaymentMethod = selectedCard as String; // Обновите это, если карта - это другой тип данных
+      });
+    }
   }
 
   @override
@@ -38,27 +71,18 @@ class CheckoutScreenState extends State<CheckoutScreen> {
         title: const Text('Оформление заказа'),
       ),
       body: ListView(
-        padding: const EdgeInsets.symmetric(horizontal: 2,vertical: 4),
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
         children: [
-          Expanded(
-            child: ListView.builder(
-              itemCount: 10,
-              itemBuilder: (context,index){
-                return Container(
-                  height: screenSize.height* 0.1,
-                  width: screenSize.width,
-                  decoration: const BoxDecoration(
-                    color: Colors.red,
-                  ),
-                  child: Text('asd',style: TextStyle(fontSize: 10),),
-                );
-              }),
-          ),
+          for (final item in widget.basketItems)
+            OrderProductItem(item: item),
           DeliveryMethodCard(
             selectedDeliveryMethod: selectedDeliveryMethod,
             onChanged: (newValue) {
               setState(() {
                 selectedDeliveryMethod = newValue!;
+                if (selectedDeliveryMethod == 'Доставка курьером') {
+                  _selectAddress(); // Открытие экрана выбора адреса
+                }
               });
             },
           ),
@@ -67,7 +91,7 @@ class CheckoutScreenState extends State<CheckoutScreen> {
               screenSize: screenSize,
               address: address,
               onPressed: () {
-                // Логика для перехода на экран выбора адреса
+                _selectAddress(); // Открытие экрана выбора адреса
               },
             ),
           PaymentMethodCard(
@@ -75,28 +99,12 @@ class CheckoutScreenState extends State<CheckoutScreen> {
             onChanged: (newValue) {
               setState(() {
                 selectedPaymentMethod = newValue!;
+                if (selectedPaymentMethod == 'Оплата картой') {
+                  _selectPaymentMethod(); // Открытие экрана выбора карт
+                }
               });
             },
           ),
-          if (selectedPaymentMethod == 'Оплата картой')
-            Container(
-              height: screenSize.height * 0.15,
-              width: screenSize.width,
-              decoration: BoxDecoration(
-                color: Colors.transparent,
-                borderRadius: BorderRadius.circular(16),
-              ),
-              child: ListTile(
-                title: const Text('Карта'),
-                subtitle: const Text('1234 5678 1234 5678'),
-                trailing: IconButton(
-                  onPressed: () {
-                    // Логика для перехода на экран выбора карт
-                  },
-                  icon: const Icon(Icons.arrow_forward_ios),
-                ),
-              ),
-            ),
           OrderSummary(
             totalPrice: totalPrice,
             selectedDeliveryMethod: selectedDeliveryMethod,

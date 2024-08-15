@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sheber_market/models/product.dart';
 import 'package:sheber_market/providers/product_provider.dart';
+import 'package:sheber_market/screens/main/basket_screen/basket_screen_logic.dart';
 import 'package:sheber_market/screens/main/product_screen/widgets/product_card.dart';
 import 'package:sheber_market/widgets/searchable_app_bar.dart';
 
@@ -16,6 +17,7 @@ class CategoryProductScreen extends StatefulWidget {
 class _CategoryProductScreenState extends State<CategoryProductScreen> {
   late TextEditingController _searchController;
   late ProductProvider _productProvider;
+  late BasketLogic _basketLogic; // Добавьте эту переменную
   bool _isSearch = false;
   List<Product> _filteredProducts = [];
 
@@ -24,6 +26,7 @@ class _CategoryProductScreenState extends State<CategoryProductScreen> {
     super.initState();
     _searchController = TextEditingController();
     _productProvider = Provider.of<ProductProvider>(context, listen: false);
+    _basketLogic = Provider.of<BasketLogic>(context, listen: false); // Получите экземпляр BasketLogic
     _fetchCategoryProducts();
   }
 
@@ -54,6 +57,14 @@ class _CategoryProductScreenState extends State<CategoryProductScreen> {
               product.name.toLowerCase().contains(query.toLowerCase()))
           .toList();
     });
+  }
+
+  void _addProductToBasket(Product product) {
+    
+    _basketLogic.addProduct(product, 1); // Добавьте продукт в корзину с количеством 1
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('${product.name} добавлен в корзину')),
+    );
   }
 
   @override
@@ -99,7 +110,7 @@ class _CategoryProductScreenState extends State<CategoryProductScreen> {
                     total: product.sellingPrice,
                     onTap: () {},
                     on: () {
-                      // Обработайте добавление в корзину
+                      _addProductToBasket(product); // Обработка добавления в корзину
                     },
                     product: product,
                     quantity: product.quantity,

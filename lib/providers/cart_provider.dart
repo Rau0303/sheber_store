@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:sheber_market/models/cart_item.dart';
 
@@ -25,7 +26,6 @@ class CartProvider with ChangeNotifier {
       _cartItems.add(cartItem);
       notifyListeners();
     } catch (e) {
-      print("Ошибка при добавлении элемента в корзину: $e");
     }
   }
 
@@ -41,7 +41,9 @@ class CartProvider with ChangeNotifier {
       }).toList();
       notifyListeners();
     } catch (e) {
-      print("Ошибка при получении элементов корзины: $e");
+      if (kDebugMode) {
+        print("Ошибка при получении элементов корзины: $e");
+      }
     }
   }
 
@@ -55,7 +57,9 @@ class CartProvider with ChangeNotifier {
       _cartItems.removeWhere((item) => item.productId == productId);
       notifyListeners();
     } catch (e) {
-      print("Ошибка при удалении элемента из корзины: $e");
+      if (kDebugMode) {
+        print("Ошибка при удалении элемента из корзины: $e");
+      }
     }
   }
 
@@ -75,7 +79,9 @@ class CartProvider with ChangeNotifier {
       _cartItems.clear();
       notifyListeners();
     } catch (e) {
-      print("Ошибка при очистке корзины: $e");
+      if (kDebugMode) {
+        print("Ошибка при очистке корзины: $e");
+      }
     }
   }
 

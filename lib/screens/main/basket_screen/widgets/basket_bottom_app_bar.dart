@@ -21,7 +21,7 @@ class BasketBottomAppBar extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: BottomAppBar(
-        height: MediaQuery.of(context).size.height * 0.19,
+        height: MediaQuery.of(context).size.height * 0.21,
         color: Colors.grey.shade700,
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 10,),
@@ -31,8 +31,8 @@ class BasketBottomAppBar extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text('Товары: $totalQuantity'),
-                  Text('Общая сумма товаров: $totalPrice тг'),
+                  Flexible(child: Text('Товары: $totalQuantity')),
+                  Flexible(child: Text('Общая сумма товаров: $totalPrice тг')),
                 ],
               ),
               const SizedBox(height: 8.0),

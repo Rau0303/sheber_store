@@ -1,5 +1,6 @@
 import 'package:firebase_app_check/firebase_app_check.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sheber_market/app/providers_setup.dart';
@@ -18,7 +19,9 @@ void main() async {
 
 
   final firebaseProvider = FirebasePushNotificationProvider();
-  print(firebaseProvider.token);
+  if (kDebugMode) {
+    print(firebaseProvider.token);
+  }
   await FirebaseAppCheck.instance.activate(
     webProvider: ReCaptchaV3Provider('recaptcha-v3-site-key'),
     androidProvider: AndroidProvider.debug,

@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:sheber_market/models/category.dart';
 import 'package:sheber_market/models/favorite_item.dart';
 import 'package:sheber_market/models/product.dart';
@@ -7,7 +8,8 @@ import 'package:sheber_market/providers/category_provider.dart';
 import 'package:sheber_market/providers/favorite_provider.dart';
 import 'package:sheber_market/providers/product_provider.dart';
 import 'package:logger/logger.dart';
-import 'package:sheber_market/screens/main/basket_screen/basket_screen_logic.dart';
+
+import 'package:sheber_market/screens/main/basket_screen/basket_screen_logic.dart'; // Используйте правильный импорт
 
 class HomeScreenLogic extends ChangeNotifier {
   bool isSearch = false;
@@ -18,10 +20,10 @@ class HomeScreenLogic extends ChangeNotifier {
   List<Category> categories = [];
   var logger = Logger(printer: PrettyPrinter());
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  late BasketLogic _basketLogic;
+  late BasketLogic _basketLogic; // Используйте Provider для получения экземпляра
 
   HomeScreenLogic(BuildContext context) {
-    _basketLogic = BasketLogic(context);
+    _basketLogic = Provider.of<BasketLogic>(context, listen: false); // Получение существующего экземпляра
   }
 
   List<Category> get filteredCategories {
@@ -145,6 +147,4 @@ class HomeScreenLogic extends ChangeNotifier {
       print('Error adding product to basket: $e');
     }
   }
-
-
 }

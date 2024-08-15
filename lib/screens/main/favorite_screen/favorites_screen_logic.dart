@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sheber_market/models/product.dart';
 import 'package:sheber_market/providers/favorite_provider.dart';
-import 'package:sheber_market/providers/product_provider.dart';
 
 class FavoritesLogic extends ChangeNotifier {
   final BuildContext context;
@@ -11,7 +10,7 @@ class FavoritesLogic extends ChangeNotifier {
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
   bool isLoading = false;
-  List<Product> _favorites = []; // Временное хранилище для избранных товаров
+  late final List<Product> _favorites = []; // Временное хранилище для избранных товаров
 
   // Загрузка данных
 

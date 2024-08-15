@@ -21,13 +21,13 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    final cartProvider = Provider.of<CartProvider>(context, listen: false);
+    Provider.of<CartProvider>(context, listen: false);
     Provider.of<HomeScreenLogic>(context, listen: false).init();
   }
 
   @override
   Widget build(BuildContext context) {
-    final cartProvider = Provider.of<CartProvider>(context);
+    Provider.of<CartProvider>(context);
     return Consumer<HomeScreenLogic>(
       builder: (context, logic, child) {
         final screenSize = MediaQuery.of(context).size;
