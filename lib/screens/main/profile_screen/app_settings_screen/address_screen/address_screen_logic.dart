@@ -4,7 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:sheber_market/models/user_address.dart';
 import 'package:sheber_market/providers/user_addresses_provider.dart';
 
-class AddressLogic {
+class AddressLogic extends ChangeNotifier{
   final BuildContext context;
   AddressLogic(this.context);
 
@@ -26,6 +26,20 @@ class AddressLogic {
     final provider = Provider.of<UserAddressProvider>(context, listen: false);
     await provider.loadUserAddresses();
     addresses = provider.userAddresses;
+
+    if (addresses.isNotEmpty) {
+      // Устанавливаем выбранный адрес в зависимости от количества адресов
+      if (addresses.length == 1) {
+        selectedAddress = addresses.first;
+      } else {
+        selectedAddress = addresses.last;
+      }
+    } else {
+      selectedAddress = null;
+    }
+
+    // Обновляем состояние
+    notifyListeners();
   }
 
   void showAddressModal({UserAddress? address}) {

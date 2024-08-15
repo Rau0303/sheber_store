@@ -2,10 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:sheber_market/models/user_address.dart';
-import 'package:sheber_market/providers/database_helper.dart';
 
 class UserAddressProvider extends ChangeNotifier {
-  final DatabaseHelper _dbHelper = DatabaseHelper.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   List<UserAddress> _userAddresses = [];
@@ -16,26 +14,13 @@ class UserAddressProvider extends ChangeNotifier {
 
     if (userId == null) return;
 
-    // Загружаем адреса из локальной базы данных
-    final allAddresses = await _dbHelper.queryAllUserAddresses();
-    _userAddresses = allAddresses.where((address) => address.userId == userId).toList();
-    notifyListeners();
-
     // Загружаем адреса из Firebase
     final snapshot = await _firestore
         .collection('user_addresses')
         .where('user_id', isEqualTo: userId)
         .get();
 
-    final firebaseAddresses = snapshot.docs.map((doc) => UserAddress.fromMap(doc.data())).toList();
-
-    // Сохраняем адреса в локальной базе данных
-    for (final address in firebaseAddresses) {
-      await _dbHelper.insertUserAddress(address);
-    }
-
-    // Обновляем список адресов
-    _userAddresses.addAll(firebaseAddresses);
+    _userAddresses = snapshot.docs.map((doc) => UserAddress.fromMap(doc.data())).toList();
     notifyListeners();
   }
 
@@ -45,9 +30,6 @@ class UserAddressProvider extends ChangeNotifier {
     if (userId == null) return;
 
     final newAddress = UserAddress.withUserId(address, userId);
-
-    // Сохраняем адрес в локальной базе данных
-    await _dbHelper.insertUserAddress(newAddress);
 
     // Сохраняем адрес в Firebase
     await _firestore.collection('user_addresses').add(newAddress.toMap());
@@ -63,9 +45,6 @@ class UserAddressProvider extends ChangeNotifier {
     if (userId == null) return;
 
     final updatedAddress = UserAddress.withUserId(address, userId);
-
-    // Обновляем адрес в локальной базе данных
-    await _dbHelper.updateUserAddress(updatedAddress);
 
     // Находим идентификатор документа в Firestore
     final snapshot = await _firestore
@@ -89,9 +68,6 @@ class UserAddressProvider extends ChangeNotifier {
     final userId = FirebaseAuth.instance.currentUser?.uid;
 
     if (userId == null) return;
-
-    // Удаляем адрес из локальной базы данных
-    await _dbHelper.deleteUserAddress(addressId);
 
     // Находим идентификатор документа в Firestore
     final snapshot = await _firestore
