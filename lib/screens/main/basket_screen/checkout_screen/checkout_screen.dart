@@ -38,9 +38,22 @@ class CheckoutScreenState extends State<CheckoutScreen> {
         title: const Text('Оформление заказа'),
       ),
       body: ListView(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.symmetric(horizontal: 2,vertical: 4),
         children: [
-          CartItemCard(screenSize: screenSize),
+          Expanded(
+            child: ListView.builder(
+              itemCount: 10,
+              itemBuilder: (context,index){
+                return Container(
+                  height: screenSize.height* 0.1,
+                  width: screenSize.width,
+                  decoration: const BoxDecoration(
+                    color: Colors.red,
+                  ),
+                  child: Text('asd',style: TextStyle(fontSize: 10),),
+                );
+              }),
+          ),
           DeliveryMethodCard(
             selectedDeliveryMethod: selectedDeliveryMethod,
             onChanged: (newValue) {

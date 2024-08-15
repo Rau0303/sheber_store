@@ -3,6 +3,7 @@ import 'package:shared_preferences/shared_preferences.dart'; // Импортир
 import 'dart:convert';
 import 'package:sheber_market/models/basket_item.dart';
 import 'package:sheber_market/models/product.dart';
+import 'package:sheber_market/screens/main/basket_screen/checkout_screen/checkout_screen.dart';
 
 class BasketLogic extends ChangeNotifier {
   final BuildContext context;
@@ -28,33 +29,43 @@ class BasketLogic extends ChangeNotifier {
     prefs.setString('basket', basketJson);
   }
 
-  Future<void> addProduct(Product product, int quantity) async {
-    final existingItem = basket.firstWhere(
-      (item) => item.product.id == product.id,
-      orElse: () => BasketItem(
-        product: product,
-        quantity: 0,
-      ),
-    );
+Future<void> addProduct(Product product, int quantity) async {
+  final existingItemIndex = basket.indexWhere((item) => item.product.id == product.id);
 
-    if (existingItem.quantity > 0) {
-      existingItem.quantity += quantity;
+  if (existingItemIndex != -1) {
+    basket[existingItemIndex] = BasketItem(
+      product: product,
+      quantity: basket[existingItemIndex].quantity + quantity,
+    );
+  } else {
+    basket.add(BasketItem(
+      product: product,
+      quantity: quantity,
+    ));
+  }
+
+  await saveBasket();
+  notifyListeners();
+}
+
+Future<void> removeProduct(BasketItem item) async {
+  final existingItemIndex = basket.indexWhere((i) => i.product.id == item.product.id);
+
+  if (existingItemIndex != -1) {
+    final currentItem = basket[existingItemIndex];
+    if (currentItem.quantity > 1) {
+      basket[existingItemIndex] = BasketItem(
+        product: currentItem.product,
+        quantity: currentItem.quantity - 1,
+      );
     } else {
-      basket.add(BasketItem(
-        product: product,
-        quantity: quantity,
-      ));
+      basket.removeAt(existingItemIndex);
     }
 
-    await saveBasket(); // Сохраняем корзину в локальное хранилище
+    await saveBasket();
     notifyListeners();
   }
-
-  Future<void> removeProduct(BasketItem item) async {
-    basket.removeWhere((i) => i.product.id == item.product.id);
-    await saveBasket(); // Сохраняем корзину в локальное хранилище
-    notifyListeners();
-  }
+}
 
   Future<void> showClearBasketDialog(BuildContext context) async {
     return showDialog(
@@ -82,11 +93,13 @@ class BasketLogic extends ChangeNotifier {
     );
   }
 
-  Future<void> clearBasket() async {
-    basket.clear();
-    await saveBasket(); // Сохраняем изменения в локальное хранилище
-    notifyListeners();
-  }
+Future<void> clearBasket() async {
+  basket.clear();
+  await saveBasket();
+  await loadBasket(); // Перезагружаем корзину
+  notifyListeners();
+}
+
 
   int calculateTotalQuantity() {
     return basket.fold(0, (sum, item) => sum + item.quantity);
@@ -105,6 +118,6 @@ class BasketLogic extends ChangeNotifier {
   }
 
   void proceedToCheckout(BuildContext context) {
-    // Логика оформления заказа
+    Navigator.push(context, MaterialPageRoute(builder: (_)=>const CheckoutScreen()));
   }
 }

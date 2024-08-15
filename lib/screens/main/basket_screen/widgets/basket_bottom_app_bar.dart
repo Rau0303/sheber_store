@@ -25,9 +25,6 @@ class BasketBottomAppBar extends StatelessWidget {
         color: Colors.grey.shade700,
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 10,),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(10)
-          ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
