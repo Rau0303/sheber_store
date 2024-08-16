@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:sheber_market/models/user_bank_card.dart';
 
-
 class UserBankCardProvider extends ChangeNotifier {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
@@ -15,10 +14,6 @@ class UserBankCardProvider extends ChangeNotifier {
 
     if (userId == null) return;
 
-    // Загружаем банковские карты из локальной базы данных
-    
-    notifyListeners();
-
     // Загружаем банковские карты из Firebase
     final snapshot = await _firestore
         .collection('user_bank_cards')
@@ -27,10 +22,8 @@ class UserBankCardProvider extends ChangeNotifier {
 
     final firebaseBankCards = snapshot.docs.map((doc) => UserBankCard.fromMap(doc.data())).toList();
 
-    // Сохраняем банковские карты в локальной базе данных
-   
-
     // Обновляем список банковских карт
+    _userBankCards.clear();
     _userBankCards.addAll(firebaseBankCards);
     notifyListeners();
   }
@@ -39,9 +32,6 @@ class UserBankCardProvider extends ChangeNotifier {
     final userId = FirebaseAuth.instance.currentUser?.uid;
 
     if (userId == null) return;
-
-    // Сохраняем карту в локальной базе данных
-    
 
     // Сохраняем карту в Firebase
     await _firestore.collection('user_bank_cards').add(card.toMap());
@@ -56,14 +46,15 @@ class UserBankCardProvider extends ChangeNotifier {
 
     if (userId == null) return;
 
-    // Обновляем карту в локальной базе данных
-    
     // Находим идентификатор документа в Firestore
     final snapshot = await _firestore
         .collection('user_bank_cards')
         .where('user_id', isEqualTo: userId)
         .get();
-    final docId = snapshot.docs.first.id;
+    
+    // Находим документ с нужным `id` карты
+    final doc = snapshot.docs.firstWhere((doc) => doc['id'] == card.id, orElse: () => throw Exception('Card not found'));
+    final docId = doc.id;
 
     // Обновляем карту в Firebase
     await _firestore.collection('user_bank_cards').doc(docId).update(card.toMap());
@@ -81,14 +72,15 @@ class UserBankCardProvider extends ChangeNotifier {
 
     if (userId == null) return;
 
-    // Удаляем карту из локальной базы данных
-    
     // Находим идентификатор документа в Firestore
     final snapshot = await _firestore
         .collection('user_bank_cards')
         .where('user_id', isEqualTo: userId)
         .get();
-    final docId = snapshot.docs.first.id;
+    
+    // Находим документ с нужным `id` карты
+    final doc = snapshot.docs.firstWhere((doc) => doc['id'] == cardId, orElse: () => throw Exception('Card not found'));
+    final docId = doc.id;
 
     // Удаляем карту из Firebase
     await _firestore.collection('user_bank_cards').doc(docId).delete();

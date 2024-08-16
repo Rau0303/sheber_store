@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:sheber_market/providers/user_bank_card_provider.dart';
 import 'package:sheber_market/screens/main/profile_screen/app_settings_screen/payment_cards_screen/payment_cards_screen_logic.dart';
 import 'package:sheber_market/screens/main/profile_screen/app_settings_screen/payment_cards_screen/widgets/add_card_dialog.dart';
 import 'package:sheber_market/widgets/add_app_bar.dart';
-import 'package:sheber_market/providers/user_bank_card_provider.dart';
 
 class PaymentCardsScreen extends StatefulWidget {
-  static String route() => '/payment-cards'; // Укажите свой маршрут
+  static String route() => '/payment-cards';
   const PaymentCardsScreen({super.key});
 
   @override
@@ -47,9 +47,10 @@ class _PaymentCardsScreenState extends State<PaymentCardsScreen> {
                   value: _logic.selectedCard == cards[index],
                   onChanged: (newValue) {
                     _logic.updateSelectedCard(cards[index], newValue ?? false);
-                    setState(() {}); // Обновить состояние экрана
+                    setState(() {});
                   },
-                  activeColor: Theme.of(context).colorScheme.primary,
+                  activeColor: Theme.of(context).colorScheme.secondary, // Цвет рамки Checkbox
+                  checkColor: Theme.of(context).colorScheme.primary, // Цвет галочки
                 ),
                 title: Text(cards[index].cardNumber),
                 trailing: _logic.buildCardTypeIcon(cards[index].cardNumber),

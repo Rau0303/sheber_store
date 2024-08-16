@@ -1,3 +1,4 @@
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:sheber_market/screens/main/profile_screen/app_settings_screen/payment_cards_screen/payment_cards_screen_logic.dart';
@@ -118,12 +119,13 @@ void showAddCardDialog(BuildContext context, PaymentCardsLogic logic) {
                         backgroundColor: Theme.of(context).colorScheme.primary,
                       ),
                       onPressed: () async {
-                        /*final result = await logic.addCard(
+                        // Вызов метода добавления карты
+                        await logic.addCard(
                           cardNumberController.text,
                           cardHolderNameController.text,
                           expiryDateController.text,
                           cvvController.text,
-                        );*/
+                        );
 
                         // Закрытие BottomSheet после завершения асинхронной операции
                         Navigator.of(context).pop();

@@ -1,10 +1,10 @@
-// Модель банковской карты пользователя
 class UserBankCard {
   final int id;
-  final int userId;
+  final String userId;
   final String cardNumber;
   final String cardExpiry;
   final String cardholderName;
+  final String cvv;
 
   UserBankCard({
     required this.id,
@@ -12,6 +12,7 @@ class UserBankCard {
     required this.cardNumber,
     required this.cardExpiry,
     required this.cardholderName,
+    required this.cvv,
   });
 
   factory UserBankCard.fromMap(Map<String, dynamic> map) {
@@ -21,6 +22,7 @@ class UserBankCard {
       cardNumber: map['card_number'],
       cardExpiry: map['card_expiry'],
       cardholderName: map['cardholder_name'],
+      cvv: map['cvv'],
     );
   }
 
@@ -31,6 +33,7 @@ class UserBankCard {
       'card_number': cardNumber,
       'card_expiry': cardExpiry,
       'cardholder_name': cardholderName,
+      'cvv': cvv,
     };
   }
 }

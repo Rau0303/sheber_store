@@ -1,13 +1,16 @@
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:sheber_market/models/user_bank_card.dart';
 import 'package:sheber_market/providers/user_bank_card_provider.dart';
+import 'package:sheber_market/utils/encryption_helper.dart';
 
-class PaymentCardsLogic {
+class PaymentCardsLogic extends ChangeNotifier {
   final BuildContext context;
   UserBankCard? selectedCard;
   List<UserBankCard> cards = [];
+  final EncryptionHelper _encryptionHelper = EncryptionHelper();
 
   PaymentCardsLogic(this.context);
 
@@ -17,27 +20,69 @@ class PaymentCardsLogic {
       final provider = Provider.of<UserBankCardProvider>(context, listen: false);
       await provider.loadUserBankCards();
       cards = provider.userBankCards;
+
+      // Расшифровка карт
+      cards = cards.map((card) {
+        return UserBankCard(
+          id: card.id,
+          userId: card.userId,
+          cardNumber: _encryptionHelper.decryptData(card.cardNumber),
+          cardExpiry: _encryptionHelper.decryptData(card.cardExpiry),
+          cardholderName: _encryptionHelper.decryptData(card.cardholderName),
+          cvv: _encryptionHelper.decryptData(card.cvv),
+        );
+      }).toList();
+
       if (cards.isNotEmpty) {
-        selectedCard = cards.last;
+        selectedCard = cards.length == 1 ? cards.first : cards.last;
+      } else {
+        selectedCard = null;
       }
+
+      notifyListeners();
     }
   }
 
   Future<void> addCard(String cardNumber, String cardHolderName, String expiryDate, String cvv) async {
+    final encryptedCardNumber = _encryptionHelper.encryptData(cardNumber);
+    final encryptedCardHolderName = _encryptionHelper.encryptData(cardHolderName);
+    final encryptedExpiryDate = _encryptionHelper.encryptData(expiryDate);
+    final encryptedCvv = _encryptionHelper.encryptData(cvv);
+
     final userId = FirebaseAuth.instance.currentUser?.uid;
     if (userId == null) return;
 
     final card = UserBankCard(
-      id: DateTime.now().millisecondsSinceEpoch, // Уникальный идентификатор карты
-      userId: int.parse(userId), // ID пользователя
-      cardNumber: cardNumber,
-      cardExpiry: expiryDate,
-      cardholderName: cardHolderName,
+      id: DateTime.now().millisecondsSinceEpoch, // Генерация уникального идентификатора
+      userId: userId,
+      cardNumber: encryptedCardNumber,
+      cardExpiry: encryptedExpiryDate,
+      cardholderName: encryptedCardHolderName,
+      cvv: encryptedCvv,
     );
 
     final provider = Provider.of<UserBankCardProvider>(context, listen: false);
     await provider.addUserBankCard(card);
-    cards.add(card); // Добавьте карту в локальный список
+
+    // Обновляем список карт
+    await loadSelectedCard();
+
+    selectedCard = cards.length == 1 ? card : cards.last;
+    notifyListeners();
+  }
+
+  Future<List<UserBankCard>> loadCards() async {
+    final snapshot = await FirebaseFirestore.instance.collection('cards').get();
+    return snapshot.docs.map((doc) {
+      return UserBankCard(
+        id: doc['id'],
+        userId: doc['user_id'],
+        cardNumber: _encryptionHelper.decryptData(doc['card_number']),
+        cardExpiry: _encryptionHelper.decryptData(doc['card_expiry']),
+        cardholderName: _encryptionHelper.decryptData(doc['cardholder_name']),
+        cvv: _encryptionHelper.decryptData(doc['cvv']),
+      );
+    }).toList();
   }
 
   void updateSelectedCard(UserBankCard card, bool isSelected) {
@@ -46,6 +91,7 @@ class PaymentCardsLogic {
     } else {
       selectedCard = null;
     }
+    notifyListeners();
   }
 
   Widget buildCardTypeIcon(String cardNumber) {

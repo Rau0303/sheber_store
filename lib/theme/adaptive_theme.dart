@@ -13,6 +13,10 @@ class AdaptiveTheme {
       bottomAppBarTheme: const BottomAppBarTheme(
         color: Colors.white, // Цвет фона для нижнего меню в светлой теме
       ),
+      checkboxTheme: CheckboxThemeData(
+      fillColor: WidgetStateProperty.all(Colors.deepOrange),
+      checkColor: WidgetStateProperty.all(Colors.orangeAccent),
+      ),
       textTheme: TextTheme(
         displayLarge: TextStyle(
           fontSize: screenWidth * 0.08,
