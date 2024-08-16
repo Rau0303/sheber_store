@@ -11,20 +11,20 @@ class ProfileSettingsLogic {
   final phoneController = TextEditingController();
   final UserProvider _userProvider = UserProvider();
   final ImageCompressor _imageCompressor = ImageCompressor();
-  User? _currentUser;
+  Users? _currentUser;
 
   ProfileSettingsLogic() {
     _loadProfile();
   }
 
   Future<void> _loadProfile() async {
-    await _userProvider.fetchUsersFromLocal();
+    await _userProvider.fetchUsersFromFirebase();
     if (_userProvider.users.isNotEmpty) {
-      _currentUser = _userProvider.users.first;
+      _currentUser = _userProvider.users.first; // Можно сделать выбор пользователя более точным
       nameController.text = _currentUser!.name;
       phoneController.text = _currentUser!.phoneNumber;
     } else {
-      _currentUser = User(id: 0, name: '', phoneNumber: '');
+      _currentUser = Users(id: 0, name: '', phoneNumber: '');
     }
   }
 
@@ -34,7 +34,7 @@ class ProfileSettingsLogic {
     final File? photo = file != null ? await _imageCompressor.compressImage(file!) : null;
 
     if (_currentUser != null) {
-      _currentUser = User(
+      _currentUser = Users(
         id: _currentUser!.id,
         name: name,
         phoneNumber: phoneNumber,

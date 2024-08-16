@@ -49,14 +49,14 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^4.0.0
-  flutter_launcher_icons: ^0.13.1 # Убедитесь, что эта строка присутствует
+  flutter_launcher_icons: ^0.13.1 
 
 flutter:
   uses-material-design: true
 
   assets:
     - assets/
-    - assets/logo/sheber_logo.png
+    - assets/logo/
 
   fonts:
     - family: Roboto
@@ -65,7 +65,17 @@ flutter:
         - asset: assets/fonts/Roboto-Medium.ttf
         - asset: assets/fonts/Roboto-Bold.ttf
 
-flutter_icons:
-  android: true
+flutter_launcher_icons:
+  android: "ic_launcher"
   ios: true
-  image_path: assets/logo/sheber_logo.png
+  image_path: "assets/logo/logo.png"
+  min_sdk_android: 21 # android min sdk min:16, default 21
+  web:
+    generate: true
+    image_path: "assets/logo/logo.png"
+  windows:
+    generate: true
+    image_path: "assets/logo/logo.png"
+  macos:
+    generate: true
+    image_path: "assets/logo/logo.png"

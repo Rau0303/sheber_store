@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:sheber_market/models/users.dart';
 
 class ProfileHeader extends StatelessWidget {
-  final User? user;
+  final Users? user;
 
   const ProfileHeader({super.key, required this.user});
 

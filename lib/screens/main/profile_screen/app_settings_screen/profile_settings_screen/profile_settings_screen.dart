@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import 'package:sheber_market/screens/main/profile_screen/app_settings_screen/profile_settings_screen/profile_settings_screen_logic.dart';
 import 'package:sheber_market/screens/main/profile_screen/app_settings_screen/profile_settings_screen/widgets/name_text_field.dart';
 import 'package:sheber_market/screens/main/profile_screen/app_settings_screen/profile_settings_screen/widgets/phone_text_field.dart';
@@ -8,7 +9,7 @@ import 'package:sheber_market/widgets/save_button.dart';
 
 
 class ProfileSettingsScreen extends StatefulWidget {
-  static String route() => '/profile-settings'; // Укажите свой маршрут
+  static String route() => '/profile-settings';
 
   const ProfileSettingsScreen({super.key});
 
@@ -36,7 +37,7 @@ class _ProfileSettingsScreenState extends State<ProfileSettingsScreen> {
   Widget build(BuildContext context) {
     final screenSize = MediaQuery.of(context).size;
     return Scaffold(
-      appBar: const DefaultAppBar( text: 'Настройки профиля'),
+      appBar: const DefaultAppBar(text: 'Настройки профиля'),
       body: Padding(
         padding: EdgeInsets.symmetric(
           horizontal: screenSize.width * 0.02,
@@ -54,13 +55,14 @@ class _ProfileSettingsScreenState extends State<ProfileSettingsScreen> {
             PhoneTextField(controller: _logic.phoneController),
             SizedBox(height: screenSize.height * 0.03),
             Savebutton(
-              onPressed: ()async{
-                  await _logic.saveProfile();
-              }, text: 'Сохранить')
+              onPressed: () async {
+                await _logic.saveProfile();
+              },
+              text: 'Сохранить',
+            ),
           ],
         ),
       ),
     );
   }
 }
-

@@ -100,17 +100,17 @@ class DatabaseHelper {
   }
 
   // Методы для работы с таблицей пользователей
-  Future<void> insertUser(User user) async {
+  Future<void> insertUser(Users user) async {
     Database db = await instance.database;
     await db.insert('users', user.toMap(), conflictAlgorithm: ConflictAlgorithm.replace);
   }
 
-  Future<List<User>> queryAllUsers() async {
+  Future<List<Users>> queryAllUsers() async {
     Database db = await instance.database;
     final List<Map<String, dynamic>> maps = await db.query('users');
 
     return List.generate(maps.length, (i) {
-      return User.fromMap(maps[i]);
+      return Users.fromMap(maps[i]);
     });
   }
 

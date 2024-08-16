@@ -29,7 +29,7 @@ class CategoryScreen extends StatelessWidget {
           logic.toggleSearch();
         }, appBarTitle: 'Категории',
       ),
-      body: logic.isSearch
+      body: logic.isSearch 
           ? const Center(child: Text('Неизвестная ошибка'))
           : Padding(
               padding: EdgeInsets.symmetric(vertical: screenSize.height * 0.02),

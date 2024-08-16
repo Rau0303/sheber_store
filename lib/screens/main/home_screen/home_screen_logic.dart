@@ -21,6 +21,7 @@ class HomeScreenLogic extends ChangeNotifier {
   var logger = Logger(printer: PrettyPrinter());
   final FirebaseAuth _auth = FirebaseAuth.instance;
   late BasketLogic _basketLogic; // Используйте Provider для получения экземпляра
+  bool isLoading = false;
 
   HomeScreenLogic(BuildContext context) {
     _basketLogic = Provider.of<BasketLogic>(context, listen: false); // Получение существующего экземпляра
@@ -40,6 +41,8 @@ class HomeScreenLogic extends ChangeNotifier {
 
   Future<void> init() async {
     if (!isInitialized) {
+      isLoading = true;
+      notifyListeners();
       try {
         await _loadInitialData();
         await loadFavoriteItems();
@@ -48,6 +51,8 @@ class HomeScreenLogic extends ChangeNotifier {
       } catch (e) {
         print('Error initializing HomeScreenLogic: $e');
       }
+      isLoading = false;
+      notifyListeners();
     }
   }
 

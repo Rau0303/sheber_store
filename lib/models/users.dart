@@ -1,20 +1,20 @@
 // lib/models/user.dart
 
-class User {
+class Users {
   final int id;
   final String name;
   final String phoneNumber;
   final String? photo;
 
-  User({
+  Users({
     required this.id,
     required this.name,
     required this.phoneNumber,
     this.photo,
   });
 
-  factory User.fromMap(Map<String, dynamic> map) {
-    return User(
+  factory Users.fromMap(Map<String, dynamic> map) {
+    return Users(
       id: map['id'],
       name: map['name'],
       phoneNumber: map['phone_number'],
