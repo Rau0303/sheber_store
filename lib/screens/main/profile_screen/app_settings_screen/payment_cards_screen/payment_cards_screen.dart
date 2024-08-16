@@ -7,7 +7,10 @@ import 'package:sheber_market/widgets/add_app_bar.dart';
 
 class PaymentCardsScreen extends StatefulWidget {
   static String route() => '/payment-cards';
-  const PaymentCardsScreen({super.key});
+
+  final bool isSelectionMode; // Новый параметр
+
+  const PaymentCardsScreen({super.key, this.isSelectionMode = false}); // По умолчанию false
 
   @override
   State<PaymentCardsScreen> createState() => _PaymentCardsScreenState();
@@ -47,10 +50,13 @@ class _PaymentCardsScreenState extends State<PaymentCardsScreen> {
                   value: _logic.selectedCard == cards[index],
                   onChanged: (newValue) {
                     _logic.updateSelectedCard(cards[index], newValue ?? false);
+                    if (newValue == true && widget.isSelectionMode) {
+                      Navigator.pop(context, cards[index]); // Возврат выбранной карты только в режиме выбора
+                    }
                     setState(() {});
                   },
-                  activeColor: Theme.of(context).colorScheme.secondary, // Цвет рамки Checkbox
-                  checkColor: Theme.of(context).colorScheme.primary, // Цвет галочки
+                  activeColor: Theme.of(context).colorScheme.secondary,
+                  checkColor: Theme.of(context).colorScheme.primary,
                 ),
                 title: Text(cards[index].cardNumber),
                 trailing: _logic.buildCardTypeIcon(cards[index].cardNumber),

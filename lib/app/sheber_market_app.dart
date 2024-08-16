@@ -11,8 +11,10 @@ class SheberMarketApp extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = AdaptiveTheme.getTheme(context); // Получите тему здесь
     final darkTheme = AdaptiveTheme.getDarkTheme(context); // Получите тёмную тему здесь
+    final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
     return MaterialApp(
+      navigatorKey: navigatorKey,
       debugShowCheckedModeBanner: false,
       title: 'Sheber Store',
       theme: theme,

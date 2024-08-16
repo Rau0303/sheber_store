@@ -15,6 +15,7 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+  final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 
 
@@ -27,6 +28,7 @@ void main() async {
     androidProvider: AndroidProvider.debug,
     appleProvider: AppleProvider.appAttest,
   );
+  
   runApp(
     MultiProvider(
       providers: getProviders(), // Используйте функцию для получения списка провайдеров
