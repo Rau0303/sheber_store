@@ -7,7 +7,10 @@ import 'address_screen_logic.dart';
 
 class AddressScreen extends StatefulWidget {
   static String route() => '/address-settings';
-  const AddressScreen({super.key});
+  
+  final bool isSelectionMode; // Новый параметр
+
+  const AddressScreen({super.key, this.isSelectionMode = false}); // По умолчанию false
 
   @override
   State<AddressScreen> createState() => _AddressScreenState();
@@ -45,6 +48,9 @@ class _AddressScreenState extends State<AddressScreen> {
               selectedAddress: addressLogic.selectedAddress,
               onAddressSelected: (address, isSelected) {
                 addressLogic.updateSelectedAddress(address, isSelected);
+                if (isSelected && widget.isSelectionMode) {
+                  Navigator.pop(context, address); // Возврат выбранного адреса только в режиме выбора
+                }
               },
               onAddressEdit: (address) {
                 addressLogic.showAddressModal(address: address);

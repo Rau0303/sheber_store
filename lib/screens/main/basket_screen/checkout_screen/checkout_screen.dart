@@ -1,119 +1,106 @@
-import 'package:flutter/material.dart';
-import 'package:sheber_market/models/basket_item.dart';
-import 'package:sheber_market/screens/main/basket_screen/checkout_screen/widgets/address_widget.dart';
-import 'package:sheber_market/screens/main/basket_screen/checkout_screen/widgets/delivery_method_card.dart';
-import 'package:sheber_market/screens/main/basket_screen/checkout_screen/widgets/order_summary.dart';
-import 'package:sheber_market/screens/main/basket_screen/checkout_screen/widgets/payment_method_card.dart';
-import 'package:sheber_market/screens/main/profile_screen/app_settings_screen/address_screen/address_screen.dart';
-import 'package:sheber_market/widgets/order_product_item.dart';
-import 'package:sheber_market/screens/main/profile_screen/app_settings_screen/payment_cards_screen/payment_cards_screen.dart'; // Импорт экрана выбора карт
+  import 'package:flutter/material.dart';
+  import 'package:provider/provider.dart';
+  import 'package:sheber_market/models/basket_item.dart';
+  import 'package:sheber_market/screens/main/basket_screen/checkout_screen/checkout_screen_logic.dart';
 
-class CheckoutScreen extends StatefulWidget {
-  final List<BasketItem> basketItems;
+  import 'package:sheber_market/screens/main/basket_screen/checkout_screen/widgets/address_widget.dart';
+  import 'package:sheber_market/screens/main/basket_screen/checkout_screen/widgets/delivery_method_card.dart';
+  import 'package:sheber_market/screens/main/basket_screen/checkout_screen/widgets/order_summary.dart';
+  import 'package:sheber_market/screens/main/basket_screen/checkout_screen/widgets/payment_method_card.dart';
 
-  const CheckoutScreen({super.key, required this.basketItems});
+  import 'package:sheber_market/screens/main/profile_screen/app_settings_screen/payment_cards_screen/payment_cards_screen.dart';
+  import 'package:sheber_market/widgets/order_product_item.dart';
 
-  @override
-  CheckoutScreenState createState() => CheckoutScreenState();
-}
+  class CheckoutScreen extends StatefulWidget {
+    final List<BasketItem> basketItems;
 
-class CheckoutScreenState extends State<CheckoutScreen> {
-  String selectedPaymentMethod = 'Выберите способ оплаты';
-  String selectedDeliveryMethod = 'Выберите способ доставки';
-  String address = '';
-  double totalPrice = 0.0;
+    const CheckoutScreen({super.key, required this.basketItems});
 
-  @override
-  void initState() {
-    super.initState();
-    totalPrice = widget.basketItems.fold(
-      0.0,
-      (sum, item) => sum + item.product.sellingPrice * item.quantity,
-    );
+    @override
+    CheckoutScreenState createState() => CheckoutScreenState();
   }
 
-  Future<void> _selectAddress() async {
-    final selectedAddress = await Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => const AddressScreen(),
-      ),
-    );
-
-    if (selectedAddress != null) {
-      setState(() {
-        address = selectedAddress as String; // Обновите это, если адрес - это другой тип данных
-      });
+  class CheckoutScreenState extends State<CheckoutScreen> {
+    @override
+    void initState() {
+      super.initState();
+      final checkoutLogic = Provider.of<CheckoutLogic>(context, listen: false);
+      checkoutLogic.calculateTotalPrice(widget.basketItems.fold(
+        0.0,
+        (sum, item) => sum + item.product.sellingPrice * item.quantity,
+      ));
     }
-  }
 
-  Future<void> _selectPaymentMethod() async {
-    final selectedCard = await Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => const PaymentCardsScreen(),
-      ),
-    );
-
-    if (selectedCard != null) {
-      setState(() {
-        selectedPaymentMethod = selectedCard as String; // Обновите это, если карта - это другой тип данных
-      });
+    Future<void> _selectAddress() async {
+      final checkoutLogic = Provider.of<CheckoutLogic>(context, listen: false);
+      checkoutLogic.setAddressFromScreen(); // Обновление адреса в логике
     }
-  }
 
-  @override
-  Widget build(BuildContext context) {
-    final screenSize = MediaQuery.of(context).size;
+    Future<void> _selectPaymentMethod() async {
+      final selectedCard = await Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const PaymentCardsScreen(),
+        ),
+      );
 
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Оформление заказа'),
-      ),
-      body: ListView(
-        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
-        children: [
-          for (final item in widget.basketItems)
-            OrderProductItem(item: item),
-          DeliveryMethodCard(
-            selectedDeliveryMethod: selectedDeliveryMethod,
-            onChanged: (newValue) {
-              setState(() {
-                selectedDeliveryMethod = newValue!;
-                if (selectedDeliveryMethod == 'Доставка курьером') {
-                  _selectAddress(); // Открытие экрана выбора адреса
-                }
-              });
-            },
-          ),
-          if (selectedDeliveryMethod == 'Доставка курьером')
-            AddressWidget(
-              screenSize: screenSize,
-              address: address,
-              onPressed: () {
-                _selectAddress(); // Открытие экрана выбора адреса
+      if (selectedCard != null) {
+        final checkoutLogic = Provider.of<CheckoutLogic>(context, listen: false);
+        checkoutLogic.updateSelectedPaymentMethod(selectedCard as String); // Обновление метода оплаты в логике
+      }
+    }
+
+    @override
+    Widget build(BuildContext context) {
+      final checkoutLogic = Provider.of<CheckoutLogic>(context);
+      final screenSize = MediaQuery.of(context).size;
+
+      return Scaffold(
+        appBar: AppBar(
+          title: const Text('Оформление заказа'),
+        ),
+        body: ListView(
+          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
+          children: [
+            for (final item in widget.basketItems)
+              OrderProductItem(item: item),
+            DeliveryMethodCard(
+              selectedDeliveryMethod: checkoutLogic.selectedDeliveryMethod,
+              onChanged: (newValue) {
+                setState(() {
+                  checkoutLogic.updateSelectedDeliveryMethod(newValue!);
+                  if (checkoutLogic.selectedDeliveryMethod == 'Доставка курьером') {
+                    _selectAddress(); // Открытие экрана выбора адреса
+                  }
+                });
               },
             ),
-          PaymentMethodCard(
-            selectedPaymentMethod: selectedPaymentMethod,
-            onChanged: (newValue) {
-              setState(() {
-                selectedPaymentMethod = newValue!;
-                if (selectedPaymentMethod == 'Оплата картой') {
-                  _selectPaymentMethod(); // Открытие экрана выбора карт
-                }
-              });
-            },
-          ),
-          OrderSummary(
-            totalPrice: totalPrice,
-            selectedDeliveryMethod: selectedDeliveryMethod,
-            onOrder: () {
-              // Логика оформления заказа
-            },
-          ),
-        ],
-      ),
-    );
+            if (checkoutLogic.selectedDeliveryMethod == 'Доставка курьером' && checkoutLogic.selectedAddress != null)
+              AddressWidget(
+                screenSize: screenSize,
+                address: checkoutLogic.address,
+                onPressed: _selectAddress, // Открытие экрана выбора адреса
+              ),
+            PaymentMethodCard(
+              selectedPaymentMethod: checkoutLogic.selectedPaymentMethod,
+              onChanged: (newValue) {
+                setState(() {
+                  checkoutLogic.updateSelectedPaymentMethod(newValue!);
+                  if (checkoutLogic.selectedPaymentMethod == 'Оплата картой') {
+                    _selectPaymentMethod(); // Открытие экрана выбора карт
+                  }
+                });
+              },
+            ),
+            OrderSummary(
+              totalPrice: checkoutLogic.totalPrice,
+              selectedDeliveryMethod: checkoutLogic.selectedDeliveryMethod,
+              onOrder: () {
+                // Логика оформления заказа
+              },
+            ),
+          ],
+        ),
+      );
+    }
   }
-}

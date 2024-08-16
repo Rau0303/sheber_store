@@ -8,6 +8,7 @@ import 'package:sheber_market/providers/product_provider.dart';
 import 'package:sheber_market/providers/user_addresses_provider.dart';
 import 'package:sheber_market/providers/user_bank_card_provider.dart';
 import 'package:sheber_market/screens/main/basket_screen/basket_screen_logic.dart';
+import 'package:sheber_market/screens/main/basket_screen/checkout_screen/checkout_provider.dart';
 import 'package:sheber_market/screens/main/basket_screen/checkout_screen/checkout_screen_logic.dart';
 import 'package:sheber_market/screens/main/category_screen/category_screen_logic.dart';
 import 'package:sheber_market/screens/main/favorite_screen/favorites_screen_logic.dart';
@@ -30,7 +31,8 @@ List<SingleChildWidget> getProviders() {
     ChangeNotifierProvider(create: (context) => ProfileScreenLogic()),
     ChangeNotifierProvider(create: (_) => AuthProvider()),
     ChangeNotifierProvider(create: (_) => CartProvider()),
-    ChangeNotifierProvider(create: (_)=>CheckoutLogic())
+    ChangeNotifierProvider(create: (context)=>CheckoutLogic(context)),
+    ChangeNotifierProvider(create: (_)=>CheckoutProvider())
     // Добавьте другие провайдеры здесь, если нужно
   ];
 }
