@@ -11,8 +11,9 @@ import 'package:sheber_market/widgets/order_product_item.dart';
 
 class CheckoutScreen extends StatefulWidget {
   final List<BasketItem> basketItems;
+  final double total;
 
-  const CheckoutScreen({super.key, required this.basketItems});
+  const CheckoutScreen({super.key, required this.basketItems, required this.total});
 
   @override
   CheckoutScreenState createState() => CheckoutScreenState();
@@ -23,10 +24,7 @@ class CheckoutScreenState extends State<CheckoutScreen> {
   void initState() {
     super.initState();
     final checkoutLogic = Provider.of<CheckoutLogic>(context, listen: false);
-    checkoutLogic.calculateTotalPrice(widget.basketItems.fold(
-      0.0,
-      (sum, item) => sum + item.product.sellingPrice * item.quantity,
-    ));
+    checkoutLogic.recalculateTotalPrice(widget.total);
   }
 
   Future<void> _selectAddress() async {

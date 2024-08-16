@@ -83,6 +83,11 @@ Future<void> setPaymentMethodFromScreen(BuildContext context) async {
 
 
 
+  void recalculateTotalPrice(double basketTotal) {
+    
+    totalPrice = calculateTotalPrice(basketTotal);
+  }
+
   double calculateTotalPrice(double basketTotal) {
     double finalTotal = basketTotal;
     if (basketTotal < 50000 && selectedDeliveryMethod == 'Доставка курьером') {

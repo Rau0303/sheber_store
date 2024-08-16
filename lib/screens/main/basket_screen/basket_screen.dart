@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sheber_market/screens/main/basket_screen/basket_screen_logic.dart';
+import 'package:sheber_market/screens/main/basket_screen/checkout_screen/checkout_screen.dart';
 import 'package:sheber_market/screens/main/basket_screen/widgets/basket_bottom_app_bar.dart';
 import 'package:sheber_market/screens/main/basket_screen/widgets/basket_item.dart';
 import 'package:sheber_market/widgets/enhanced_app_bar.dart';
@@ -73,7 +74,9 @@ class BasketScreenState extends State<BasketScreen> {
               totalPrice: totalPrice,
               isEligibleForFreeDelivery: isEligibleForFreeDelivery,
               remainingAmountForFreeDelivery: remainingAmountForFreeDelivery,
-              onProceedToCheckout: () => _logic.proceedToCheckout(context),
+              onProceedToCheckout: () {
+                 Navigator.push(context, MaterialPageRoute(builder: (_)=> CheckoutScreen(basketItems: _logic.basket, total: totalPrice,)));
+              },
             )
           : const SizedBox.shrink(),
     );

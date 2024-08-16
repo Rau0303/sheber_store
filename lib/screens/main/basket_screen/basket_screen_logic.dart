@@ -122,7 +122,5 @@ Future<void> clearBasket() async {
     return totalPrice >= freeDeliveryThreshold;
   }
 
-  void proceedToCheckout(BuildContext context) {
-    Navigator.push(context, MaterialPageRoute(builder: (_)=> CheckoutScreen(basketItems: basket,)));
-  }
+
 }

@@ -31,13 +31,13 @@ class OrderSummary extends StatelessWidget {
           children: [
             Text(
               'Общая сумма товаров:',
-              style: textTheme.titleMedium?.copyWith(
+              style: textTheme.bodyMedium?.copyWith(
                 fontWeight: FontWeight.bold,
                 color: theme.colorScheme.onSurface,
               ),
             ),
             Text(
-              '${totalPrice.toStringAsFixed(2)} \u20B8',
+              '${totalPrice.toStringAsFixed(2)} тг',
               style: textTheme.bodyLarge?.copyWith(
                 color: theme.colorScheme.onSurface,
               ),
@@ -46,7 +46,7 @@ class OrderSummary extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.only(top: 8.0),
                 child: Text(
-                  'Стоимость доставки: 1500 \u20B8',
+                  'Стоимость доставки: 1500 тг',
                   style: textTheme.bodyMedium?.copyWith(
                     color: Colors.red,
                   ),
@@ -55,8 +55,8 @@ class OrderSummary extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.only(top: 8.0),
               child: Text(
-                'Итоговая сумма: ${finalTotal.toStringAsFixed(2)} \u20B8',
-                style: textTheme.titleMedium?.copyWith(
+                'Итоговая сумма: ${finalTotal.toStringAsFixed(2)} тг',
+                style: textTheme.bodyLarge?.copyWith(
                   fontWeight: FontWeight.bold,
                   color: theme.colorScheme.onSurface,
                 ),
