@@ -1,16 +1,21 @@
-
-
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:sheber_market/models/order.dart';
+import 'package:sheber_market/providers/orders_provider.dart';
 
-class UserOrdersLogic {
-  final String userId;
+class UserOrdersLogic extends ChangeNotifier {
+  
   List<Order> orders = [];
 
-  UserOrdersLogic({required this.userId});
+  
 
-  Future<void> loadUserOrders() async {
-    // Получаем заказы и сортируем по дате заказа
-    //orders = await OrderService().getUserOrders(userId);
-    orders.sort((a, b) => b.orderDate.compareTo(a.orderDate));
+  Future<void> loadUserOrders(BuildContext context) async {
+    final ordersProvider = Provider.of<OrdersProvider>(context, listen: false);
+    await ordersProvider.loadOrders();
+    final userId = FirebaseAuth.instance.currentUser?.uid;
+
+    orders = ordersProvider.orders.where((order) => order.userId == userId).toList();
+    notifyListeners();
   }
 }

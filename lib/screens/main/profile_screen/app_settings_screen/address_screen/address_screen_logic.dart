@@ -15,7 +15,9 @@ class AddressLogic extends ChangeNotifier{
   final TextEditingController houseController = TextEditingController();
   final TextEditingController apartmentController = TextEditingController();
 
+  @override
   void dispose() {
+    super.dispose();
     cityController.dispose();
     streetController.dispose();
     houseController.dispose();

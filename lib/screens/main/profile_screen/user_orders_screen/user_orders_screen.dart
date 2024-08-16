@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:sheber_market/screens/main/profile_screen/user_orders_screen/user_orders_screen_logic.dart';
-import 'package:sheber_market/screens/main/profile_screen/user_orders_screen/widgets/orders_listview.dart'; // Импортируем новый виджет
 
 class UserOrdersScreen extends StatefulWidget {
   final String userId;
@@ -8,17 +8,17 @@ class UserOrdersScreen extends StatefulWidget {
   const UserOrdersScreen({super.key, required this.userId});
 
   @override
-  UserOrdersScreenState createState() => UserOrdersScreenState();
+  _UserOrdersScreenState createState() => _UserOrdersScreenState();
 }
 
-class UserOrdersScreenState extends State<UserOrdersScreen> {
-  late final UserOrdersLogic _controller;
+class _UserOrdersScreenState extends State<UserOrdersScreen> {
+  late UserOrdersLogic logic;
 
   @override
-  void initState() {
-    super.initState();
-    _controller = UserOrdersLogic(userId: widget.userId);
-    _controller.loadUserOrders(); // Можно использовать FutureBuilder в build, но для лучшего управления состоянием можно сделать это здесь
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    logic = Provider.of<UserOrdersLogic>(context);
+    logic.loadUserOrders(context);
   }
 
   @override
@@ -27,16 +27,27 @@ class UserOrdersScreenState extends State<UserOrdersScreen> {
       appBar: AppBar(
         title: const Text('Мои заказы'),
       ),
-      body: FutureBuilder<void>(
-        future: _controller.loadUserOrders(),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
-          } else if (snapshot.hasError) {
-            return Center(child: Text('Ошибка загрузки данных: ${snapshot.error}'));
-          }
-
-          return OrdersListView(orders: _controller.orders);
+      body: Consumer<UserOrdersLogic>(
+        builder: (context, logic, child) {
+          return logic.orders.isEmpty
+              ? const Center(child: Text('Заказы отсутствуют.'))
+              : ListView.builder(
+                  itemCount: logic.orders.length,
+                  itemBuilder: (context, index) {
+                    final order = logic.orders[index];
+                    return ListTile(
+                      title: Text('Заказ №${order.id}'),
+                      subtitle: Text('Дата: ${order.orderDate}'),
+                      onTap: () {
+                        Navigator.pushNamed(
+                          context,
+                          '/order_inform',
+                          arguments: {'orderId': order.id},
+                        );
+                      },
+                    );
+                  },
+                );
         },
       ),
     );

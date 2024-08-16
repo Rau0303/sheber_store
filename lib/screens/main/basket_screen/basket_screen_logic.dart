@@ -3,7 +3,6 @@ import 'package:shared_preferences/shared_preferences.dart'; // Импортир
 import 'dart:convert';
 import 'package:sheber_market/models/basket_item.dart';
 import 'package:sheber_market/models/product.dart';
-import 'package:sheber_market/screens/main/basket_screen/checkout_screen/checkout_screen.dart';
 
 class BasketLogic extends ChangeNotifier {
   final BuildContext context;

@@ -20,9 +20,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     logic = Provider.of<ProfileScreenLogic>(context);
-    if (logic.user == null) {
-      logic.loadUserProfile();
-    }
+    
   }
 
   @override
@@ -46,7 +44,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               ),
               child: Column(
                 children: [
-                  ProfileHeader(user: logic.user),
+                  //ProfileHeader(user: null),
                   SizedBox(height: screenSize.height * 0.01),
                   ProfileOptionsList(
                     options: const [

@@ -4,6 +4,7 @@ import 'package:sheber_market/providers/cart_provider.dart';
 import 'package:sheber_market/providers/category_provider.dart';
 import 'package:sheber_market/providers/favorite_provider.dart';
 import 'package:sheber_market/providers/firebase_push_notification_provider.dart';
+import 'package:sheber_market/providers/orders_provider.dart';
 import 'package:sheber_market/providers/product_provider.dart';
 import 'package:sheber_market/providers/user_addresses_provider.dart';
 import 'package:sheber_market/providers/user_bank_card_provider.dart';
@@ -15,6 +16,7 @@ import 'package:sheber_market/screens/main/favorite_screen/favorites_screen_logi
 import 'package:sheber_market/screens/main/home_screen/home_screen_logic.dart';
 import 'package:sheber_market/screens/main/profile_screen/profile_screen/profile_screen_logic.dart';
 import 'package:provider/single_child_widget.dart';
+import 'package:sheber_market/screens/main/profile_screen/user_orders_screen/user_orders_screen_logic.dart';
 
 List<SingleChildWidget> getProviders() {
   return [
@@ -22,17 +24,19 @@ List<SingleChildWidget> getProviders() {
     ChangeNotifierProvider(create: (_) => UserBankCardProvider()),
     ChangeNotifierProvider(create: (_) => UserAddressProvider()),
     ChangeNotifierProvider(create: (_) => FavoriteProvider()),
-    ChangeNotifierProvider(create: (_) => CategoryProvider()), // Добавляем CategoryProvider
-    ChangeNotifierProvider(create: (_) => ProductProvider()),  // Добавляем ProductProvider
-    ChangeNotifierProvider(create: (context) => HomeScreenLogic(context)),
+    ChangeNotifierProvider(create: (_) => CategoryProvider()), 
+    ChangeNotifierProvider(create: (_) => ProductProvider()),  
+    ChangeNotifierProvider(create: (context) => BasketLogic(context)), // BasketLogic должен быть до HomeScreenLogic
+    ChangeNotifierProvider(create: (context) => HomeScreenLogic(context)), 
     ChangeNotifierProvider(create: (_) => CategoryScreenLogic()),
-    ChangeNotifierProvider(create: (context) => BasketLogic(context)),
     ChangeNotifierProvider(create: (context) => FavoritesLogic(context)),
     ChangeNotifierProvider(create: (context) => ProfileScreenLogic()),
     ChangeNotifierProvider(create: (_) => AuthProvider()),
     ChangeNotifierProvider(create: (_) => CartProvider()),
     ChangeNotifierProvider(create: (context)=>CheckoutLogic(context)),
-    ChangeNotifierProvider(create: (_)=>CheckoutProvider())
-    // Добавьте другие провайдеры здесь, если нужно
+    ChangeNotifierProvider(create: (_)=>CheckoutProvider()),
+    ChangeNotifierProvider(create: (_) => UserOrdersLogic()),
+    ChangeNotifierProvider(create: (_) => OrdersProvider()),
   ];
 }
+

@@ -1,9 +1,10 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:sheber_market/models/users.dart';
 import 'package:sheber_market/widgets/logout_dialog.dart';
 
 class ProfileScreenLogic extends ChangeNotifier {
-  User? user;
+  
   bool isLoading = false;
 
   Future<void> loadUserProfile() async {
@@ -12,23 +13,19 @@ class ProfileScreenLogic extends ChangeNotifier {
 
     // Mock user data; replace with real data loading logic
     
-    user = User(
-      id: 1,
-      name: 'Имя пользователя',
-      phoneNumber: '+1234567890',
-      photo: 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png',
-    );
+    
 
     isLoading = false;
     notifyListeners();
   }
 
-void navigateTo(BuildContext context, int index, {String? userId}) {
+void navigateTo(BuildContext context, int index) {
   switch (index) {
     case 0:
       Navigator.pushNamed(context, '/app-settings');
       break;
     case 1:
+    final userId = FirebaseAuth.instance.currentUser?.uid;
       if (userId != null) {
         Navigator.pushNamed(
           context,
