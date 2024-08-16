@@ -1,6 +1,9 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:sheber_market/models/favorite_item.dart';
 import 'package:sheber_market/models/product.dart';
+import 'package:sheber_market/providers/favorite_provider.dart';
 import 'package:sheber_market/providers/product_provider.dart';
 import 'package:sheber_market/screens/main/basket_screen/basket_screen_logic.dart';
 import 'package:sheber_market/screens/main/product_screen/widgets/product_card.dart';
@@ -20,6 +23,8 @@ class _CategoryProductScreenState extends State<CategoryProductScreen> {
   late BasketLogic _basketLogic; // Добавьте эту переменную
   bool _isSearch = false;
   List<Product> _filteredProducts = [];
+  List<FavoriteItem> favoriteItems = [];
+  final FirebaseAuth _auth = FirebaseAuth.instance;
 
   @override
   void initState() {
@@ -28,6 +33,7 @@ class _CategoryProductScreenState extends State<CategoryProductScreen> {
     _productProvider = Provider.of<ProductProvider>(context, listen: false);
     _basketLogic = Provider.of<BasketLogic>(context, listen: false); // Получите экземпляр BasketLogic
     _fetchCategoryProducts();
+    loadFavoriteItems();
   }
 
   @override
@@ -65,6 +71,45 @@ class _CategoryProductScreenState extends State<CategoryProductScreen> {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text('${product.name} добавлен в корзину')),
     );
+  }
+
+  Future<void> loadFavoriteItems() async {
+    final favoriteProvider = FavoriteProvider();
+    final User? currentUser = _auth.currentUser;
+    final currentUserId = currentUser?.uid ?? "";
+
+    try {
+      favoriteItems = await favoriteProvider.fetchFavoriteItems(currentUserId);
+      print('Favorite items loaded: ${favoriteItems.length}');
+      setState(() {
+        
+      });
+    } catch (e) {
+      print('Error loading favorite items: $e');
+    }
+  }
+
+  Future<void> toggleFavorite(int productId) async {
+    final favoriteProvider = FavoriteProvider();
+    final User? currentUser = _auth.currentUser;
+    final currentUserId = currentUser?.uid ?? "";
+
+    try {
+      if (isFavorite(productId)) {
+        await favoriteProvider.deleteFavoriteItem(currentUserId, productId);
+      } else {
+        await favoriteProvider.addFavoriteItem(
+          FavoriteItem(userId: currentUserId, productId: productId),
+        );
+      }
+      await loadFavoriteItems();
+    } catch (e) {
+      print('Error toggling favorite: $e');
+    }
+  }
+
+  bool isFavorite(int productId) {
+    return favoriteItems.any((item) => item.productId == productId);
   }
 
   @override
@@ -108,7 +153,9 @@ class _CategoryProductScreenState extends State<CategoryProductScreen> {
                     title: product.name,
                     description: product.description ?? '',
                     total: product.sellingPrice,
-                    onTap: () {},
+                    onTap: () {
+                      toggleFavorite(product.id);
+                    },
                     on: () {
                       _addProductToBasket(product); // Обработка добавления в корзину
                     },
