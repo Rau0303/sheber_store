@@ -31,7 +31,12 @@ class CategoryScreen extends StatelessWidget {
       ),
       body: logic.isSearch 
           ? const Center(child: Text('Неизвестная ошибка'))
-          : Padding(
+          : 
+          logic.isLoading
+          ?
+          const Center(child: CircularProgressIndicator(),)
+          :
+          Padding(
               padding: EdgeInsets.symmetric(vertical: screenSize.height * 0.02),
               child: ListView.separated(
                 itemCount: logic.categories.length,

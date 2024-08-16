@@ -87,6 +87,11 @@ class _HomeScreenState extends State<HomeScreen> {
                       category: logic.categories[index],
                       onTap: () {
                         Vibration.vibrate(duration: 50);
+                        Navigator.pushNamed(
+                          context,
+                          '/category-products',
+                          arguments: {'category': logic.categories[index].name},
+                        );
                       },
                     );
                   },
