@@ -3,7 +3,7 @@ name: Deploy to Firebase Hosting
 on:
   push:
     branches:
-      - main  # Укажите ветку, которая будет запускать развертывание
+      - master  # Укажите ветку, которая будет запускать развертывание
 
 jobs:
   build-and-deploy:
