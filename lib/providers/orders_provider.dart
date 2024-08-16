@@ -1,14 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:sheber_market/models/order.dart'as app_order;
-import 'package:sheber_market/models/order_product.dart';
-import 'package:sheber_market/providers/database_helper.dart';
-
-
+import 'package:sheber_market/models/order.dart' as app_order;
+import 'package:sheber_market/models/basket_item.dart';
 
 class OrdersProvider extends ChangeNotifier {
-  final DatabaseHelper _dbHelper = DatabaseHelper.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   List<app_order.Order> _orders = [];
@@ -19,49 +15,66 @@ class OrdersProvider extends ChangeNotifier {
 
     if (userId == null) return;
 
-    // Загружаем заказы из локальной базы данных
-    _orders = await _dbHelper.queryOrdersByUserId(userId);
-    notifyListeners();
-
     // Загружаем заказы из Firebase
     final snapshot = await _firestore
         .collection('orders')
         .where('user_id', isEqualTo: userId)
         .get();
 
-    final firebaseOrders = snapshot.docs.map((doc) => app_order.Order.fromMap(doc.data())).toList();
+    final firebaseOrders = snapshot.docs.map((doc) async {
+      final data = doc.data();
 
-    // Сохраняем заказы в локальной базе данных
-    for (final order in firebaseOrders) {
-      await _dbHelper.insertOrder(order);
-    }
+      // Загружаем продукты для каждого заказа
+      final productsSnapshot = await _firestore
+          .collection('order_products')
+          .where('order_id', isEqualTo: doc.id)
+          .get();
 
-    // Обновляем список заказов
-    _orders.addAll(firebaseOrders);
+      final orderedProducts = productsSnapshot.docs.map((productDoc) {
+        return BasketItem.fromJson(productDoc.data());
+      }).toList();
+
+      return app_order.Order.fromMap({
+        ...data,
+        'id': doc.id,
+        'ordered_products': orderedProducts, // Добавляем продукты в заказ
+      });
+    }).toList();
+
+    _orders = await Future.wait(firebaseOrders); // Ожидаем загрузку всех заказов
     notifyListeners();
   }
 
-  Future<void> addOrder(app_order.Order order, List<OrderProduct> orderProducts) async {
+  Future<void> addOrder(app_order.Order order) async {
     final userId = FirebaseAuth.instance.currentUser?.uid;
 
     if (userId == null) return;
 
-    // Сохраняем заказ в локальной базе данных
-    await _dbHelper.insertOrder(order);
+    // Сохраняем заказ в Firebase и получаем его идентификатор
+    final orderRef = await _firestore.collection('orders').add({
+      ...order.toMap(),
+      'user_id': userId,
+      'order_date': Timestamp.now(),
+    });
 
-    // Сохраняем продукты заказа в локальной базе данных
-    for (final orderProduct in orderProducts) {
-      await _dbHelper.insertOrderProduct(orderProduct);
+    final orderId = orderRef.id;
+
+    // Обновляем заказ с добавленным идентификатором
+    final updatedOrder = order.copyWith(id: orderId);
+
+    // Сохраняем продукты заказа в Firebase
+    for (final item in order.orderedProducts) {
+      await _firestore.collection('order_products').add({
+        ...item.toJson(),
+        'order_id': orderId,
+      });
     }
 
-    // Сохраняем заказ в Firebase
-    await _firestore.collection('orders').add(order.toMap());
-    for (final orderProduct in orderProducts) {
-      await _firestore.collection('order_products').add(orderProduct.toMap());
-    }
+    // Обновляем заказ в Firebase с правильным идентификатором
+    await _firestore.collection('orders').doc(orderId).update(updatedOrder.toMap());
 
     // Обновляем список заказов
-    _orders.add(order);
+    _orders.add(updatedOrder);
     notifyListeners();
   }
 
@@ -70,18 +83,27 @@ class OrdersProvider extends ChangeNotifier {
 
     if (userId == null) return;
 
-    // Обновляем заказ в локальной базе данных
-    await _dbHelper.updateOrder(order);
-
-    // Находим идентификатор документа в Firestore
-    final snapshot = await _firestore
-        .collection('orders')
-        .where('user_id', isEqualTo: userId)
-        .get();
-    final docId = snapshot.docs.first.id;
-    
     // Обновляем заказ в Firebase
-    await _firestore.collection('orders').doc(docId).update(order.toMap());
+    await _firestore.collection('orders').doc(order.id).update({
+      ...order.toMap(),
+    });
+
+    // Обновляем продукты заказа
+    final productsSnapshot = await _firestore
+        .collection('order_products')
+        .where('order_id', isEqualTo: order.id)
+        .get();
+
+    for (final doc in productsSnapshot.docs) {
+      await doc.reference.delete();
+    }
+
+    for (final item in order.orderedProducts) {
+      await _firestore.collection('order_products').add({
+        ...item.toJson(),
+        'order_id': order.id,
+      });
+    }
 
     // Обновляем список заказов
     final index = _orders.indexWhere((o) => o.id == order.id);
@@ -91,26 +113,23 @@ class OrdersProvider extends ChangeNotifier {
     }
   }
 
-  Future<void> deleteOrder(int orderId) async {
+  Future<void> deleteOrder(String orderId) async {
     final userId = FirebaseAuth.instance.currentUser?.uid;
 
     if (userId == null) return;
 
-    // Удаляем заказ из локальной базы данных
-    await _dbHelper.deleteOrder(orderId);
-
-    // Удаляем продукты заказа из локальной базы данных
-    await _dbHelper.deleteOrderProducts(orderId);
-
-    // Находим иденфикатор документа в Firestore
-    final snapshot = await _firestore
-        .collection('orders')
-        .where('user_id', isEqualTo: userId)
-        .get();
-    final docId = snapshot.docs.first.id;
-    
     // Удаляем заказ из Firebase
-    await _firestore.collection('orders').doc(docId).delete();
+    await _firestore.collection('orders').doc(orderId).delete();
+
+    // Удаляем продукты заказа из Firebase
+    final productsSnapshot = await _firestore
+        .collection('order_products')
+        .where('order_id', isEqualTo: orderId)
+        .get();
+
+    for (final doc in productsSnapshot.docs) {
+      await doc.reference.delete();
+    }
 
     // Обновляем список заказов
     _orders.removeWhere((o) => o.id == orderId);

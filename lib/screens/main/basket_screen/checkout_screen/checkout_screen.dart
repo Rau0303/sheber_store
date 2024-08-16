@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sheber_market/models/basket_item.dart';
-
 import 'package:sheber_market/screens/main/basket_screen/checkout_screen/checkout_screen_logic.dart';
 import 'package:sheber_market/screens/main/basket_screen/checkout_screen/widgets/address_widget.dart';
 import 'package:sheber_market/screens/main/basket_screen/checkout_screen/widgets/delivery_method_card.dart';
@@ -29,13 +28,12 @@ class CheckoutScreenState extends State<CheckoutScreen> {
 
   Future<void> _selectAddress() async {
     final checkoutLogic = Provider.of<CheckoutLogic>(context, listen: false);
-    await checkoutLogic.setAddressFromScreen(context); // Обновление адреса в логике
+    await checkoutLogic.setAddressFromScreen(context);
   }
 
   Future<void> _selectPaymentMethod() async {
-    print('selectCard');
     final checkoutLogic = Provider.of<CheckoutLogic>(context, listen: false);
-    await checkoutLogic.setPaymentMethodFromScreen(context); // Обновление метода оплаты
+    await checkoutLogic.setPaymentMethodFromScreen(context);
   }
 
   @override
@@ -47,53 +45,65 @@ class CheckoutScreenState extends State<CheckoutScreen> {
       appBar: AppBar(
         title: const Text('Оформление заказа'),
       ),
-      body: ListView(
-        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
+      body: Stack(
         children: [
-          for (final item in widget.basketItems)
-            OrderProductItem(item: item),
-          DeliveryMethodCard(
-            selectedDeliveryMethod: checkoutLogic.selectedDeliveryMethod,
-            onChanged: (newValue) {
-              setState(() {
-                checkoutLogic.updateSelectedDeliveryMethod(newValue!);
-                if (checkoutLogic.selectedDeliveryMethod == 'Доставка курьером') {
-                  _selectAddress(); // Открытие экрана выбора адреса
-                }
-              });
-            },
+          ListView(
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
+            children: [
+              for (final item in widget.basketItems)
+                OrderProductItem(item: item),
+              DeliveryMethodCard(
+                selectedDeliveryMethod: checkoutLogic.selectedDeliveryMethod,
+                onChanged: (newValue) {
+                  setState(() {
+                    checkoutLogic.updateSelectedDeliveryMethod(newValue!);
+                    if (checkoutLogic.selectedDeliveryMethod == 'Доставка курьером') {
+                      _selectAddress();
+                    }
+                  });
+                },
+              ),
+              if (checkoutLogic.selectedDeliveryMethod == 'Доставка курьером' && checkoutLogic.selectedAddress != null)
+                AddressWidget(
+                  screenSize: screenSize,
+                  address: checkoutLogic.address,
+                  onPressed: _selectAddress,
+                ),
+              PaymentMethodCard(
+                selectedPaymentMethod: checkoutLogic.selectedPaymentMethod,
+                onChanged: (newValue) {
+                  setState(() {
+                    checkoutLogic.updateSelectedPaymentMethod(newValue!);
+                    if (checkoutLogic.selectedPaymentMethod == 'Оплата картой') {
+                      _selectPaymentMethod();
+                    }
+                  });
+                },
+              ),
+              if (checkoutLogic.selectedPaymentMethod == 'Оплата картой' && checkoutLogic.selectedCard != null)
+                ListTile(
+                  title: Text('Карта: ${checkoutLogic.selectedCard!.cardNumber}'),
+                  subtitle: Text('Срок действия: ${checkoutLogic.selectedCard!.cardExpiry}'),
+                  leading: const Icon(Icons.credit_card),
+                ),
+              OrderSummary(
+                totalPrice: checkoutLogic.totalPrice,
+                selectedDeliveryMethod: checkoutLogic.selectedDeliveryMethod,
+                onOrder: () {
+                  if(checkoutLogic.selectedPaymentMethod == 'Оплата картой' || checkoutLogic.selectedPaymentMethod == 'Наличными' && checkoutLogic.selectedDeliveryMethod=="Доставка курьером"||checkoutLogic.selectedDeliveryMethod=="Самовызов") {
+                    checkoutLogic.placeOrder(widget.basketItems);
+                  }
+                  else{
+                    
+                  }
+                },
+              ),
+            ],
           ),
-          if (checkoutLogic.selectedDeliveryMethod == 'Доставка курьером' && checkoutLogic.selectedAddress != null)
-            AddressWidget(
-              screenSize: screenSize,
-              address: checkoutLogic.address,
-              onPressed: _selectAddress, // Открытие экрана выбора адреса
+          if (checkoutLogic.isLoading)
+            const Center(
+              child: CircularProgressIndicator(),
             ),
-          PaymentMethodCard(
-            selectedPaymentMethod: checkoutLogic.selectedPaymentMethod,
-            onChanged: (newValue) {
-              setState(() {
-                checkoutLogic.updateSelectedPaymentMethod(newValue!);
-                if (checkoutLogic.selectedPaymentMethod == 'Оплата картой') {
-                  print('оплата картой');
-                  _selectPaymentMethod(); // Открытие экрана выбора карт
-                }
-              });
-            },
-          ),
-          if (checkoutLogic.selectedPaymentMethod == 'Оплата картой' && checkoutLogic.selectedCard != null)
-            ListTile(
-              title: Text('Карта: ${checkoutLogic.selectedCard!.cardNumber}'),
-              subtitle: Text('Срок действия: ${checkoutLogic.selectedCard!.cardExpiry}'),
-              leading: const Icon(Icons.credit_card),
-            ),
-          OrderSummary(
-            totalPrice: checkoutLogic.totalPrice,
-            selectedDeliveryMethod: checkoutLogic.selectedDeliveryMethod,
-            onOrder: () {
-              // Логика оформления заказа
-            },
-          ),
         ],
       ),
     );

@@ -15,7 +15,7 @@ class OrdersListView extends StatelessWidget {
         Order order = orders[index];
         return ListTile(
           title: Text('Заказ №${order.id}'),
-          subtitle: Text('${order.deliveryAddressId ?? 'Не указано'}'),
+          subtitle: Text('${order.deliveryAddress ?? 'Не указано'}'),
           trailing: Text(
             '${order.totalPrice} ₸',
             style: const TextStyle(color: Color.fromARGB(255, 109, 186, 111)),
