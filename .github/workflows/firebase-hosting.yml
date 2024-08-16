@@ -1,9 +1,9 @@
-name: Deploy to Firebase Hosting
+name: Deploy Flutter Web App
 
 on:
   push:
     branches:
-      - master  # Укажите ветку, которая будет запускать развертывание
+      - master  # Ваша ветка
 
 jobs:
   build-and-deploy:
@@ -13,16 +13,16 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
         with:
-          node-version: '18'
+          flutter-version: '3.22.3'  # Ваша версия Flutter
 
       - name: Install dependencies
-        run: npm install
+        run: flutter pub get
 
       - name: Build project
-        run: npm run build  # Или другая команда сборки для вашего проекта
+        run: flutter build web
 
       - name: Install Firebase CLI
         run: npm install -g firebase-tools
