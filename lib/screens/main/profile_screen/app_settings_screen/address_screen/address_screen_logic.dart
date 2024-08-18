@@ -29,16 +29,7 @@ class AddressLogic extends ChangeNotifier{
     await provider.loadUserAddresses();
     addresses = provider.userAddresses;
 
-    if (addresses.isNotEmpty) {
-      // Устанавливаем выбранный адрес в зависимости от количества адресов
-      if (addresses.length == 1) {
-        selectedAddress = addresses.first;
-      } else {
-        selectedAddress = addresses.last;
-      }
-    } else {
-      selectedAddress = null;
-    }
+    selectedAddress = null;
 
     // Обновляем состояние
     notifyListeners();

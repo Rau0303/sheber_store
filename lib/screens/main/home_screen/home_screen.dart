@@ -42,11 +42,7 @@ class _HomeScreenState extends State<HomeScreen> {
             onClearPressed: logic.onClearPressed,
             appBarTitle: 'Главная',
           ),
-          body: logic.isLoading
-          ?
-          const Center(child: CircularProgressIndicator(),)
-          :
-          ListView(
+          body: ListView(
             padding: const EdgeInsets.all(8.0),
             children: [
               // Промо-картинка

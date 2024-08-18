@@ -10,6 +10,8 @@ import 'package:sheber_market/screens/main/profile_screen/app_settings_screen/ad
 import 'package:sheber_market/screens/main/profile_screen/app_settings_screen/address_screen/address_screen_logic.dart';
 import 'package:sheber_market/screens/main/profile_screen/app_settings_screen/payment_cards_screen/payment_cards_screen.dart';
 import 'package:sheber_market/screens/main/profile_screen/app_settings_screen/payment_cards_screen/payment_cards_screen_logic.dart';
+import 'package:sheber_market/screens/main/main_screen/main_screen.dart';
+import 'package:sheber_market/screens/main/basket_screen/basket_screen_logic.dart';
 
 class CheckoutLogic extends ChangeNotifier {
   String selectedPaymentMethod = 'Выберите способ оплаты';
@@ -100,12 +102,17 @@ class CheckoutLogic extends ChangeNotifier {
     final userId = FirebaseAuth.instance.currentUser?.uid;
 
     if (userId == null) {
-      _showSnackBar('Вы не авторизованы.');
+      showSnackBar('Вы не авторизованы.');
       return;
     }
 
     if (selectedAddress == null || selectedPaymentMethod == 'Выберите способ оплаты' || selectedDeliveryMethod == 'Выберите способ доставки') {
-      _showSnackBar('Выберите правильный метод доставки и оплаты.');
+      showSnackBar('Выберите правильный метод доставки и оплаты.');
+      return;
+    }
+
+    if (selectedPaymentMethod == 'Оплата картой') {
+      showSnackBar('Оплата картой в процессе разработки.');
       return;
     }
 
@@ -126,12 +133,23 @@ class CheckoutLogic extends ChangeNotifier {
 
       await _firestore.collection('orders').add(order.toMap());
 
-      _showSnackBar('Заказ успешно создан!');
-      Navigator.pushNamedAndRemoveUntil(context, '/home', (route) => false);
+      showSnackBar('Заказ успешно создан!');
+      BasketLogic basketLogic = BasketLogic(context);
+      basketLogic.basket.clear();
+      notifyListeners();
+
+      // Перенаправление на главный экран
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (context) => const MainScreen()),
+          (route) => false,
+        );
+      });
 
     } catch (e) {
       print('Ошибка при создании заказа: $e');
-      _showSnackBar('Ошибка при создании заказа.');
+      showSnackBar('Ошибка при создании заказа.');
     } finally {
       setLoading(false);
     }
@@ -142,10 +160,12 @@ class CheckoutLogic extends ChangeNotifier {
     notifyListeners();
   }
 
-  void _showSnackBar(String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(message)),
-    );
+  void showSnackBar(String message) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(message)),
+      );
+    });
   }
 
   PaymentMethod _mapPaymentMethodToEnum(String paymentMethod) {

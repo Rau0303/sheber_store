@@ -49,7 +49,8 @@ class _AddressScreenState extends State<AddressScreen> {
               onAddressSelected: (address, isSelected) {
                 addressLogic.updateSelectedAddress(address, isSelected);
                 if (isSelected && widget.isSelectionMode) {
-                  Navigator.pop(context, address); // Возврат выбранного адреса только в режиме выбора
+                  Navigator.pop(context, address);
+                  print('Selected address from AddressScreen: $address');
                 }
               },
               onAddressEdit: (address) {

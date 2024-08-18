@@ -23,7 +23,10 @@ class FirebasePushNotificationProvider with ChangeNotifier {
         AndroidInitializationSettings('@mipmap/ic_launcher');
     const InitializationSettings initializationSettings =
         InitializationSettings(android: initializationSettingsAndroid);
-    await _flutterLocalNotificationsPlugin.initialize(initializationSettings);
+    await _flutterLocalNotificationsPlugin.initialize(
+      initializationSettings,
+      
+    );
 
     // Получение токена устройства
     try {
@@ -37,6 +40,11 @@ class FirebasePushNotificationProvider with ChangeNotifier {
     // Настройка обработчиков сообщений
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       _showNotification(message);
+    });
+
+    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+      // Обработка уведомлений при открытии приложения
+      _onSelectNotification(message.data['payload']);
     });
   }
 
@@ -56,7 +64,17 @@ class FirebasePushNotificationProvider with ChangeNotifier {
       message.notification?.title ?? '',
       message.notification?.body ?? '',
       platformChannelSpecifics,
+      payload: message.data['payload'],
     );
+  }
+
+  Future<void> _onSelectNotification(String? payload) async {
+    // Обработка нажатий на уведомления
+    if (payload != null) {
+      print('Notification payload: $payload');
+      // Здесь можно добавить логику для навигации или выполнения действий
+      // Например, перейти на определённый экран или обновить состояние
+    }
   }
 
   void subscribeToTopic(String topic) {
