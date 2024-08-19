@@ -30,7 +30,7 @@ class BasketBottomAppBar extends StatelessWidget {
         ),
         child: BottomAppBar(
           shape: const CircularNotchedRectangle(),
-          height: screenSize.height * 0.26,
+          height:isEligibleForFreeDelivery? screenSize.height * 0.15 :screenSize.height * 0.255,
           color: isDarkTheme? Colors.grey.shade700 :Colors.grey.shade300,
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 5,),
