@@ -16,12 +16,14 @@ class BasketItemWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final screenSize = MediaQuery.of(context).size;
+    final theme = Theme.of(context);
+    final isDarkTheme = theme.brightness==Brightness.dark;
 
     return Container(
       height: screenSize.height * 0.20,
       width: screenSize.width,
       decoration: BoxDecoration(
-        color: Colors.grey.shade700,
+        color:isDarkTheme? Colors.grey.shade700 :Colors.grey.shade300,
         borderRadius: BorderRadius.circular(16),
       ),
       child: Padding(
@@ -50,10 +52,10 @@ class BasketItemWidget extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(item.product.name,softWrap: true,),
+                  Text(item.product.name,softWrap: true,style: theme.textTheme.displaySmall,),
                   Text(
                     '${item.product.sellingPrice.toStringAsFixed(2)} тг',
-                    style: const TextStyle(color: Colors.green),
+                    style: theme.textTheme.headlineLarge?.copyWith(color: Colors.green,fontWeight: FontWeight.bold),
                   ),
                   
                   Row(
@@ -62,7 +64,7 @@ class BasketItemWidget extends StatelessWidget {
                         onPressed: onAdd,
                         icon: const Icon(Icons.add),
                       ),
-                      Text('${item.quantity}'),
+                      Text('${item.quantity}',style: theme.textTheme.bodyLarge,),
                       IconButton(
                         onPressed: onRemove,
                         icon: const Icon(Icons.remove),
