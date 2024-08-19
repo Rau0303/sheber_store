@@ -9,9 +9,15 @@ class FavoriteItem extends StatelessWidget {
 
   const FavoriteItem({super.key, required this.product});
 
+
+  
+
   @override
   Widget build(BuildContext context) {
     final screenSize = MediaQuery.of(context).size;
+    final theme = Theme.of(context);
+    final isDarkTheme = Brightness.dark ==theme.brightness;
+    bool isStock = product.quantity>0 ? true : false;
 
     return Padding(
       padding: const EdgeInsets.only(bottom: 10.0),
@@ -36,7 +42,7 @@ class FavoriteItem extends StatelessWidget {
           height: screenSize.height * 0.18,
           width: screenSize.width,
           decoration: BoxDecoration(
-            color: Colors.deepOrange,
+            color:isDarkTheme?Colors.grey.shade700:Colors.grey.shade300,
             borderRadius: BorderRadius.circular(16),
           ),
           child: Row(
@@ -64,19 +70,26 @@ class FavoriteItem extends StatelessWidget {
                   ),
                 ),
               Expanded(
-                child: ListTile(
-                  title: Text(
-                    product.name,
-                    style: const TextStyle(color: Colors.white),
-                  ),
-                  subtitle: Text(
-                    '${product.sellingPrice} ${product.unit}',
-                    style: const TextStyle(
-                      color: Colors.green,
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    
+                    Text(
+                        product.name,
+                        style: theme.textTheme.displayMedium,
+                      ),
+                    Text(
+                        'Цена: ${product.sellingPrice} тг',
+                        style: theme.textTheme.headlineLarge?.copyWith(color: Colors.green,fontWeight: FontWeight.bold)
+                      ),
+                    Text(
+                      isStock?'Есть в наличии':'Нет в наличии',
+                      style: theme.textTheme.headlineLarge?.copyWith(color: isStock?Colors.green:Colors.red),
+                    )
+
+                    
+                  ],
                 ),
               ),
             ],
