@@ -18,44 +18,51 @@ class BasketBottomAppBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDarkTheme = theme.brightness==Brightness.dark;
+    final screenSize = MediaQuery.of(context).size;
     return Padding(
       padding: const EdgeInsets.all(8.0),
-      child: BottomAppBar(
-        height: MediaQuery.of(context).size.height * 0.21,
-        color: Colors.grey.shade700,
-        child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 10,),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Flexible(child: Text('Товары: $totalQuantity')),
-                  Flexible(child: Text('Общая сумма товаров: $totalPrice тг')),
-                ],
-              ),
-              const SizedBox(height: 8.0),
-              if (!isEligibleForFreeDelivery)
-                Text(
-                  'Добавьте товаров на ${remainingAmountForFreeDelivery.toInt()} тг для бесплатной доставки',
-                  style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+      child: ClipRRect(
+        borderRadius: const BorderRadius.only(
+          topLeft: Radius.circular(20),
+          topRight: Radius.circular(20)
+        ),
+        child: BottomAppBar(
+          shape: const CircularNotchedRectangle(),
+          height: screenSize.height * 0.26,
+          color: isDarkTheme? Colors.grey.shade700 :Colors.grey.shade300,
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 5,),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Flexible(child: Text('Товары: $totalQuantity',style: theme.textTheme.bodyMedium?.copyWith(color:isDarkTheme?Colors.white:Colors.black,fontWeight:  FontWeight.bold),)),
+                    Flexible(child: Text('Общая сумма товаров: $totalPrice тг',style: theme.textTheme.bodyLarge?.copyWith(color:isDarkTheme?Colors.white:Colors.black,fontWeight:  FontWeight.bold))),
+                  ],
                 ),
-              const SizedBox(height: 8.0),
-              SizedBox(
-                height: 50,
-                child: ElevatedButton(
+                const SizedBox(height: 3.0),
+                if (!isEligibleForFreeDelivery)
+                  Text(
+                    'Добавьте товаров на ${remainingAmountForFreeDelivery.toInt()} тг для бесплатной доставки',
+                    style: theme.textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.bold),
+                  ),
+                const SizedBox(height: 3.0),
+                ElevatedButton(
                   onPressed: onProceedToCheckout,
                   style: ButtonStyle(
-                    backgroundColor: WidgetStateProperty.all<Color>(Colors.red),
+                    backgroundColor: WidgetStateProperty.all<Color>(Colors.green),
                   ),
-                  child: const Text(
+                  child:  Text(
                     'Оформить заказ',
-                    style: TextStyle(color: Colors.white),
+                    style: theme.textTheme.bodyLarge?.copyWith(color: Colors.white,fontWeight: FontWeight.bold),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

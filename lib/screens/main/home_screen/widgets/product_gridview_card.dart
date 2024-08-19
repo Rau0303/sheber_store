@@ -119,7 +119,7 @@ class _ProductGridViewCardState extends State<ProductGridViewCard> {
                   ),
                   const SizedBox(height: 8.0),
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
                       Expanded(
                         child: ElevatedButton(

@@ -9,98 +9,98 @@ class AdaptiveTheme {
         primary: Colors.deepOrange,
         secondary: Colors.orangeAccent,
       ),
-      scaffoldBackgroundColor: Colors.grey[100], // Светлый фон для светлой темы
+      scaffoldBackgroundColor: Colors.grey[100],
       bottomAppBarTheme: const BottomAppBarTheme(
-        color: Colors.white, // Цвет фона для нижнего меню в светлой теме
+        color: Colors.white,
       ),
       checkboxTheme: CheckboxThemeData(
-      fillColor: WidgetStateProperty.all(Colors.deepOrange),
-      checkColor: WidgetStateProperty.all(Colors.orangeAccent),
+        fillColor: WidgetStateProperty.all(Colors.deepOrange),
+        checkColor: WidgetStateProperty.all(Colors.orangeAccent),
       ),
       textTheme: TextTheme(
         displayLarge: TextStyle(
-          fontSize: screenWidth * 0.08,
+          fontSize: screenWidth * 0.07, // Уменьшено
           fontWeight: FontWeight.bold,
           color: Colors.black,
           fontFamily: 'Roboto',
         ),
         displayMedium: TextStyle(
-          fontSize: screenWidth * 0.07,
+          fontSize: screenWidth * 0.06, // Уменьшено
           fontWeight: FontWeight.bold,
           color: Colors.black,
           fontFamily: 'Roboto',
         ),
         displaySmall: TextStyle(
-          fontSize: screenWidth * 0.06,
+          fontSize: screenWidth * 0.05, // Уменьшено
           fontWeight: FontWeight.bold,
           color: Colors.black,
           fontFamily: 'Roboto',
         ),
         headlineLarge: TextStyle(
-          fontSize: screenWidth * 0.05,
+          fontSize: screenWidth * 0.04, // Уменьшено
           fontWeight: FontWeight.bold,
           color: Colors.black,
           fontFamily: 'Roboto',
         ),
         headlineMedium: TextStyle(
-          fontSize: screenWidth * 0.045,
+          fontSize: screenWidth * 0.035, // Уменьшено
           fontWeight: FontWeight.bold,
           color: Colors.black,
           fontFamily: 'Roboto',
         ),
         headlineSmall: TextStyle(
-          fontSize: screenWidth * 0.04,
+          fontSize: screenWidth * 0.03, // Уменьшено
           fontWeight: FontWeight.bold,
           color: Colors.black,
           fontFamily: 'Roboto',
         ),
         titleLarge: TextStyle(
-          fontSize: screenWidth * 0.035,
+          fontSize: screenWidth * 0.03, // Уменьшено
           fontWeight: FontWeight.bold,
           color: Colors.black,
           fontFamily: 'Roboto',
         ),
         titleMedium: TextStyle(
-          fontSize: screenWidth * 0.03,
+          fontSize: screenWidth * 0.025, // Уменьшено
           fontWeight: FontWeight.bold,
           color: Colors.black,
           fontFamily: 'Roboto',
         ),
         titleSmall: TextStyle(
-          fontSize: screenWidth * 0.025,
+          fontSize: screenWidth * 0.02, // Уменьшено
           fontWeight: FontWeight.bold,
           color: Colors.black,
           fontFamily: 'Roboto',
         ),
         bodyLarge: TextStyle(
-          fontSize: screenWidth * 0.045,
+          fontSize: screenWidth * 0.04, // Уменьшено
           color: Colors.black,
           fontFamily: 'Roboto',
         ),
         bodyMedium: TextStyle(
-          fontSize: screenWidth * 0.04,
+          fontSize: screenWidth * 0.035, // Уменьшено
           color: Colors.black54,
           fontFamily: 'Roboto',
         ),
         bodySmall: TextStyle(
-          fontSize: screenWidth * 0.035,
+          fontSize: screenWidth * 0.03, // Уменьшено
           color: Colors.black54,
           fontFamily: 'Roboto',
         ),
         labelLarge: TextStyle(
-          fontSize: screenWidth * 0.03,
+          fontSize: screenWidth * 0.025, // Уменьшено
           fontWeight: FontWeight.bold,
           color: Colors.black,
           fontFamily: 'Roboto',
         ),
         labelMedium: TextStyle(
-          fontSize: screenWidth * 0.025,
+          fontSize: screenWidth * 0.02, // Уменьшено
           fontWeight: FontWeight.bold,
           color: Colors.black54,
           fontFamily: 'Roboto',
         ),
         labelSmall: TextStyle(
-          fontSize: screenWidth * 0.02,
+          fontSize: screenWidth * 0.015, // Уменьшено
           fontWeight: FontWeight.bold,
           color: Colors.black54,
           fontFamily: 'Roboto',
@@ -109,20 +109,20 @@ class AdaptiveTheme {
       appBarTheme: AppBarTheme(
         backgroundColor: Colors.deepOrange,
         titleTextStyle: TextStyle(
-          fontSize: screenWidth * 0.05,
+          fontSize: screenWidth * 0.04, // Уменьшено
           fontWeight: FontWeight.bold,
           color: Colors.white,
           fontFamily: 'Roboto',
         ),
         elevation: 0,
-        iconTheme: const IconThemeData(color: Colors.white), // Установите цвет иконок для AppBar
+        iconTheme: const IconThemeData(color: Colors.white),
       ),
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
           foregroundColor: Colors.white,
           backgroundColor: Colors.deepOrange,
           textStyle: TextStyle(
-            fontSize: screenWidth * 0.045,
+            fontSize: screenWidth * 0.035, // Уменьшено
             fontFamily: 'Roboto',
           ),
         ),
@@ -147,12 +147,11 @@ class AdaptiveTheme {
         fillColor: Colors.transparent,
         filled: false,
       ),
-    progressIndicatorTheme: const ProgressIndicatorThemeData(
-          color: Colors.deepOrange, // Цвет для индикаторов загрузки
-          circularTrackColor: Colors.deepOrange, // Цвет фона кругового индикатора
-          linearTrackColor: Colors.deepOrange, // Цвет фона линейного индикатора
-          // Вы можете также настроить другие параметры, если нужно
-        ),
+      progressIndicatorTheme: const ProgressIndicatorThemeData(
+        color: Colors.deepOrange,
+        circularTrackColor: Colors.deepOrange,
+        linearTrackColor: Colors.deepOrange,
+      ),
     );
   }
 
@@ -164,94 +163,94 @@ class AdaptiveTheme {
         primary: Colors.black,
         secondary: Colors.deepOrange,
       ),
-      scaffoldBackgroundColor: Colors.grey[850], // Темный фон для темной темы
+      scaffoldBackgroundColor: Colors.grey[850],
       bottomAppBarTheme: BottomAppBarTheme(
-        color: Colors.grey[900], // Цвет фона для нижнего меню в темной теме
+        color: Colors.grey[900],
       ),
       textTheme: TextTheme(
         displayLarge: TextStyle(
-          fontSize: screenWidth * 0.08,
+          fontSize: screenWidth * 0.07, // Уменьшено
           fontWeight: FontWeight.bold,
           color: Colors.white,
           fontFamily: 'Roboto',
         ),
         displayMedium: TextStyle(
-          fontSize: screenWidth * 0.07,
+          fontSize: screenWidth * 0.06, // Уменьшено
           fontWeight: FontWeight.bold,
           color: Colors.white,
           fontFamily: 'Roboto',
         ),
         displaySmall: TextStyle(
-          fontSize: screenWidth * 0.06,
+          fontSize: screenWidth * 0.05, // Уменьшено
           fontWeight: FontWeight.bold,
           color: Colors.white,
           fontFamily: 'Roboto',
         ),
         headlineLarge: TextStyle(
-          fontSize: screenWidth * 0.05,
+          fontSize: screenWidth * 0.04, // Уменьшено
           fontWeight: FontWeight.bold,
           color: Colors.white,
           fontFamily: 'Roboto',
         ),
         headlineMedium: TextStyle(
-          fontSize: screenWidth * 0.045,
+          fontSize: screenWidth * 0.035, // Уменьшено
           fontWeight: FontWeight.bold,
           color: Colors.white,
           fontFamily: 'Roboto',
         ),
         headlineSmall: TextStyle(
-          fontSize: screenWidth * 0.04,
+          fontSize: screenWidth * 0.03, // Уменьшено
           fontWeight: FontWeight.bold,
           color: Colors.white,
           fontFamily: 'Roboto',
         ),
         titleLarge: TextStyle(
-          fontSize: screenWidth * 0.035,
+          fontSize: screenWidth * 0.03, // Уменьшено
           fontWeight: FontWeight.bold,
           color: Colors.white,
           fontFamily: 'Roboto',
         ),
         titleMedium: TextStyle(
-          fontSize: screenWidth * 0.03,
+          fontSize: screenWidth * 0.025, // Уменьшено
           fontWeight: FontWeight.bold,
           color: Colors.white,
           fontFamily: 'Roboto',
         ),
         titleSmall: TextStyle(
-          fontSize: screenWidth * 0.025,
+          fontSize: screenWidth * 0.02, // Уменьшено
           fontWeight: FontWeight.bold,
           color: Colors.white,
           fontFamily: 'Roboto',
         ),
         bodyLarge: TextStyle(
-          fontSize: screenWidth * 0.045,
+          fontSize: screenWidth * 0.035, // Уменьшено
           color: Colors.white,
           fontFamily: 'Roboto',
         ),
         bodyMedium: TextStyle(
-          fontSize: screenWidth * 0.04,
+          fontSize: screenWidth * 0.03, // Уменьшено
           color: Colors.white70,
           fontFamily: 'Roboto',
         ),
         bodySmall: TextStyle(
-          fontSize: screenWidth * 0.035,
+          fontSize: screenWidth * 0.025, // Уменьшено
           color: Colors.white70,
           fontFamily: 'Roboto',
         ),
         labelLarge: TextStyle(
-          fontSize: screenWidth * 0.03,
+          fontSize: screenWidth * 0.025, // Уменьшено
           fontWeight: FontWeight.bold,
           color: Colors.white,
           fontFamily: 'Roboto',
         ),
         labelMedium: TextStyle(
-          fontSize: screenWidth * 0.025,
+          fontSize: screenWidth * 0.02, // Уменьшено
           fontWeight: FontWeight.bold,
           color: Colors.white70,
           fontFamily: 'Roboto',
         ),
         labelSmall: TextStyle(
-          fontSize: screenWidth * 0.02,
+          fontSize: screenWidth * 0.015, // Уменьшено
           fontWeight: FontWeight.bold,
           color: Colors.white70,
           fontFamily: 'Roboto',
@@ -260,13 +259,13 @@ class AdaptiveTheme {
       appBarTheme: AppBarTheme(
         backgroundColor: Colors.deepOrange,
         titleTextStyle: TextStyle(
-          fontSize: screenWidth * 0.05,
+          fontSize: screenWidth * 0.04, // Уменьшено
           fontWeight: FontWeight.bold,
           color: Colors.white,
           fontFamily: 'Roboto',
         ),
         elevation: 0,
-        iconTheme: const IconThemeData(color: Colors.white), // Установите цвет иконок для AppBar
+        iconTheme: const IconThemeData(color: Colors.white),
       ),
       dividerColor: Colors.grey[700],
       elevatedButtonTheme: ElevatedButtonThemeData(
@@ -274,7 +273,7 @@ class AdaptiveTheme {
           foregroundColor: Colors.white,
           backgroundColor: Colors.deepOrange,
           textStyle: TextStyle(
-            fontSize: screenWidth * 0.045,
+            fontSize: screenWidth * 0.035, // Уменьшено
             fontFamily: 'Roboto',
           ),
         ),
@@ -299,16 +298,14 @@ class AdaptiveTheme {
         filled: false,
       ),
       progressIndicatorTheme: const ProgressIndicatorThemeData(
-          color: Colors.deepOrange, // Цвет для индикаторов загрузки
-          circularTrackColor: Colors.deepOrange, // Цвет фона кругового индикатора
-          linearTrackColor: Colors.deepOrange, // Цвет фона линейного индикатора
-          // Вы можете также настроить другие параметры, если нужно
-        ),
+        color: Colors.deepOrange,
+        circularTrackColor: Colors.deepOrange,
+        linearTrackColor: Colors.deepOrange,
+      ),
     );
   }
 
   static ThemeData of(BuildContext context) {
-    // Эта функция должна возвращать текущую тему, но её реализация не указана в вашем коде.
     return Theme.of(context);
   }
 }

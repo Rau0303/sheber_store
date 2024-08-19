@@ -77,7 +77,9 @@ class ProductCardState extends State<ProductCard> {
                     children: [
                       Text(
                         widget.title,
-                        style: theme.textTheme.titleLarge,
+                        style: theme.textTheme.titleLarge?.copyWith(
+                          fontSize: theme.textTheme.titleLarge!.fontSize! * 1.2, // Увеличенный размер шрифта
+                        ),
                       ),
                       const SizedBox(height: 4),
                       Text(
@@ -90,6 +92,15 @@ class ProductCardState extends State<ProductCard> {
                         style: theme.textTheme.bodyLarge?.copyWith(
                           color: Colors.green,
                           fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        widget.quantity > 10
+                            ? 'Есть в наличии'
+                            : 'Осталось ${widget.quantity} шт.',
+                        style: theme.textTheme.bodySmall?.copyWith(
+                          color: widget.quantity > 10 ? Colors.green : Colors.red,
                         ),
                       ),
                       const SizedBox(height: 8),

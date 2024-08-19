@@ -1,22 +1,26 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:logger/logger.dart';
 
 class AuthProvider extends ChangeNotifier {
   final FirebaseAuth _auth = FirebaseAuth.instance;
+
+  var logger = Logger(printer:PrettyPrinter());
 
   Future<User?> getCurrentUser() async {
     return _auth.currentUser;
   }
 
-  Future<void> signInWithPhoneNumber(BuildContext context, String phoneNumber) async {
+Future<void> signInWithPhoneNumber(BuildContext context, String phoneNumber) async {
+  try {
     await _auth.verifyPhoneNumber(
       phoneNumber: phoneNumber,
       verificationCompleted: (PhoneAuthCredential credential) async {
-        // Автоматическая верификация (напр., Google Play Services)
+        logger.i('Автоматическая верификация прошла успешно.');
         await _auth.signInWithCredential(credential);
       },
       verificationFailed: (FirebaseAuthException e) {
-        // Ошибка верификации
+        logger.e('Ошибка верификации: ${e.message}');
         showDialog(
           context: context,
           builder: (context) => AlertDialog(
@@ -32,14 +36,14 @@ class AuthProvider extends ChangeNotifier {
         );
       },
       codeSent: (String verificationId, int? resendToken) {
-        // Код отправлен на телефон
+        logger.i('Код отправлен на номер $phoneNumber, verificationId: $verificationId');
         Navigator.of(context).pushNamed(
           '/sms_verification',
           arguments: {'verificationId': verificationId},
         );
       },
       codeAutoRetrievalTimeout: (String verificationId) {
-        // Время ожидания истекло
+        logger.w('Время ожидания истекло для verificationId: $verificationId');
         showDialog(
           context: context,
           builder: (context) => AlertDialog(
@@ -55,7 +59,10 @@ class AuthProvider extends ChangeNotifier {
         );
       },
     );
+  } catch (e) {
+    logger.e('Произошла ошибка при верификации номера телефона: $e');
   }
+}
 
   void verifySmsCode(BuildContext context, String verificationId, String smsCode,
       {required VoidCallback onSuccess, required Function(String) onError}) async {
