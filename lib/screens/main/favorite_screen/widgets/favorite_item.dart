@@ -49,7 +49,7 @@ class FavoriteItem extends StatelessWidget {
             children: [
               if (product.photo == null)
                 Container(
-                  width: screenSize.width * 0.3,
+                  width: screenSize.width * 0.35,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(16),
                     image: const DecorationImage(
@@ -60,7 +60,7 @@ class FavoriteItem extends StatelessWidget {
                 )
               else
                 Container(
-                  width: screenSize.width * 0.3,
+                  width: screenSize.width * 0.35,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(16),
                     image: DecorationImage(
@@ -69,6 +69,7 @@ class FavoriteItem extends StatelessWidget {
                     ),
                   ),
                 ),
+              const SizedBox(width:10),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,

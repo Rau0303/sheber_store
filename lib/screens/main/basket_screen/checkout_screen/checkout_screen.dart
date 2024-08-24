@@ -6,6 +6,7 @@ import 'package:sheber_market/models/order.dart' as app_order;
 import 'package:sheber_market/models/order.dart';
 import 'package:sheber_market/models/user_address.dart';
 import 'package:sheber_market/models/user_bank_card.dart';
+import 'package:sheber_market/screens/main/basket_screen/basket_screen_logic.dart';
 import 'package:sheber_market/screens/main/profile_screen/app_settings_screen/address_screen/address_screen.dart';
 import 'package:sheber_market/screens/main/profile_screen/app_settings_screen/payment_cards_screen/payment_cards_screen.dart';
 import 'package:sheber_market/screens/main/main_screen/main_screen.dart';
@@ -33,6 +34,7 @@ class CheckoutScreenState extends State<CheckoutScreen> {
   UserAddress? selectedAddress;
   UserBankCard? selectedCard; // Убираем final
   bool isLoading = false;
+  
 
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
@@ -102,6 +104,7 @@ class CheckoutScreenState extends State<CheckoutScreen> {
 
 Future<void> placeOrder() async {
   final userId = FirebaseAuth.instance.currentUser?.uid;
+  const double pi = 3.1415926535897932;
 
   if (userId == null) {
     showSnackBar('Вы не авторизованы.');
@@ -139,10 +142,10 @@ Future<void> placeOrder() async {
   setState(() {
     isLoading = true;
   });
-
+  int id = (DateTime.now().millisecond * pi).toInt();
   try {
     final order = app_order.Order(
-      id: '',
+      id: id.toString(),
       userId: userId,
       orderDate: DateTime.now(),
       totalPrice: totalPrice,
@@ -159,8 +162,8 @@ Future<void> placeOrder() async {
     setState(() {
       // Очищаем корзину
       // Нужно получить BasketLogic и очистить корзину
-      // BasketLogic basketLogic = BasketLogic(context);
-      // basketLogic.basket.clear();
+      BasketLogic basketLogic = BasketLogic(context);
+      basketLogic.basket.clear();
     });
 
     // Перенаправление на главный экран

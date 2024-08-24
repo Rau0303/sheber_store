@@ -32,7 +32,7 @@ class BasketItemWidget extends StatelessWidget {
           children: [
             Container(
               height: screenSize.height ,
-              width: screenSize.width * 0.35,
+              width: screenSize.width * 0.4,
               decoration: BoxDecoration(
                 color: Colors.grey,
                 borderRadius: BorderRadius.circular(16),
