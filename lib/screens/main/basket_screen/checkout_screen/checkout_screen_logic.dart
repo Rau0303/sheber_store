@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -98,6 +100,21 @@ class CheckoutLogic extends ChangeNotifier {
     return finalTotal;
   }
 
+  /// Метод для генерации уникального номера заказа на 12 цифр
+String generateUniqueOrderId() {
+  // Получаем текущую временную метку
+  int timestamp = DateTime.now().millisecondsSinceEpoch;
+
+  // Генерируем случайное число от 1000 до 9999
+  int randomPart = Random().nextInt(90000) + 10000;
+
+  // Склеиваем временную метку и случайное число
+  String orderId = '$timestamp$randomPart';
+
+  // Обрезаем длину до 16 символов (или любой другой длины, если нужно)
+  return orderId;
+}
+
   Future<void> placeOrder(List<BasketItem> basketItems) async {
     final userId = FirebaseAuth.instance.currentUser?.uid;
 
@@ -106,7 +123,7 @@ class CheckoutLogic extends ChangeNotifier {
       return;
     }
 
-    if (selectedAddress == null || selectedPaymentMethod == 'Выберите способ оплаты' || selectedDeliveryMethod == 'Выберите способ доставки') {
+    if (selectedPaymentMethod == 'Выберите способ оплаты' || selectedDeliveryMethod == 'Выберите способ доставки') {
       showSnackBar('Выберите правильный метод доставки и оплаты.');
       return;
     }
@@ -119,12 +136,31 @@ class CheckoutLogic extends ChangeNotifier {
     setLoading(true);
 
     try {
+      // Генерация уникального 12-значного номера заказа
+      String orderId = generateUniqueOrderId();
+
+      // Проверяем, если выбран метод "Самовывоз", адрес доставки не нужен
+      UserAddress? deliveryAddress;
+      if (selectedDeliveryMethod != 'Самовывоз') {
+        if (selectedAddress == null) {
+          showSnackBar('Выберите адрес доставки.');
+          setLoading(false);
+          return;
+        }
+        deliveryAddress = selectedAddress!;
+      }
+
       final order = app_order.Order(
-        id: '',
+        id: orderId,  // Уникальный ID с 12 цифрами
         userId: userId,
         orderDate: DateTime.now(),
         totalPrice: totalPrice,
-        deliveryAddress: selectedAddress!,
+        deliveryAddress: deliveryAddress ?? UserAddress(
+          city: 'Самовывоз',
+          street: 'Самовывоз',
+          house: 'Самовывоз',
+          apartment: 'Самовывоз', id: 0, userId: FirebaseAuth.instance.currentUser?.uid??'0',
+        ),
         status: 'Новый',
         paymentMethod: _mapPaymentMethodToEnum(selectedPaymentMethod),
         deliveryMethod: _mapDeliveryMethodToEnum(selectedDeliveryMethod),

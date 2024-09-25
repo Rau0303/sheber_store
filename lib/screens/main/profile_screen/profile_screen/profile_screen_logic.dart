@@ -56,17 +56,33 @@ class ProfileScreenLogic extends ChangeNotifier {
         Navigator.pushNamed(context, '/terms_of_use');
         break;
       case 3:
+        // Показ диалога подтверждения выхода из аккаунта
         showDialog(
           context: context,
           builder: (BuildContext context) {
-            return LogoutDialog(onLogout: () {
-              // Ваш код выхода из аккаунта
+            return LogoutDialog(onLogout: () async {
+              await _logout(context); // Логика выхода
             });
           },
         );
         break;
       default:
         break;
+    }
+  }
+
+  // Метод выхода из аккаунта
+  Future<void> _logout(BuildContext context) async {
+    try {
+      await FirebaseAuth.instance.signOut(); // Выход из Firebase
+      Navigator.pushNamedAndRemoveUntil(
+        context,
+        '/login', // После выхода перенаправляем на экран логина
+        (route) => false, // Удаляем все предыдущие экраны из стека
+      );
+    } catch (e) {
+      print("Ошибка при выходе из аккаунта: $e");
+      // Возможно, добавить уведомление для пользователя о неудачной попытке выхода
     }
   }
 }
