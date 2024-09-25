@@ -3,7 +3,6 @@ import 'package:provider/provider.dart';
 import 'package:sheber_market/models/users.dart';
 import 'package:sheber_market/screens/main/profile_screen/profile_screen/profile_screen_logic.dart';
 import 'package:sheber_market/screens/main/profile_screen/profile_screen/widgets/profile_headrs.dart';
-
 import 'package:sheber_market/screens/main/profile_screen/profile_screen/widgets/profile_options_list.dart';
 import 'package:sheber_market/widgets/enhanced_app_bar.dart';
 
@@ -21,9 +20,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     logic = Provider.of<ProfileScreenLogic>(context);
-    if (!logic.isLoading) {
-      logic.loadUserProfile();
+    // Проверяем, если еще не загружается профиль
+    if (!logic.isLoading && logic.currentUser == null) {
+      _loadUserProfile();
     }
+  }
+
+  Future<void> _loadUserProfile() async {
+    await logic.loadUserProfile();
   }
 
   @override
@@ -37,30 +41,30 @@ class _ProfileScreenState extends State<ProfileScreen> {
         showAction: false,
       ),
       body: Padding(
-              padding: EdgeInsets.symmetric(
-                vertical: screenSize.height * 0.05,
-                horizontal: screenSize.width * 0.03,
-              ),
-              child: Column(
-                children: [
-                  ProfileHeader(
-                    user: logic.currentUser != null
-                        ? logic.currentUser!
-                        : Users(id: 0, name: 'Дейнерис Таргариан', phoneNumber: ''),
-                  ),
-                  SizedBox(height: screenSize.height * 0.01),
-                  ProfileOptionsList(
-                    options: const [
-                      'Настройки аккаунта',
-                      'Мои покупки',
-                      'Условия использования',
-                      'Выйти с аккаунта',
-                    ],
-                    onOptionSelected: (index) => logic.navigateTo(context, index),
-                  ),
-                ],
-              ),
+        padding: EdgeInsets.symmetric(
+          vertical: screenSize.height * 0.05,
+          horizontal: screenSize.width * 0.03,
+        ),
+        child: Column(
+          children: [
+            ProfileHeader(
+              user: logic.currentUser != null
+                  ? logic.currentUser!
+                  : Users(id: 0, name: 'Дейнерис Таргариан', phoneNumber: ''),
             ),
+            SizedBox(height: screenSize.height * 0.01),
+            ProfileOptionsList(
+              options: const [
+                'Настройки аккаунта',
+                'Мои покупки',
+                'Условия использования',
+                'Выйти с аккаунта',
+              ],
+              onOptionSelected: (index) => logic.navigateTo(context, index),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
