@@ -4,13 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sheber_market/models/user_bank_card.dart';
 import 'package:sheber_market/providers/user_bank_card_provider.dart';
-import 'package:sheber_market/utils/encryption_helper.dart';
 
 class PaymentCardsLogic extends ChangeNotifier {
   final BuildContext context;
   UserBankCard? selectedCard;
   List<UserBankCard> cards = [];
-  final EncryptionHelper _encryptionHelper = EncryptionHelper();
 
   PaymentCardsLogic(this.context);
 
@@ -21,18 +19,7 @@ class PaymentCardsLogic extends ChangeNotifier {
       await provider.loadUserBankCards();
       cards = provider.userBankCards;
 
-      // Расшифровка карт
-      cards = cards.map((card) {
-        return UserBankCard(
-          id: card.id,
-          userId: card.userId,
-          cardNumber: _encryptionHelper.decryptData(card.cardNumber),
-          cardExpiry: _encryptionHelper.decryptData(card.cardExpiry),
-          cardholderName: _encryptionHelper.decryptData(card.cardholderName),
-          cvv: _encryptionHelper.decryptData(card.cvv),
-        );
-      }).toList();
-
+      // Если карты не пустые, выбираем первую или последнюю
       if (cards.isNotEmpty) {
         selectedCard = cards.length == 1 ? cards.first : cards.last;
       } else {
@@ -44,21 +31,16 @@ class PaymentCardsLogic extends ChangeNotifier {
   }
 
   Future<void> addCard(String cardNumber, String cardHolderName, String expiryDate, String cvv) async {
-    final encryptedCardNumber = _encryptionHelper.encryptData(cardNumber);
-    final encryptedCardHolderName = _encryptionHelper.encryptData(cardHolderName);
-    final encryptedExpiryDate = _encryptionHelper.encryptData(expiryDate);
-    final encryptedCvv = _encryptionHelper.encryptData(cvv);
-
     final userId = FirebaseAuth.instance.currentUser?.uid;
     if (userId == null) return;
 
     final card = UserBankCard(
       id: DateTime.now().millisecondsSinceEpoch, // Генерация уникального идентификатора
       userId: userId,
-      cardNumber: encryptedCardNumber,
-      cardExpiry: encryptedExpiryDate,
-      cardholderName: encryptedCardHolderName,
-      cvv: encryptedCvv,
+      cardNumber: cardNumber,
+      cardExpiry: expiryDate,
+      cardholderName: cardHolderName,
+      cvv: cvv,
     );
 
     final provider = Provider.of<UserBankCardProvider>(context, listen: false);
@@ -77,10 +59,10 @@ class PaymentCardsLogic extends ChangeNotifier {
       return UserBankCard(
         id: doc['id'],
         userId: doc['user_id'],
-        cardNumber: _encryptionHelper.decryptData(doc['card_number']),
-        cardExpiry: _encryptionHelper.decryptData(doc['card_expiry']),
-        cardholderName: _encryptionHelper.decryptData(doc['cardholder_name']),
-        cvv: _encryptionHelper.decryptData(doc['cvv']),
+        cardNumber: doc['card_number'],
+        cardExpiry: doc['card_expiry'],
+        cardholderName: doc['cardholder_name'],
+        cvv: doc['cvv'],
       );
     }).toList();
   }
